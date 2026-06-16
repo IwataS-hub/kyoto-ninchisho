@@ -1,0 +1,4295 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.090791,
+          35.658342
+        ]
+      },
+      "properties": {
+        "name": "京丹後市立弥栄病院",
+        "address": "京都府京丹後市弥栄町溝谷３４５２番地の１",
+        "tel": "https://www.city.kyotango.lg.jp/yasaka_hospital/index.html",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.060378,
+          35.626651
+        ]
+      },
+      "properties": {
+        "name": "公益財団法人　丹後中央病院",
+        "address": "京都府京丹後市峰山町杉谷１５８番地の１",
+        "tel": "https://www.tangohp.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.230851,
+          35.30291
+        ]
+      },
+      "properties": {
+        "name": "医療法人　綾冨士会　綾部ルネス病院",
+        "address": "京都府綾部市大島町二反田７番地の１６",
+        "tel": "http://www.a-renaiss.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.254877,
+          35.307133
+        ]
+      },
+      "properties": {
+        "name": "綾部市立病院",
+        "address": "京都府綾部市青野町大塚２０番地の１",
+        "tel": "http://www.ayabe-hsp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.204826,
+          35.304326
+        ]
+      },
+      "properties": {
+        "name": "公益社団法人　京都保健会　京都協立病院",
+        "address": "京都府綾部市高津町三反田１番地",
+        "tel": "http://www.kyoto-kyoritsu.org/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.398745,
+          35.502642
+        ]
+      },
+      "properties": {
+        "name": "医療法人医誠会東舞鶴医誠会病院",
+        "address": "京都府舞鶴市字大字大波下小字前田７６５番１６",
+        "tel": "http://www.higashimaizuruhp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.402385,
+          35.462174
+        ]
+      },
+      "properties": {
+        "name": "京都府立舞鶴こども療育センター",
+        "address": "京都府舞鶴市字行永２４１０番地３７",
+        "tel": "http://maizuru-ryouiku.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.337308,
+          35.444453
+        ]
+      },
+      "properties": {
+        "name": "舞鶴赤十字病院",
+        "address": "京都府舞鶴市字倉谷４２７",
+        "tel": "https://maizuru.jrc.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.124473,
+          35.271301
+        ]
+      },
+      "properties": {
+        "name": "医療法人　　福知会　　もみじヶ丘病院",
+        "address": "京都府福知山市荒木３３７４",
+        "tel": "http://www.fukuchikai.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.118361,
+          35.299964
+        ]
+      },
+      "properties": {
+        "name": "医療法人　福冨士会　京都ルネス病院",
+        "address": "京都府福知山市末広町４丁目１３番地",
+        "tel": "http://www.renaiss.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.111417,
+          35.303797
+        ]
+      },
+      "properties": {
+        "name": "市立福知山市民病院",
+        "address": "京都府福知山市厚中町２３１番地",
+        "tel": "https://www.city.fukuchiyama.lg.jp/site/hosp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.604862,
+          35.007254
+        ]
+      },
+      "properties": {
+        "name": "亀岡市立病院",
+        "address": "京都府亀岡市篠町篠野田１番地１",
+        "tel": "http://www.city.kameoka.kyoto.jp/hospital/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.5634,
+          35.0299
+        ]
+      },
+      "properties": {
+        "name": "京都中部総合医療センター",
+        "address": "京都府南丹市八木町八木上野25",
+        "tel": "0771-42-2510",
+        "area": "南丹",
+        "level": "専門",
+        "shindan": true,
+        "monowasure": true,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "京都府認知症疾患医療センター"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.581169,
+          35.010003
+        ]
+      },
+      "properties": {
+        "name": "医療法人　亀岡病院",
+        "address": "京都府亀岡市古世町三丁目２１番１号",
+        "tel": "https://kameokahp.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.595468,
+          35.00334
+        ]
+      },
+      "properties": {
+        "name": "医療法人清仁会　亀岡シミズ病院",
+        "address": "京都府亀岡市篠町広田１丁目３２の１５号",
+        "tel": "http://www.shimizu-hospital.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.542115,
+          35.04136
+        ]
+      },
+      "properties": {
+        "name": "重症心身障害児施設　花ノ木医療福祉センター",
+        "address": "京都府亀岡市大井町小金岐北浦３７番地１",
+        "tel": "https://kyoto-hananoki.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.373262,
+          35.180954
+        ]
+      },
+      "properties": {
+        "name": "国保京丹波町病院",
+        "address": "京都府船井郡京丹波町和田大下２８番地",
+        "tel": "http://www.kyotamba-hospital.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.689942,
+          34.91396
+        ]
+      },
+      "properties": {
+        "name": "一般財団法人長岡記念財団　長岡病院",
+        "address": "京都府長岡京市友岡４丁目１８番１号",
+        "tel": "http://www.nagaoka.or.jp/healthcare/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.686609,
+          34.916071
+        ]
+      },
+      "properties": {
+        "name": "社会福祉法人恩賜財団京都府済生会　京都済生会病院",
+        "address": "京都府長岡京市下海印寺下内田１０１番地",
+        "tel": "https://www.kyoto.saiseikai.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.690331,
+          34.922876
+        ]
+      },
+      "properties": {
+        "name": "医療法人総心会　　長岡京病院",
+        "address": "京都府長岡京市天神１丁目２０番１０号",
+        "tel": "http://nagaokakyo-hospital.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.691245,
+          34.962205
+        ]
+      },
+      "properties": {
+        "name": "医療法人　真生会　向日回生病院",
+        "address": "京都府向日市物集女町中海道９２番地の１２",
+        "tel": "http://shinseikai.jpn.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.698274,
+          34.923876
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団　千春会　千春会病院",
+        "address": "京都府長岡京市開田２丁目１４番２６号",
+        "tel": "http://www.senshunkai.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.6635,
+          34.9165
+        ]
+      },
+      "properties": {
+        "name": "一般財団法人療道協会 西山病院",
+        "address": "京都府長岡京市浄土谷宮ノ平1",
+        "tel": "075-955-2229",
+        "area": "京都・乙訓",
+        "level": "専門",
+        "shindan": true,
+        "monowasure": true,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "京都府認知症疾患医療センター"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.756099,
+          35.018978
+        ]
+      },
+      "properties": {
+        "name": "京都第二赤十字病院",
+        "address": "京都府京都市上京区釜座通丸太町上ル春帯町３５５番地の５",
+        "tel": "https://www.kyoto2.jrc.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.758126,
+          35.031115
+        ]
+      },
+      "properties": {
+        "name": "室町病院",
+        "address": "京都府京都市上京区室町通上立売下る裏築地町８８",
+        "tel": "http://www.muromachi.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.752626,
+          35.030504
+        ]
+      },
+      "properties": {
+        "name": "社会医療法人　西陣健康会　堀川病院",
+        "address": "京都府京都市上京区堀川通今出川上る北舟橋町８６５",
+        "tel": "http://www.horikawa-hp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.736822,
+          35.027782
+        ]
+      },
+      "properties": {
+        "name": "医療法人　相馬病院",
+        "address": "京都府京都市上京区御前通今小路下ル南馬喰町９１１番地",
+        "tel": "https://www.sohma-hp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.7686,
+          35.0227
+        ]
+      },
+      "properties": {
+        "name": "京都府立医科大学附属病院",
+        "address": "京都府京都市上京区河原町通広小路上る梶井町465",
+        "tel": "075-251-5566",
+        "area": "京都・乙訓",
+        "level": "専門",
+        "shindan": true,
+        "monowasure": true,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "京都府認知症疾患医療センター"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.739127,
+          35.032865
+        ]
+      },
+      "properties": {
+        "name": "社会福祉法人京都社会事業財団　西陣病院",
+        "address": "京都府京都市上京区五辻通六軒町西入溝前町１０３５",
+        "tel": "https://www.nishijinhp.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.757293,
+          35.026394
+        ]
+      },
+      "properties": {
+        "name": "医療法人愛寿会同仁病院",
+        "address": "京都府京都市上京区一条通新町東入東日野殿町３９４－１",
+        "tel": "http://www.dohjin-hp.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.760791,
+          35.044892
+        ]
+      },
+      "properties": {
+        "name": "冨田病院",
+        "address": "京都府京都市北区小山下内河原町５６",
+        "tel": "http://www.kyoto-hakuaikai.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.771873,
+          35.060362
+        ]
+      },
+      "properties": {
+        "name": "社会福祉法人京都博愛会　　京都博愛会病院",
+        "address": "京都府京都市北区上賀茂ケシ山１番地",
+        "tel": "https://www.kyoto-hakuaikai.or.jp/hakuai/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.701438,
+          34.987758
+        ]
+      },
+      "properties": {
+        "name": "三菱京都病院",
+        "address": "京都府京都市西京区桂御所町１番地",
+        "tel": "http://www.mitsubishi-hp.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.673691,
+          34.96701
+        ]
+      },
+      "properties": {
+        "name": "医療法人清仁会　洛西ニュータウン病院",
+        "address": "京都府京都市西京区大枝東新林町３丁目６番地",
+        "tel": "https://www.shimizu-hospital.or.jp/newtown/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.70388,
+          34.99197
+        ]
+      },
+      "properties": {
+        "name": "医療法人京都翔医会　西京都病院",
+        "address": "京都府京都市西京区桂畑ケ田町１７５番地",
+        "tel": "http://www.hospynkh.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.687134,
+          34.981953
+        ]
+      },
+      "properties": {
+        "name": "社会福祉法人　京都社会事業財団　京都桂病院",
+        "address": "京都府京都市西京区山田平尾町１７番地",
+        "tel": "http://www.katsura.com",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.6928,
+          34.981711
+        ]
+      },
+      "properties": {
+        "name": "医療法人清仁会　シミズ病院",
+        "address": "京都府京都市西京区山田中吉見町１１番地２",
+        "tel": "http://www.shimizu-hospital.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.665636,
+          34.975175
+        ]
+      },
+      "properties": {
+        "name": "医療法人　清仁会　洛西シミズ病院",
+        "address": "京都府京都市西京区大枝沓掛町１３－１０７",
+        "tel": "http://www.shimizu-hospital.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.741129,
+          34.978426
+        ]
+      },
+      "properties": {
+        "name": "京都九条病院",
+        "address": "京都府京都市南区唐橋羅城門町１０",
+        "tel": "http://www.dojinkai.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.732908,
+          34.976343
+        ]
+      },
+      "properties": {
+        "name": "公益社団法人京都保健会　吉祥院病院",
+        "address": "京都府京都市南区吉祥院井ノ口町４３",
+        "tel": "http://www.kissyouin-hp.org/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.741019,
+          34.973704
+        ]
+      },
+      "properties": {
+        "name": "医療法人財団　　医道会　十条武田リハビリテーション病院",
+        "address": "京都府京都市南区吉祥院八反田町３２番地",
+        "tel": "http://www.takedahp.or.jp/jujo/index.php",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.773127,
+          34.980954
+        ]
+      },
+      "properties": {
+        "name": "京都第一赤十字病院",
+        "address": "京都府京都市東山区本町　１５丁目　７４９番地",
+        "tel": "https://www.kyoto1.jrc.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.770516,
+          34.970733
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団育生会　京都久野病院",
+        "address": "京都府京都市東山区本町２２丁目５００番地",
+        "tel": "https://www.kuno-hospital.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.731046,
+          34.988592
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団恵心会　京都武田病院",
+        "address": "京都府京都市下京区西七条南衣田町１１",
+        "tel": "www.kyototakeda.jp",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.755878,
+          34.986898
+        ]
+      },
+      "properties": {
+        "name": "武田病院",
+        "address": "京都府京都市下京区塩小路通西洞院東入東塩小路町８４１－５",
+        "tel": "http://www.takedahp.or.jp/koseikai/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.706075,
+          35.008561
+        ]
+      },
+      "properties": {
+        "name": "公益社団法人京都保健会　京都民医連中央病院",
+        "address": "京都府京都市右京区太秦土本町２番１",
+        "tel": "http://kyoto-min-iren-c-hp.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.734962,
+          34.996702
+        ]
+      },
+      "properties": {
+        "name": "地方独立行政法人京都市立病院機構　京都市立病院",
+        "address": "京都府京都市中京区壬生東高田町１－２",
+        "tel": "http://www.kch-org.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.739017,
+          35.018866
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団洛和会　洛和会丸太町病院",
+        "address": "京都府京都市中京区聚楽廻松下町９番７",
+        "tel": "http://www.rakuwa.or.jp/maruta/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.71238,
+          35.019643
+        ]
+      },
+      "properties": {
+        "name": "医療法人新生十全会京都ならびがおか病院",
+        "address": "京都府京都市右京区常盤古御所町２番地",
+        "tel": "http://www.juzenkai.or.jp/narabigaoka",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.672855,
+          35.024031
+        ]
+      },
+      "properties": {
+        "name": "医療法人淳宰晃会　嵯峨さくら病院",
+        "address": "京都府京都市右京区嵯峨二尊院門前北中院町　２－９",
+        "tel": "https://saga-sakurahospital.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.690938,
+          35.001728
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団　松仁会　内田病院",
+        "address": "京都府京都市右京区梅津大縄場町６－９",
+        "tel": "uchida-hospital.com",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.702686,
+          35.028781
+        ]
+      },
+      "properties": {
+        "name": "独立行政法人国立病院機構宇多野病院",
+        "address": "京都府京都市右京区鳴滝音戸山町８",
+        "tel": "https://utano.hosp.go.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.813811,
+          34.971476
+        ]
+      },
+      "properties": {
+        "name": "医療法人　社団　恵仁会　なぎ辻病院",
+        "address": "京都府京都市山科区椥辻東潰５番１",
+        "tel": "http://www.nagitsuji-hp.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.830455,
+          34.985705
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団洛和会　洛和会音羽リハビリテーション病院",
+        "address": "京都府京都市山科区小山北溝町３２－１",
+        "tel": "http://www.rakuwa.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.829649,
+          34.987816
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団洛和会　洛和会音羽病院",
+        "address": "京都府京都市山科区音羽珍事町２番地",
+        "tel": "https://rakuwa-otowa.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.774322,
+          34.953791
+        ]
+      },
+      "properties": {
+        "name": "独立行政法人国立病院機構京都医療センター",
+        "address": "京都府京都市伏見区深草向畑町１－１",
+        "tel": "https://kyoto.hosp.go.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.758936,
+          34.931959
+        ]
+      },
+      "properties": {
+        "name": "社会福祉法人浩照会　伏見桃山総合病院",
+        "address": "京都府京都市伏見区下油掛町８９５",
+        "tel": "https://koshokai-swc.or.jp/hospital/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.771546,
+          34.929432
+        ]
+      },
+      "properties": {
+        "name": "社会医療法人　弘仁会　　大島病院",
+        "address": "京都府京都市伏見区桃山町泰長老１１５",
+        "tel": "http://www.oshima.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.715468,
+          34.903906
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団淀さんせん会　金井病院",
+        "address": "京都府京都市伏見区淀木津町６１２－１２",
+        "tel": "http://www.kanaihospital.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.805876,
+          34.935682
+        ]
+      },
+      "properties": {
+        "name": "医療法人　桜花会　醍醐病院",
+        "address": "京都府京都市伏見区石田大山町７２番地",
+        "tel": "http://www.daigo-hp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.81143,
+          34.955319
+        ]
+      },
+      "properties": {
+        "name": "医療法人　松寿会　共和病院",
+        "address": "京都府京都市伏見区醍醐川久保町３０番地",
+        "tel": "https://kyowa-hp.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.802404,
+          34.938876
+        ]
+      },
+      "properties": {
+        "name": "医療法人　医仁会武田総合病院",
+        "address": "京都府京都市伏見区石田森南町２８－１",
+        "tel": "https://www.takedahp.or.jp/ijinkai/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.772544,
+          34.973622
+        ]
+      },
+      "properties": {
+        "name": "医療法人財団　医道会　稲荷山武田病院",
+        "address": "京都府京都市伏見区深草正覚町２７",
+        "tel": "http://www.takedahp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.795678,
+          35.033671
+        ]
+      },
+      "properties": {
+        "name": "日本バプテスト病院",
+        "address": "京都府京都市左京区北白川山ノ元町４７番地",
+        "tel": "http://www.jbh.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.77943,
+          35.018061
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団貴順会　吉川病院",
+        "address": "京都府京都市左京区聖護院山王町１番地",
+        "tel": "http://www.yoshikawahp.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.783649,
+          35.080666
+        ]
+      },
+      "properties": {
+        "name": "医療法人　三幸会　第二北山病院",
+        "address": "京都府京都市左京区岩倉上蔵町１６１番地",
+        "tel": "http://www.sankokai.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.7931,
+          35.0648
+        ]
+      },
+      "properties": {
+        "name": "医療法人三幸会 北山病院",
+        "address": "京都府京都市左京区岩倉上蔵町123",
+        "tel": "075-706-5515",
+        "area": "京都・乙訓",
+        "level": "専門",
+        "shindan": true,
+        "monowasure": true,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "京都府認知症疾患医療センター"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.777208,
+          35.02045
+        ]
+      },
+      "properties": {
+        "name": "京都大学医学部附属病院",
+        "address": "京都府京都市左京区聖護院川原町５４",
+        "tel": "http://www.kuhp.kyoto-u.ac.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.781955,
+          35.078388
+        ]
+      },
+      "properties": {
+        "name": "医療法人　稲門会　いわくら病院",
+        "address": "京都府京都市左京区岩倉上蔵町１０１",
+        "tel": "http://www.toumonkai.net/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.793067,
+          35.024228
+        ]
+      },
+      "properties": {
+        "name": "一般財団法人　川越病院",
+        "address": "京都府京都市左京区浄土寺馬場町４８番地",
+        "tel": "http://business2.plala.or.jp/kawagoe",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.8205,
+          34.7375
+        ]
+      },
+      "properties": {
+        "name": "京都山城総合医療センター",
+        "address": "京都府木津川市木津駅前1-27",
+        "tel": "0774-72-6363",
+        "area": "山城南",
+        "level": "専門",
+        "shindan": true,
+        "monowasure": true,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "京都府認知症疾患医療センター"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.78672,
+          34.74934
+        ]
+      },
+      "properties": {
+        "name": "医療法人　社団　医聖会　　学研都市病院",
+        "address": "京都府相楽郡精華町精華台７－４－１",
+        "tel": "http://www.iseikai.jp/gakkentoshi/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.794411,
+          34.804085
+        ]
+      },
+      "properties": {
+        "name": "医療法人　芳松会　田辺病院",
+        "address": "京都府京田辺市飯岡南原５５番地",
+        "tel": "http://www.kyotanabe-hosp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.806,
+          34.918
+        ]
+      },
+      "properties": {
+        "name": "京都府立洛南病院",
+        "address": "京都府宇治市五ヶ庄西浦41-1",
+        "tel": "0774-32-5960",
+        "area": "山城北",
+        "level": "専門",
+        "shindan": true,
+        "monowasure": true,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "京都府認知症疾患医療センター"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.787212,
+          34.903352
+        ]
+      },
+      "properties": {
+        "name": "医療法人徳洲会　宇治徳洲会病院",
+        "address": "京都府宇治市槇島町石橋１４５番",
+        "tel": "http://www.ujitoku.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.8095,
+          34.9135
+        ]
+      },
+      "properties": {
+        "name": "医療法人栄仁会 宇治おうばく病院",
+        "address": "京都府宇治市五ヶ庄新開14-13",
+        "tel": "0774-32-8226",
+        "area": "山城北",
+        "level": "専門",
+        "shindan": true,
+        "monowasure": true,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "京都府認知症疾患医療センター"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.717025,
+          34.874854
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団医聖会　京都八幡病院",
+        "address": "京都府八幡市川口別所６１",
+        "tel": "http://iseikai.jp/kyotoyawata/index.html",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.802433,
+          34.917295
+        ]
+      },
+      "properties": {
+        "name": "社会福祉法人　あじろぎ会　宇治病院",
+        "address": "京都府宇治市五ケ庄芝ノ東５４－２",
+        "tel": "http://uji-hosp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.76105,
+          34.865328
+        ]
+      },
+      "properties": {
+        "name": "医療法人　啓信会　京都きづ川病院",
+        "address": "京都府城陽市平川　西六反　２６－１",
+        "tel": "http://www.kyoto-keishinkai.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.747245,
+          34.874021
+        ]
+      },
+      "properties": {
+        "name": "京都岡本記念病院",
+        "address": "京都府久世郡久御山町佐山西ノ口１００番地",
+        "tel": "http://www.okamoto-hp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.817435,
+          34.832665
+        ]
+      },
+      "properties": {
+        "name": "京都府立心身障害者福祉センター　附属リハビリテーション病院",
+        "address": "京都府城陽市中芦原",
+        "tel": "http://www.ksj.or.jp/lihahosp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.801573,
+          34.892298
+        ]
+      },
+      "properties": {
+        "name": "宇治武田病院",
+        "address": "京都府宇治市宇治里尻３６－２６",
+        "tel": "http://www.takedahp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.706748,
+          34.871104
+        ]
+      },
+      "properties": {
+        "name": "医療法人　社団　医聖会　八幡中央病院",
+        "address": "京都府八幡市八幡五反田３９－１",
+        "tel": "http://www.iseikai.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.771745,
+          34.822166
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団　石鎚会　京都田辺中央病院",
+        "address": "京都府京田辺市田辺中央６丁目１番地６",
+        "tel": "http://www.sekitetsukai.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.814075,
+          34.831249
+        ]
+      },
+      "properties": {
+        "name": "独立行政法人　国立病院機構　南京都病院",
+        "address": "京都府城陽市中芦原１１番地",
+        "tel": "https://minamikyoto.hosp.go.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.778847,
+          35.021311
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団行陵会　京都近衛リハビリテーション病院",
+        "address": "京都府京都市左京区吉田近衛町２６番地",
+        "tel": "https://kyoto-konoe.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.776179,
+          34.789903
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団石鎚会　同志社山手病院",
+        "address": "京都府京田辺市同志社山手二丁目２番",
+        "tel": "https://doushishayamate.sekitetsukai.kyoto/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.763543,
+          35.003368
+        ]
+      },
+      "properties": {
+        "name": "医療法人瑞明会　たなか睡眠クリニック",
+        "address": "京都府京都市下京区四条通柳馬場西入立売中之町９９四条ＳＥＴビル５Ｆ",
+        "tel": "http://www.kyotosleep.net",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.760932,
+          35.002979
+        ]
+      },
+      "properties": {
+        "name": "谷山クリニック",
+        "address": "京都府京都市下京区東洞院通四条下ル元悪王子町４６　やさか長砂ビル１階",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.765071,
+          34.991731
+        ]
+      },
+      "properties": {
+        "name": "医療法人冨井医院",
+        "address": "京都府京都市下京区正面通西木屋町西入梅湊町９２番地",
+        "tel": "https://tomii-cl.com",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.764516,
+          34.989425
+        ]
+      },
+      "properties": {
+        "name": "社会医療法人健康会　内浜診療所",
+        "address": "京都府京都市下京区七条通河原町東入材木町４６０",
+        "tel": "kyotominami.or.jp",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.761627,
+          34.990592
+        ]
+      },
+      "properties": {
+        "name": "安東医院",
+        "address": "京都府京都市下京区間之町通下珠数屋町上る西玉水町２７９",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.761655,
+          34.993758
+        ]
+      },
+      "properties": {
+        "name": "間嶋胃腸科内科医院",
+        "address": "京都府京都市下京区間之町通り六条下ル夷ノ町８８",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.761377,
+          34.98712
+        ]
+      },
+      "properties": {
+        "name": "中西医院",
+        "address": "京都府京都市下京区七条通り　烏丸東入る　南側　オグシビル　４階",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.755461,
+          34.986676
+        ]
+      },
+      "properties": {
+        "name": "ごうだクリニック",
+        "address": "京都府京都市下京区西洞院通塩小路下る東塩小路町９３７　アユマビル３Ｆ",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.757072,
+          34.990731
+        ]
+      },
+      "properties": {
+        "name": "医療法人福島医院",
+        "address": "京都府京都市下京区新町通北小路上る平野町７６６",
+        "tel": "http://www.terra.dti.ne.jp/~ken18",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.755266,
+          34.993619
+        ]
+      },
+      "properties": {
+        "name": "大岩医院",
+        "address": "京都府京都市下京区西洞院通六条下ル東側町５１３",
+        "tel": "http://www.ishikai.or.jp/oiwaclinic/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.748489,
+          34.998674
+        ]
+      },
+      "properties": {
+        "name": "広沢医院",
+        "address": "京都府京都市下京区下松屋町通松原下る上長福寺町２１８",
+        "tel": "https://hirosawa-clinic.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.758183,
+          34.997202
+        ]
+      },
+      "properties": {
+        "name": "ふてんま医院",
+        "address": "京都府京都市下京区室町通五条上ル坂東屋町２６６ロイヤルハイツ室町１Ｆ",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.743878,
+          34.996508
+        ]
+      },
+      "properties": {
+        "name": "医療法人立岡神経内科",
+        "address": "京都府京都市下京区中堂寺坊城町３１番地２",
+        "tel": "http://www.ne.jp/asahi/tatsuoka/clinic/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.732213,
+          34.987675
+        ]
+      },
+      "properties": {
+        "name": "たけのうちクリニック",
+        "address": "京都府京都市下京区七条御所ノ内北町８４ニューインダストリービル５Ｆ",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.76165,
+          35.090553
+        ]
+      },
+      "properties": {
+        "name": "特別養護老人ホーム市原寮静市診療所",
+        "address": "京都府京都市左京区静市市原町１２７８番地",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.756906,
+          34.984148
+        ]
+      },
+      "properties": {
+        "name": "尾石クリニック",
+        "address": "京都府京都市南区東九条室町６４番地４ハイライズ田中善八条口５階",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.752154,
+          35.03106
+        ]
+      },
+      "properties": {
+        "name": "社会医療法人西陣健康会クリニックほりかわ",
+        "address": "京都府京都市上京区堀川通今出川上る北舟橋町８４５番地",
+        "tel": "http://www.horikawa-hp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.769458,
+          35.031282
+        ]
+      },
+      "properties": {
+        "name": "竹上内科クリニック",
+        "address": "京都府京都市上京区出町桝形上ル青竜町１９９　仲製作所ビル１階",
+        "tel": "http://www.myclinic.ne.jp/takegami/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.75957,
+          35.036365
+        ]
+      },
+      "properties": {
+        "name": "医療法人つばき医院",
+        "address": "京都府京都市上京区上御霊前通烏丸東入上御霊前町４１０番地",
+        "tel": "https://www.tsubakimental.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.744072,
+          35.016617
+        ]
+      },
+      "properties": {
+        "name": "京都市児童福祉センター診療所",
+        "address": "京都府京都市上京区竹屋町千本東入主税町９１０－２５",
+        "tel": "http://www.city.kyoto.lg.jp/hokenfukushi/soshiki/8-3-3-0-0.html",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.741682,
+          35.031893
+        ]
+      },
+      "properties": {
+        "name": "医療法人永原診療会千本診療所",
+        "address": "京都府京都市上京区千本五辻上ル牡丹鉾町５５６番地",
+        "tel": "http://nagahara.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.75257,
+          35.048224
+        ]
+      },
+      "properties": {
+        "name": "なかのうクリニック",
+        "address": "京都府京都市北区紫竹上梅ノ木町１７－５",
+        "tel": "http://web.kyoto-inet.or.jp/people/bankyu",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.729712,
+          35.026643
+        ]
+      },
+      "properties": {
+        "name": "中嶋クリニック",
+        "address": "京都府京都市北区北野西白梅町７５",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.731307,
+          35.024417
+        ]
+      },
+      "properties": {
+        "name": "医療法人梁山会診療所",
+        "address": "京都府京都市北区大将軍西町１６３番地",
+        "tel": "www.kyoto-reha.jp",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.725128,
+          35.032198
+        ]
+      },
+      "properties": {
+        "name": "立命館診療所",
+        "address": "京都府京都市北区等持院北町５６－１",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.749597,
+          35.057168
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団都会渡辺西賀茂診療所",
+        "address": "京都府京都市北区大宮南田尻町５９番地　医療福祉複合施設にしがも１階",
+        "tel": "http://www.miyakokai.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.750014,
+          35.04978
+        ]
+      },
+      "properties": {
+        "name": "医療法人　ふじたクリニック",
+        "address": "京都府京都市北区紫竹下芝本町６３番３の２　ベルビュー北山１階",
+        "tel": "http://www.kyotokita-mental.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.719239,
+          35.04603
+        ]
+      },
+      "properties": {
+        "name": "藤本医院",
+        "address": "京都府京都市北区大北山原谷乾町２０７－３",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.768098,
+          35.016034
+        ]
+      },
+      "properties": {
+        "name": "医療法人西尾医院",
+        "address": "京都府京都市中京区新烏丸通丸太町下る東椹木町１２３",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.767876,
+          35.01309
+        ]
+      },
+      "properties": {
+        "name": "ふじたみつえクリニック",
+        "address": "京都府京都市中京区二条通寺町東入榎木町９５番地１延寿堂第２ビル４Ｆ",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.76632,
+          35.013145
+        ]
+      },
+      "properties": {
+        "name": "医療法人坂部医院",
+        "address": "京都府京都市中京区御幸町二条下る山本町４３５",
+        "tel": "http://add.centers.jp/sakabe/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.766598,
+          35.0172
+        ]
+      },
+      "properties": {
+        "name": "たかぎクリニック",
+        "address": "京都府京都市中京区御幸町通竹屋町上る毘沙門町５５７－２ＡＣＴ－Ｋビル３Ｆ",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.766876,
+          35.008507
+        ]
+      },
+      "properties": {
+        "name": "モリタニ　クリニック",
+        "address": "京都府京都市中京区寺町三条下ル永楽町２２４とーべえビル４Ｆ",
+        "tel": "www.moritani-clinic.com",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.762765,
+          35.008507
+        ]
+      },
+      "properties": {
+        "name": "一般財団法人大和松寿会　中央診療所",
+        "address": "京都府京都市中京区三条通高倉東入桝屋町５８番地、５６番地",
+        "tel": "http://www.chuo-c.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.763126,
+          35.007257
+        ]
+      },
+      "properties": {
+        "name": "医療法人川崎医院",
+        "address": "京都府京都市中京区六角通堺町西入堀之上町１１９番地岡松ビル４Ｆ",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.757904,
+          35.007673
+        ]
+      },
+      "properties": {
+        "name": "医療法人博友会　まるいクリニック",
+        "address": "京都府京都市中京区室町通三条下る烏帽子屋町４９３番地",
+        "tel": "http://www5e.biglobe.ne.jp/~marui/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.759321,
+          35.009312
+        ]
+      },
+      "properties": {
+        "name": "真理子こころのクリニック",
+        "address": "京都府京都市中京区烏丸通姉小路下ル場之町５９９　ＣＵＢＥ　ＯＩＫＥ２Ｆ",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.755266,
+          35.006923
+        ]
+      },
+      "properties": {
+        "name": "医療法人　西大路病院　池須町クリニック",
+        "address": "京都府京都市中京区西洞院通六角下る池須町４０８番３",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.740683,
+          35.019144
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団近藤医院",
+        "address": "京都府京都市中京区聚楽廻中町３６－１",
+        "tel": "http://www.myclinic.ne.jp/kondoiin/pc/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.725935,
+          35.014422
+        ]
+      },
+      "properties": {
+        "name": "公益社団法人京都保健会　京都民医連太子道診療所",
+        "address": "京都府京都市中京区西ノ京小堀池町１８番地の１",
+        "tel": "https://taishimichi.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.729323,
+          35.015283
+        ]
+      },
+      "properties": {
+        "name": "一般財団法人京都工場保健会診療所",
+        "address": "京都府京都市中京区西ノ京北壺井町６７番地",
+        "tel": "http://www.kyotokojohokenkai.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.732462,
+          35.015172
+        ]
+      },
+      "properties": {
+        "name": "杉本医院",
+        "address": "京都府京都市中京区西ノ京南上合町７０番地",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.747961,
+          34.998924
+        ]
+      },
+      "properties": {
+        "name": "川口医院",
+        "address": "京都府京都市中京区壬生相合町１番地",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.743156,
+          35.002007
+        ]
+      },
+      "properties": {
+        "name": "医療法人財団康生会京都壬生苑診療所",
+        "address": "京都府京都市中京区壬生梛ノ宮町３１",
+        "tel": "http://www.takedahp.or.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.737712,
+          35.000452
+        ]
+      },
+      "properties": {
+        "name": "むらた医院",
+        "address": "京都府京都市中京区壬生下溝町６０－１２",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.790066,
+          35.06439
+        ]
+      },
+      "properties": {
+        "name": "医療法人　翠川医院",
+        "address": "京都府京都市左京区上高野諸木町５０番地３",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.770652,
+          35.039254
+        ]
+      },
+      "properties": {
+        "name": "大原在宅診療所",
+        "address": "京都府京都市左京区下鴨西林町６上文堂ビル",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.770902,
+          35.046975
+        ]
+      },
+      "properties": {
+        "name": "医療法人石川医院",
+        "address": "京都府京都市左京区下鴨梅ノ木町４６番地１号　カーサ下鴨２Ｆ３Ｆ",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.785456,
+          35.05153
+        ]
+      },
+      "properties": {
+        "name": "北山通ソウクリニック",
+        "address": "京都府京都市左京区松ヶ崎小脇町８－２",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.791233,
+          35.044864
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団いじち医院",
+        "address": "京都府京都市左京区一乗寺宮ノ東町３７番地",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.774096,
+          35.032032
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団　ウエノ診療所",
+        "address": "京都府京都市左京区田中上柳町２番地１",
+        "tel": "https://ueno-clinic.info/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.790817,
+          35.035532
+        ]
+      },
+      "properties": {
+        "name": "田中淳夫内科診療所",
+        "address": "京都府京都市左京区北白川瀬ノ内町５の２",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.778541,
+          35.01509
+        ]
+      },
+      "properties": {
+        "name": "医療法人天翔会上田リハビリテーション診療所",
+        "address": "京都府京都市左京区岡崎徳成町２０－６",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.778513,
+          35.016784
+        ]
+      },
+      "properties": {
+        "name": "桑原クリニック",
+        "address": "京都府京都市左京区聖護院山王町２８",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.815206,
+          34.990343
+        ]
+      },
+      "properties": {
+        "name": "安田医院",
+        "address": "京都府京都市山科区竹鼻竹ノ街道町６２の７",
+        "tel": "http://www.yasuda-iin.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.807874,
+          34.978566
+        ]
+      },
+      "properties": {
+        "name": "福田医院",
+        "address": "京都府京都市山科区東野八代１－１４",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.802708,
+          34.967623
+        ]
+      },
+      "properties": {
+        "name": "土屋診療所",
+        "address": "京都府京都市山科区勧修寺柴山８－１０９",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.796679,
+          35.000286
+        ]
+      },
+      "properties": {
+        "name": "医療法人　竹村診療所",
+        "address": "京都府京都市山科区御陵封ジ山町７番地の７１",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.758991,
+          34.929348
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団東前医院",
+        "address": "京都府京都市伏見区表町５８９－２",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.757129,
+          34.956901
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団久世会　くぜクリニック",
+        "address": "京都府京都市伏見区竹田桶ノ井町１５６番地",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.728133,
+          34.934847
+        ]
+      },
+      "properties": {
+        "name": "医療法人　高安医院",
+        "address": "京都府京都市伏見区久我東町２１４番地の１７",
+        "tel": "http://www.takayasu-group.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.717936,
+          35.002562
+        ]
+      },
+      "properties": {
+        "name": "医療法人國枝医院",
+        "address": "京都府京都市右京区西院東貝川町１４",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.697049,
+          34.987647
+        ]
+      },
+      "properties": {
+        "name": "医療法人創志会しくま脳神経外科クリニック",
+        "address": "京都府京都市西京区上桂三ノ宮町８０番地１",
+        "tel": "http://www.shikuma-clinic.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.683773,
+          34.982369
+        ]
+      },
+      "properties": {
+        "name": "社会福祉法人京都社会事業財団　ライフ・イン京都診療所",
+        "address": "京都府京都市西京区山田平尾町４６－２ライフ・イン京都",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.701825,
+          35.014922
+        ]
+      },
+      "properties": {
+        "name": "社会医療法人太秦病院附属うずまさ診療所",
+        "address": "京都府京都市右京区太秦帷子ノ辻町３０番地の４",
+        "tel": "https://www.uzumasa-hp.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.677383,
+          35.020698
+        ]
+      },
+      "properties": {
+        "name": "嵯峨嵐山・田中クリニック",
+        "address": "京都府京都市右京区嵯峨釈迦堂門前瀬戸川町４－８",
+        "tel": "http://www.sagaarashiyama-tanakaclinic.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.778605,
+          34.842497
+        ]
+      },
+      "properties": {
+        "name": "鈴木診療所",
+        "address": "京都府城陽市富野西田部１－７",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.772356,
+          34.821555
+        ]
+      },
+      "properties": {
+        "name": "医療法人健心会　五十嵐こころのクリニック",
+        "address": "京都府京田辺市河原神谷７－１",
+        "tel": "https://igarashi-c.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.757663,
+          34.813055
+        ]
+      },
+      "properties": {
+        "name": "京都府立こども発達支援センター診療所",
+        "address": "京都府京田辺市田辺茂ヶ谷１８６－１",
+        "tel": "http://www.ksj.or.jp/kodomo/index.html",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.814129,
+          34.866078
+        ]
+      },
+      "properties": {
+        "name": "一般財団法人日本老人福祉財団京都ゆうゆうの里診療所",
+        "address": "京都府宇治市白川鍋倉山１４－１",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.773715,
+          34.87091
+        ]
+      },
+      "properties": {
+        "name": "やましろ健康医療生活協同組合あさくら診療所",
+        "address": "京都府宇治市大久保町山ノ内１９－１",
+        "tel": "https://iryouseikyou.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.807386,
+          34.718261
+        ]
+      },
+      "properties": {
+        "name": "医療法人周寿会　はただ診療所",
+        "address": "京都府木津川市市坂六本木７６",
+        "tel": "http://www.hatada-clinic.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.782914,
+          34.749618
+        ]
+      },
+      "properties": {
+        "name": "山田内科クリニック",
+        "address": "京都府相楽郡精華町精華台２－１０－９４",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.586517,
+          35.275919
+        ]
+      },
+      "properties": {
+        "name": "南丹市国民健康保険南丹みやま診療所",
+        "address": "京都府南丹市美山町安掛下８",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.576752,
+          35.017725
+        ]
+      },
+      "properties": {
+        "name": "医療法人福知会　クリニック「もみじ」",
+        "address": "京都府亀岡市余部町清水２６番地１",
+        "tel": "http://www.fukuchikai.or.jp/momiji/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.472757,
+          35.115324
+        ]
+      },
+      "properties": {
+        "name": "社会福祉法人長生園診療所",
+        "address": "京都府南丹市園部町上木崎町坪ノ内１９番地",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.327143,
+          35.426677
+        ]
+      },
+      "properties": {
+        "name": "医療法人　荒木クリニック",
+        "address": "京都府舞鶴市字京田小字大角１８－１",
+        "tel": "http://arakiccc.sharepoint.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.396774,
+          35.474089
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団黒重会黒田神経内科医院",
+        "address": "京都府舞鶴市字浜５３７",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.145632,
+          35.388872
+        ]
+      },
+      "properties": {
+        "name": "医療法人成仁会　吉河医院",
+        "address": "京都府福知山市大江町河守３１２",
+        "tel": "https://www.yoshikawa-c.jp/index.php",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.118722,
+          35.294576
+        ]
+      },
+      "properties": {
+        "name": "医療法人福知会　クリニック「まほら」",
+        "address": "京都府福知山市駅南町２－１８８",
+        "tel": "http://fukuchikai.or.jp/mahora/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.252085,
+          35.719538
+        ]
+      },
+      "properties": {
+        "name": "伊根町国民健康保険本庄診療所",
+        "address": "京都府与謝郡伊根町本庄上１０１９番地の１",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.272581,
+          35.674621
+        ]
+      },
+      "properties": {
+        "name": "伊根町国民健康保険伊根診療所",
+        "address": "京都府与謝郡伊根町字日出６４６番地",
+        "tel": "http://www.town.ine.kyoto.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.121572,
+          35.541411
+        ]
+      },
+      "properties": {
+        "name": "医療法人　南斗六星会　須川医院",
+        "address": "京都府与謝郡与謝野町下山田９８番地の１",
+        "tel": "https://nantorokusei.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.092965,
+          35.494915
+        ]
+      },
+      "properties": {
+        "name": "木村内科クリニック",
+        "address": "京都府与謝郡与謝野町字後野６４３－７",
+        "tel": "http://www.kimuranaikaclinic.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.759293,
+          35.015145
+        ]
+      },
+      "properties": {
+        "name": "瀬戸クリニック",
+        "address": "京都府京都市中京区烏丸通夷川上る少将井町２４５番地２烏丸梅田ビル３階３０１号室",
+        "tel": "https://www7b.biglobe.ne.jp/~setoclinic/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.756654,
+          35.018311
+        ]
+      },
+      "properties": {
+        "name": "こだまクリニック",
+        "address": "京都府京都市上京区新町通丸太町上る春帯町３４８番地ユー、ピー、ディービル１階Ｂ号室",
+        "tel": "http://kodamaclinic.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.758454,
+          34.987653
+        ]
+      },
+      "properties": {
+        "name": "医療法人　菅原クリニック",
+        "address": "京都府京都市下京区東塩小路町５７９－１　山崎ビル８Ｆ",
+        "tel": "sugawara-clinic.com",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.757849,
+          35.003452
+        ]
+      },
+      "properties": {
+        "name": "医療法人社団　桜木りかメンタルクリニック",
+        "address": "京都府京都市下京区室町通綾小路上ル鶏鉾町４８０　オフィスワン四条烏丸１２Ｆ",
+        "tel": "https://www.sakuragirika.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.706097,
+          34.981297
+        ]
+      },
+      "properties": {
+        "name": "山本クリニック",
+        "address": "京都府京都市西京区桂木ノ下町４０番地－１１",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.70216,
+          34.980342
+        ]
+      },
+      "properties": {
+        "name": "やすおクリニック",
+        "address": "京都府京都市西京区桂南巽町１２６番地",
+        "tel": "https://www.yasuoclinic.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.77429,
+          35.043975
+        ]
+      },
+      "properties": {
+        "name": "漢方心療内科　藤井医院",
+        "address": "京都府京都市左京区下鴨東本町２５番地　ワールドダック４０３",
+        "tel": "https://hp.kampo-mentalclinic.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.717631,
+          34.997118
+        ]
+      },
+      "properties": {
+        "name": "光華もの忘れ・フレイルクリニック",
+        "address": "京都府京都市右京区西京極葛野町４４番地",
+        "tel": "https://clinic.koka.ac.jp/",
+        "area": "",
+        "level": "専門",
+        "shindan": false,
+        "monowasure": true,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.684854,
+          35.020171
+        ]
+      },
+      "properties": {
+        "name": "医療法人はまなかクリニック",
+        "address": "京都府京都市右京区嵯峨天龍寺中島町７番地１",
+        "tel": "https://www.hamanaka.clinic.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.722832,
+          34.832386
+        ]
+      },
+      "properties": {
+        "name": "ちゅうしょクリニック",
+        "address": "京都府京田辺市山手西２－２－１０　日東センタービル２階",
+        "tel": "https://chusho-clinic.com/index.html",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.781692,
+          34.75134
+        ]
+      },
+      "properties": {
+        "name": "医療法人翠樹会　岸田内科医院",
+        "address": "京都府相楽郡精華町精華台２－１７－１０",
+        "tel": "https://www.kishida-naikaiin.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.804016,
+          34.912295
+        ]
+      },
+      "properties": {
+        "name": "藤井おうばく駅前内科クリニック",
+        "address": "京都府宇治市五ヶ庄新開１１番地２９－１８",
+        "tel": "https://www.oubaku-naika.com/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.753933,
+          34.988036
+        ]
+      },
+      "properties": {
+        "name": "康生会クリニック",
+        "address": "京都府京都市下京区油小路通下魚ノ棚下ル油小路町２７７番地",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.77695,
+          34.874958
+        ]
+      },
+      "properties": {
+        "name": "みずはらクリニック",
+        "address": "京都府宇治市広野町西裏１番１６サンマルシェ大久保内",
+        "tel": "https://mizuhara-cl.jp/access/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.804428,
+          34.91238
+        ]
+      },
+      "properties": {
+        "name": "ふじいキハダ診療所",
+        "address": "京都府宇治市五ケ庄新開１１番地ツバサ薬局２階",
+        "tel": "https://www.fujii-kihada.com/%E5%BD%93%E9%99%A2%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.691781,
+          35.020204
+        ]
+      },
+      "properties": {
+        "name": "社会医療法人太秦病院附属うずまさ第二診療所",
+        "address": "京都府京都市右京区嵯峨広沢南野町２６番の２の２",
+        "tel": "https://www.uzumasa-hp.jp",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.801337,
+          34.893156
+        ]
+      },
+      "properties": {
+        "name": "京都認知症総合センタークリニック",
+        "address": "京都府宇治市宇治里尻３６番３５",
+        "tel": "https://www.takedahp.or.jp/group/welfare/kyotoninchisho/service/dementia.html",
+        "area": "",
+        "level": "専門",
+        "shindan": true,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.756414,
+          34.987505
+        ]
+      },
+      "properties": {
+        "name": "京都心療内科ゆうメンタルクリニック京都院",
+        "address": "京都府京都市下京区東塩小路町６１４５階",
+        "tel": "https://kyoto.yuik.net/about/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.755478,
+          34.987606
+        ]
+      },
+      "properties": {
+        "name": "一般社団法人日本先進医療学会　四条烏丸こころやすらぎクリニック",
+        "address": "京都府京都市下京区四条通高倉西立売西町６８番地２四条烏丸セントラルビル５Ｆ",
+        "tel": "https://kyoto-mental-clinic.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.710879,
+          35.015347
+        ]
+      },
+      "properties": {
+        "name": "医療法人三幸会　三幸会うずまさクリニック",
+        "address": "京都府京都市右京区太秦森ケ西町１２－３",
+        "tel": "https://www.sankokai.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.751846,
+          35.004395
+        ]
+      },
+      "properties": {
+        "name": "一般社団法人なごみ会なごみクリニック",
+        "address": "京都府京都市中京区錦堀川町６５９京都松田ビル　３階",
+        "tel": "",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.748808,
+          35.001558
+        ]
+      },
+      "properties": {
+        "name": "くりた内科・内視鏡クリニック",
+        "address": "京都府京都市下京区綾大宮町６２シェルブリュー四条大宮１階",
+        "tel": "https://www.kurita-naika.jp/",
+        "area": "",
+        "level": "関連",
+        "shindan": false,
+        "monowasure": false,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "医療情報ネット"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.1356,
+          35.4986
+        ]
+      },
+      "properties": {
+        "name": "京都府立医科大学附属北部医療センター",
+        "address": "京都府与謝郡与謝野町字男山481",
+        "tel": "0772-46-4701",
+        "area": "丹後",
+        "level": "専門",
+        "shindan": true,
+        "monowasure": true,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "京都府認知症疾患医療センター"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.403,
+          35.4715
+        ]
+      },
+      "properties": {
+        "name": "国立病院機構 舞鶴医療センター",
+        "address": "京都府舞鶴市字行永2410",
+        "tel": "0773-62-1710",
+        "area": "中丹",
+        "level": "専門",
+        "shindan": true,
+        "monowasure": true,
+        "zaitaku": false,
+        "supportdoc": false,
+        "source": "京都府認知症疾患医療センター"
+      }
+    }
+  ]
+}

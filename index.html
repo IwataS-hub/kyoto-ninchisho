@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>京都府 認知症「かかりつけ医」検索</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+  :root{
+    --color-clinic: #2563eb;
+    --color-clinic-fill: #3b82f6;
+    --color-senmon: #1e3a8a;
+    --color-senmon-fill: #2563eb;
+    --color-related: #94a3b8;
+    --color-related-fill: #cbd5e1;
+    --color-highlight: #f59e0b;
+    --color-highlight-fill: #fbbf24;
+    --color-address: #dc2626;
+    --color-address-fill: #ef4444;
+    --border: #d9dee5;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin: 0;
+    font-family: "Hiragino Sans", "Yu Gothic", "Helvetica Neue", Arial, sans-serif;
+    color: #1f2937;
+    background: #f5f7fa;
+  }
+  header{
+    background: #1d3a5f;
+    color: #fff;
+    padding: 12px 16px;
+  }
+  header h1{
+    margin: 0 0 8px;
+    font-size: 1.15rem;
+  }
+  .search-row{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .search-row input[type="text"]{
+    flex: 1 1 240px;
+    padding: 8px 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+  }
+  .search-row button{
+    padding: 8px 18px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background: #f59e0b;
+    color: #1f2937;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .search-row button:hover{ background: #fbbf24; }
+  #status{
+    margin-top: 6px;
+    font-size: 0.85rem;
+    min-height: 1.2em;
+    color: #e5e7eb;
+  }
+  .filters{
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.9rem;
+  }
+  .filters label{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(255,255,255,0.08);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .sort-options{
+    margin-top: 8px;
+    font-size: 0.9rem;
+  }
+  .sort-options label{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(245,158,11,0.18);
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: fit-content;
+  }
+  .legend{
+    margin-top: 8px;
+    font-size: 0.78rem;
+    color: #cbd5e1;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .legend span{ display:inline-flex; align-items:center; gap:5px; }
+  .dot{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .dot.senmon{ width:13px; height:13px; background: var(--color-senmon-fill); border: 2px solid var(--color-senmon); }
+  .dot.related{ width:8px; height:8px; background: var(--color-related-fill); border: 2px solid var(--color-related); }
+  .dot.address{ background: var(--color-address-fill); border: 2px solid var(--color-address); }
+  .filter-disabled-wrap{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .filter-disabled-label{
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .filter-note{
+    font-size: 0.72rem;
+    color: #cbd5e1;
+  }
+
+  main{
+    display: flex;
+    height: calc(100vh - 168px);
+    min-height: 420px;
+  }
+  #map{
+    flex: 1 1 55%;
+    height: 100%;
+  }
+  #list{
+    flex: 1 1 45%;
+    overflow-y: auto;
+    padding: 10px;
+    background: #fff;
+    border-left: 1px solid var(--border);
+  }
+  .clinic-card{
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    background: #fafbfc;
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .clinic-card:hover{
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  }
+  .clinic-card.active{
+    border-color: var(--color-highlight);
+    background: #fff7ed;
+    box-shadow: 0 0 0 2px var(--color-highlight-fill);
+  }
+  .clinic-card h3{
+    margin: 0 0 4px;
+    font-size: 1rem;
+    color: #1d3a5f;
+  }
+  .clinic-card .addr, .clinic-card .tel, .clinic-card .area{
+    margin: 2px 0;
+    font-size: 0.85rem;
+    color: #4b5563;
+  }
+  .clinic-card .tel a{
+    color: #1d4ed8;
+  }
+  .clinic-card .dist{
+    margin: 4px 0 6px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: #b45309;
+  }
+  .badges{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .badge{
+    font-size: 0.72rem;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #e0e7ff;
+    color: #3730a3;
+    white-space: nowrap;
+  }
+  .badge.senmon{
+    background: #fee2e2;
+    color: #b91c1c;
+    font-weight: bold;
+  }
+  .badge.center{
+    background: #1e3a8a;
+    color: #fff;
+    font-weight: bold;
+  }
+  .empty-msg{
+    color: #6b7280;
+    font-size: 0.9rem;
+    padding: 20px 4px;
+    text-align: center;
+  }
+  #list-meta{
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  #result-count{
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #1d3a5f;
+    margin-bottom: 4px;
+  }
+  .dist-note{
+    font-size: 0.72rem;
+    color: #6b7280;
+  }
+  footer{
+    background: #1d3a5f;
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    padding: 8px 16px;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 768px){
+    main{
+      flex-direction: column;
+      height: auto;
+    }
+    #map{
+      height: 45vh;
+      flex: none;
+    }
+    #list{
+      border-left: none;
+      border-top: 1px solid var(--border);
+      max-height: 50vh;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>京都府 認知症「かかりつけ医」検索</h1>
+  <div class="search-row">
+    <input type="text" id="address-input" placeholder="住所を入力（例：京都市中京区三条通）">
+    <button id="search-btn">検索</button>
+  </div>
+  <div id="status"></div>
+  <div class="filters">
+    <label><input type="checkbox" class="filter-cb" value="shindan"> 鑑別診断</label>
+    <label><input type="checkbox" class="filter-cb" value="monowasure"> もの忘れ外来</label>
+    <span class="filter-disabled-wrap">
+      <label class="filter-disabled-label"><input type="checkbox" class="filter-cb" value="zaitaku" disabled> 訪問診療・在宅</label>
+      <span class="filter-note">現在データ整備中</span>
+    </span>
+    <label><input type="checkbox" class="filter-cb" value="supportdoc"> 認知症サポート医</label>
+  </div>
+  <div class="sort-options">
+    <label><input type="checkbox" id="senmon-priority-cb"> 認知症専門を優先して上位に表示</label>
+  </div>
+  <div class="legend">
+    <span><span class="dot senmon"></span>専門（認知症疾患医療センター等）</span>
+    <span><span class="dot related"></span>関連（精神科・神経内科等）</span>
+    <span><span class="dot address"></span>検索した住所</span>
+  </div>
+</header>
+
+<main>
+  <div id="map"></div>
+  <div id="list"></div>
+</main>
+
+<footer>
+  © OpenStreetMap contributors<br>
+  ※情報は変わることがあります。受診前に必ず電話でご確認ください。<br>
+  ※入力された住所は地図検索（国土地理院API）にのみ使用され、保存されません
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  const FLAG_LABELS = {
+    shindan: "鑑別診断",
+    monowasure: "もの忘れ外来",
+    zaitaku: "訪問診療・在宅",
+    supportdoc: "認知症サポート医"
+  };
+
+  // 京都府全域（北は丹後・舞鶴、南は木津川）が収まる固定の初期表示位置。
+  // fitBounds が有効な座標を1件も得られなかった場合のフォールバックにも使う。
+  const KYOTO_CENTER = [35.3, 135.5];
+  const KYOTO_INITIAL_ZOOM = 9;
+  const ADDRESS_SEARCH_ZOOM = 13;
+
+  const map = L.map("map").setView(KYOTO_CENTER, KYOTO_INITIAL_ZOOM);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(map);
+
+  const clinicLayerGroup = L.layerGroup().addTo(map);
+  let addressMarker = null;
+  let referencePoint = null; // {lat, lon, title}
+  let clinics = [];          // raw features loaded from geojson
+  let markerByIndex = {};    // clinicIndex -> Leaflet circleMarker
+  let activeIndex = null;
+
+  const statusEl = document.getElementById("status");
+  const listEl = document.getElementById("list");
+  const addressInput = document.getElementById("address-input");
+  const searchBtn = document.getElementById("search-btn");
+  const filterCbs = Array.from(document.querySelectorAll(".filter-cb"));
+  const senmonPriorityCb = document.getElementById("senmon-priority-cb");
+
+  function showStatus(msg){
+    statusEl.textContent = msg;
+  }
+
+  function haversineKm(lat1, lon1, lat2, lon2){
+    const R = 6371;
+    const toRad = d => d * Math.PI / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a = Math.sin(dLat / 2) ** 2 +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  function defaultStyle(level){
+    if(level === "専門"){
+      return { radius: 10, color: "#1e3a8a", weight: 2.5, fillColor: "#2563eb", fillOpacity: 0.95 };
+    }
+    return { radius: 6, color: "#94a3b8", weight: 1.5, fillColor: "#cbd5e1", fillOpacity: 0.85 };
+  }
+  function highlightStyle(){
+    return { radius: 13, color: "#b45309", weight: 3, fillColor: "#f59e0b", fillOpacity: 0.95 };
+  }
+
+  // ジオコーディング未済みの施設は元データ上で座標が "0.0,0.0"（null island）のまま
+  // 入っていることがあるため、文字列/欠損だけでなくこの placeholder 値も無効として除外する。
+  function getValidLatLng(feature){
+    const coords = feature && feature.geometry && feature.geometry.coordinates;
+    if(!Array.isArray(coords) || coords.length !== 2) return null;
+    const lon = Number(coords[0]);
+    const lat = Number(coords[1]);
+    if(!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+    if(lat < -90 || lat > 90 || lon < -180 || lon > 180) return null;
+    if(lat === 0 && lon === 0) return null;
+    return [lat, lon];
+  }
+
+  function telDisplayHtml(tel){
+    if(!tel) return "";
+    // 電話番号形式（数字・ハイフン・括弧のみ）でなければURLとみなす。
+    // 元データ（案内用ホームページアドレス）には http(s):// が付いていない
+    // ドメインのみの値（例: www.example.jp）も存在するため、その場合は
+    // 補って公式サイトリンクとして扱う。
+    const isPhoneNumber = /^[0-9０-９()（）\-ー－ ]+$/.test(tel.trim());
+    if(isPhoneNumber){
+      return `TEL: ${escapeHtml(tel)}`;
+    }
+    const url = /^https?:\/\//i.test(tel) ? tel : `https://${tel}`;
+    return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">公式サイト</a>`;
+  }
+
+  function extraBadgesHtml(props){
+    let html = "";
+    if(props.level === "専門"){
+      html += `<span class="badge senmon">認知症専門</span>`;
+    }
+    if(props.source === "京都府認知症疾患医療センター"){
+      html += `<span class="badge center">認知症疾患医療センター</span>`;
+    }
+    return html;
+  }
+
+  function buildClinicPopupHtml(props){
+    const badges = extraBadgesHtml(props) + Object.keys(FLAG_LABELS)
+      .filter(k => props[k])
+      .map(k => `<span class="badge">${FLAG_LABELS[k]}</span>`)
+      .join("");
+    const telHtml = telDisplayHtml(props.tel);
+    return `
+      <strong>${escapeHtml(props.name)}</strong><br>
+      ${escapeHtml(props.address)}<br>
+      ${props.area ? `医療圏: ${escapeHtml(props.area)}<br>` : ""}
+      ${telHtml ? `${telHtml}<br>` : ""}
+      <div class="badges" style="margin-top:4px;">${badges}</div>
+    `;
+  }
+
+  function escapeHtml(str){
+    if(!str) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function getActiveFilters(){
+    return filterCbs.filter(cb => cb.checked).map(cb => cb.value);
+  }
+
+  function passesFilter(props, activeFilters){
+    return activeFilters.every(f => props[f] === true);
+  }
+
+  function highlightMarker(index){
+    if(activeIndex !== null && markerByIndex[activeIndex]){
+      const prevLevel = clinics[activeIndex] && clinics[activeIndex].properties.level;
+      markerByIndex[activeIndex].setStyle(defaultStyle(prevLevel));
+    }
+    activeIndex = index;
+    const marker = markerByIndex[index];
+    if(marker){
+      marker.setStyle(highlightStyle());
+      marker.bringToFront();
+      marker.openPopup();
+      map.panTo(marker.getLatLng());
+    }
+    document.querySelectorAll(".clinic-card").forEach(card => {
+      card.classList.toggle("active", Number(card.dataset.index) === index);
+    });
+  }
+
+  function placeAddressMarker(point){
+    if(addressMarker){
+      map.removeLayer(addressMarker);
+    }
+    addressMarker = L.circleMarker([point.lat, point.lon], {
+      radius: 9, color: "#991b1b", weight: 2, fillColor: "#ef4444", fillOpacity: 0.9
+    }).addTo(map);
+    addressMarker.bindPopup(`検索地点：${escapeHtml(point.title)}`).openPopup();
+  }
+
+  function renderMarkers(filteredWithIndex){
+    clinicLayerGroup.clearLayers();
+    markerByIndex = {};
+    filteredWithIndex.forEach(item => {
+      const { feature, index } = item;
+      const [lon, lat] = feature.geometry.coordinates;
+      const marker = L.circleMarker([lat, lon], defaultStyle(feature.properties.level));
+      marker.bindPopup(buildClinicPopupHtml(feature.properties));
+      marker.on("click", () => highlightMarker(index));
+      marker.addTo(clinicLayerGroup);
+      markerByIndex[index] = marker;
+    });
+  }
+
+  function renderList(filteredWithIndex){
+    const totalCount = filteredWithIndex.length;
+    const senmonCount = filteredWithIndex.filter(
+      item => item.feature.properties.level === "専門"
+    ).length;
+
+    listEl.innerHTML = `
+      <div id="list-meta">
+        <div id="result-count">該当 ${totalCount}件（うち専門 ${senmonCount}件）</div>
+        <div class="dist-note">※直線距離からの概算です。実際の道路距離・所要時間とは異なります</div>
+      </div>
+    `;
+
+    if(totalCount === 0){
+      const emptyDiv = document.createElement("div");
+      emptyDiv.className = "empty-msg";
+      emptyDiv.textContent = "条件に合う施設が見つかりませんでした。";
+      listEl.appendChild(emptyDiv);
+      return;
+    }
+
+    filteredWithIndex.forEach(item => {
+      const { feature, index, distanceKm } = item;
+      const props = feature.properties;
+
+      const card = document.createElement("div");
+      card.className = "clinic-card";
+      card.dataset.index = index;
+
+      const badgesHtml = extraBadgesHtml(props) + Object.keys(FLAG_LABELS)
+        .filter(k => props[k])
+        .map(k => `<span class="badge">${FLAG_LABELS[k]}</span>`)
+        .join("");
+
+      const distHtml = (distanceKm === null)
+        ? ""
+        : `<div class="dist">概算移動距離: 約 ${distanceKm.toFixed(1)} km</div>`;
+
+      const areaHtml = props.area ? `<div class="area">医療圏: ${escapeHtml(props.area)}</div>` : "";
+
+      card.innerHTML = `
+        <h3>${escapeHtml(props.name)}</h3>
+        <div class="addr">${escapeHtml(props.address)}</div>
+        ${areaHtml}
+        <div class="tel">${telDisplayHtml(props.tel)}</div>
+        ${distHtml}
+        <div class="badges">${badgesHtml}</div>
+      `;
+
+      card.addEventListener("click", () => highlightMarker(index));
+      listEl.appendChild(card);
+    });
+  }
+
+  function renderAll(){
+    const activeFilters = getActiveFilters();
+
+    let items = clinics
+      .map((feature, index) => ({ feature, index }))
+      .filter(item => passesFilter(item.feature.properties, activeFilters));
+
+    if(referencePoint){
+      items = items.map(item => {
+        const [lon, lat] = item.feature.geometry.coordinates;
+        const distanceKm = haversineKm(referencePoint.lat, referencePoint.lon, lat, lon) * 1.3;
+        return { ...item, distanceKm };
+      }).sort((a, b) => a.distanceKm - b.distanceKm);
+    } else {
+      items = items.map(item => ({ ...item, distanceKm: null }));
+    }
+
+    if(senmonPriorityCb.checked){
+      // Array#sort is stable, so ties keep their existing (distance) order.
+      items = items.slice().sort((a, b) => {
+        const aSenmon = a.feature.properties.level === "専門" ? 1 : 0;
+        const bSenmon = b.feature.properties.level === "専門" ? 1 : 0;
+        return bSenmon - aSenmon;
+      });
+    }
+
+    renderMarkers(items);
+    renderList(items);
+  }
+
+  function fitMapToClinics(){
+    const validLatLngs = clinics
+      .map(feature => getValidLatLng(feature))
+      .filter(latLng => latLng !== null);
+
+    if(validLatLngs.length === 0){
+      map.setView(KYOTO_CENTER, KYOTO_INITIAL_ZOOM);
+      return;
+    }
+    const bounds = L.latLngBounds(validLatLngs);
+    map.fitBounds(bounds, { padding: [24, 24] });
+  }
+
+  async function loadClinics(){
+    try{
+      const res = await fetch("clinics.geojson");
+      if(!res.ok) throw new Error("clinics.geojson の読み込みに失敗しました");
+      const geojson = await res.json();
+      clinics = (geojson.features || []).filter(f =>
+        f.geometry && f.geometry.type === "Point" && getValidLatLng(f) !== null
+      );
+      fitMapToClinics();
+      renderAll();
+    }catch(err){
+      console.error(err);
+      showStatus("clinics.geojson の読み込みに失敗しました。同じフォルダに配置し、サーバー経由で開いてください。");
+    }
+  }
+
+  async function searchAddress(){
+    const q = addressInput.value.trim();
+    if(!q){
+      showStatus("住所を入力してください。");
+      return;
+    }
+    showStatus("検索中...");
+    searchBtn.disabled = true;
+    try{
+      const url = "https://msearch.gsi.go.jp/address-search/AddressSearch?q=" + encodeURIComponent(q);
+      const res = await fetch(url);
+      if(!res.ok) throw new Error("ジオコーディングAPIエラー: " + res.status);
+      const data = await res.json();
+      if(!Array.isArray(data) || data.length === 0){
+        showStatus("該当する住所が見つかりませんでした。住所表記を変えて再度お試しください。");
+        return;
+      }
+      const top = data[0];
+      const [lon, lat] = top.geometry.coordinates;
+      referencePoint = { lat, lon, title: (top.properties && top.properties.title) || q };
+
+      placeAddressMarker(referencePoint);
+      map.setView([lat, lon], ADDRESS_SEARCH_ZOOM);
+      showStatus(`検索地点: ${referencePoint.title}（候補 ${data.length} 件中の最有力候補）`);
+      renderAll();
+    }catch(err){
+      console.error(err);
+      showStatus("検索中にエラーが発生しました。通信環境をご確認の上、再度お試しください。");
+    }finally{
+      searchBtn.disabled = false;
+    }
+  }
+
+  searchBtn.addEventListener("click", searchAddress);
+  addressInput.addEventListener("keydown", e => {
+    if(e.key === "Enter") searchAddress();
+  });
+  filterCbs.forEach(cb => cb.addEventListener("change", renderAll));
+  senmonPriorityCb.addEventListener("change", renderAll);
+
+  loadClinics();
+})();
+</script>
+</body>
+</html>
