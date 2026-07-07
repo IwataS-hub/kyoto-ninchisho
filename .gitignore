@@ -10,3 +10,9 @@
 # OS/エディタの一時ファイル
 .DS_Store
 .claude/settings.local.json
+.claude/launch.json
+
+# Cloudflare Worker（wranglerの生成物・依存）
+worker/node_modules/
+worker/.wrangler/
+worker/.dev.vars

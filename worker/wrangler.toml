@@ -1,0 +1,6 @@
+name = "kyoto-ninchisho-consult"
+main = "worker.js"
+compatibility_date = "2026-07-01"
+
+# APIキーは wrangler secret で設定する（このファイルやコードには絶対に書かない）:
+#   npx wrangler secret put GEMINI_API_KEY

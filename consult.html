@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<!--
+  京都府 認知症 相談ナビ（AI相談ページ）
+
+  ■ モック / 本番の切り替え方法
+    下の <script> 冒頭にある CONFIG を編集してください。
+      MOCK: true  … Cloudflare Worker を呼ばず、内蔵のダミー応答で動作（APIキー不要）
+      MOCK: false … CONFIG.WORKER_URL に設定した Cloudflare Worker 経由で Gemini API を呼ぶ
+    本番切替の手順:
+      1. worker/README.md に従い Worker をデプロイ
+      2. CONFIG.WORKER_URL にデプロイ先URL（例 "https://xxx.workers.dev"）を設定
+      3. CONFIG.MOCK を false に変更
+
+  ■ 安全設計
+    - このAIは診断を行いません（Worker側システムプロンプトでも禁止）
+    - 赤旗語（意識障害・けいれん等）はフロント側でルールベース判定し、
+      AIの応答とは独立に救急案内バナーを即時表示します
+    - 入力内容はどこにも保存されません（Workerもログに本文を残しません）
+-->
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>京都府 認知症 相談ナビ（AI相談）</title>
+<style>
+  :root{
+    --navy: #1d3a5f;
+    --amber: #f59e0b;
+    --amber-light: #fbbf24;
+    --border: #d9dee5;
+    --red: #dc2626;
+    --orange: #ea580c;
+    --green: #16a34a;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin: 0;
+    font-family: "Hiragino Sans", "Yu Gothic", "Helvetica Neue", Arial, sans-serif;
+    color: #1f2937;
+    background: #f5f7fa;
+  }
+
+  /* ===== 救急バナー（赤旗ルールベース判定・AIとは独立） ===== */
+  #red-flag-banner{
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #b91c1c;
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  #red-flag-banner.visible{ display: block; }
+  #red-flag-banner strong{ font-size: 1.05rem; }
+  #red-flag-banner a{
+    color: #fff;
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  header{
+    background: var(--navy);
+    color: #fff;
+    padding: 12px 16px;
+  }
+  header h1{
+    margin: 0;
+    font-size: 1.15rem;
+  }
+  header .subtitle{
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #cbd5e1;
+  }
+  header .back-link{
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--amber-light);
+    font-size: 0.85rem;
+    text-decoration: none;
+  }
+  header .back-link:hover{ text-decoration: underline; }
+
+  .container{
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 14px 14px 40px;
+  }
+
+  .notice{
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    margin-bottom: 14px;
+  }
+  .notice strong{ color: #92400e; }
+  .notice ul{
+    margin: 6px 0 0;
+    padding-left: 18px;
+  }
+
+  /* ===== チャット ===== */
+  #chat{
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    min-height: 220px;
+    margin-bottom: 10px;
+  }
+  .msg{
+    display: flex;
+    margin-bottom: 10px;
+  }
+  .msg .bubble{
+    max-width: 85%;
+    padding: 9px 12px;
+    border-radius: 12px;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .msg.ai{ justify-content: flex-start; }
+  .msg.ai .bubble{
+    background: #eef2f7;
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+  }
+  .msg.user{ justify-content: flex-end; }
+  .msg.user .bubble{
+    background: #fef3c7;
+    border: 1px solid #fcd34d;
+    border-bottom-right-radius: 4px;
+  }
+  .msg.system-error .bubble{
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+  }
+  .msg .bubble .retry-btn{
+    display: block;
+    margin-top: 6px;
+    padding: 4px 12px;
+    border: 1px solid #991b1b;
+    border-radius: 4px;
+    background: #fff;
+    color: #991b1b;
+    cursor: pointer;
+    font-size: 0.85rem;
+  }
+  #typing{
+    display: none;
+    color: #6b7280;
+    font-size: 0.85rem;
+    padding: 4px 2px;
+  }
+  #typing.visible{ display: block; }
+
+  .input-row{
+    display: flex;
+    gap: 8px;
+  }
+  .input-row textarea{
+    flex: 1;
+    padding: 9px 10px;
+    font-size: 1rem;
+    font-family: inherit;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    resize: none;
+    min-height: 44px;
+  }
+  .input-row button{
+    padding: 8px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    background: var(--amber);
+    color: #1f2937;
+    font-weight: bold;
+    cursor: pointer;
+    align-self: flex-end;
+    min-height: 44px;
+  }
+  .input-row button:hover{ background: var(--amber-light); }
+  .input-row button:disabled{
+    background: #d1d5db;
+    cursor: not-allowed;
+  }
+  #turn-note{
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-top: 5px;
+  }
+
+  /* ===== 結果パネル ===== */
+  #result-panel{
+    display: none;
+    margin-top: 18px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  #result-panel.visible{ display: block; }
+  #result-panel h2{
+    margin: 0 0 10px;
+    font-size: 1.05rem;
+    color: var(--navy);
+  }
+  .fixed-disclaimer{
+    background: #f1f5f9;
+    border-left: 4px solid var(--navy);
+    padding: 8px 12px;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .urgency-badge{
+    display: inline-block;
+    padding: 5px 14px;
+    border-radius: 999px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+  }
+  .urgency-badge.emergency{ background: var(--red); }
+  .urgency-badge.urgent{ background: var(--orange); }
+  .urgency-badge.routine{ background: var(--green); }
+  .result-section{
+    margin-bottom: 14px;
+  }
+  .result-section h3{
+    margin: 0 0 4px;
+    font-size: 0.88rem;
+    color: #4b5563;
+  }
+  .result-section p{
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+  .category-name{
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: var(--navy);
+  }
+  .emergency-box{
+    background: #fef2f2;
+    border: 2px solid var(--red);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+  .emergency-box a{ color: var(--red); font-weight: bold; }
+  .note-box{
+    background: #fafbfc;
+    border: 1px dashed #9ca3af;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .copy-btn{
+    margin-top: 8px;
+    padding: 7px 16px;
+    border: 1px solid var(--navy);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--navy);
+    font-weight: bold;
+    font-size: 0.88rem;
+    cursor: pointer;
+  }
+  .copy-btn:hover{ background: #eef2f7; }
+  .map-btn{
+    display: inline-block;
+    margin-top: 4px;
+    padding: 11px 22px;
+    border-radius: 6px;
+    background: var(--navy);
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+  .map-btn:hover{ background: #2c5282; }
+  .extra-note{
+    margin-top: 8px;
+    font-size: 0.85rem;
+    color: #4b5563;
+    line-height: 1.7;
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+  .reset-btn{
+    margin-top: 6px;
+    padding: 7px 16px;
+    border: 1px solid #9ca3af;
+    border-radius: 6px;
+    background: #fff;
+    color: #4b5563;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  footer{
+    background: var(--navy);
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    padding: 10px 16px;
+    text-align: center;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<!-- 救急案内バナー：フロント側の赤旗ルールベース判定で表示（AI応答とは独立） -->
+<div id="red-flag-banner" role="alert">
+  <strong>⚠ 緊急の可能性がある症状が含まれています</strong><br>
+  意識障害・けいれん・急激な変化などは、ためらわず
+  <a href="tel:119">119番（救急車）</a> へ。
+  救急車を呼ぶか迷うときは <a href="tel:%237119">救急安心センター #7119</a> に電話でご相談ください。
+</div>
+
+<header>
+  <h1>京都府 認知症 相談ナビ（AI相談）</h1>
+  <div class="subtitle">困りごとを整理して、相談できる窓口をご案内します</div>
+  <a class="back-link" href="index.html">← 地図で医療機関を検索する</a>
+</header>
+
+<div class="container">
+
+  <div class="notice">
+    <strong>ご利用にあたって</strong>
+    <ul>
+      <li>このAIは<strong>診断を行いません</strong>。病名の判断や治療の提案はせず、「どこに相談できるか」の案内のみを行います。</li>
+      <li>入力された内容は<strong>どこにも保存されません</strong>（サーバーのログにも本文は残りません）。</li>
+      <li><strong>緊急時（意識がない・けいれん・急な麻痺など）は、このアプリを使わずすぐに119番へ。</strong></li>
+    </ul>
+  </div>
+
+  <div id="chat" aria-live="polite"></div>
+  <div id="typing">整理しています…</div>
+
+  <div class="input-row">
+    <textarea id="user-input" rows="2"
+      placeholder="例：最近、同じことを何度も聞くようになって心配です"></textarea>
+    <button id="send-btn">送信</button>
+  </div>
+  <div id="turn-note"></div>
+
+  <div id="result-panel" aria-live="polite"></div>
+
+</div>
+
+<footer>
+  本アプリは診断を行うものではありません。緊急時は119へ。<br>
+  入力内容は保存されません。医療機関の受診時は必ず事前に電話でご確認ください。
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= 設定 =================
+     MOCK: true  … 内蔵ダミー応答で動作（Worker不要・APIキー不要）
+     MOCK: false … WORKER_URL の Cloudflare Worker 経由で Gemini を呼ぶ */
+  const CONFIG = {
+    WORKER_URL: "",
+    MOCK: true
+  };
+
+  // AIが行う質問の上限（無限問診の防止）。上限到達後は強制的に整理フェーズへ。
+  const MAX_QUESTIONS = 4;
+
+  /* ===== 赤旗ルールベース判定（AIとは独立に動く） ===== */
+  const RED_FLAG_RE = new RegExp([
+    "意識がない", "意識を失", "意識が(遠|もうろう|朦朧)", "もうろう", "朦朧",
+    "けいれん", "痙攣",
+    "倒れ", "転倒",
+    "急に", "急激", "突然",
+    "高熱", "発熱",
+    "頭を(打|ぶつけ)", "頭部打撲",
+    "(手|足|手足|半身|体|からだ)が(動かない|動かせない|しびれ)", "麻痺", "まひ",
+    "ろれつ", "呂律",
+    "息が(苦し|でき)", "呼吸が(苦し|おかし)",
+    "胸が(痛|苦し)"
+  ].join("|"));
+
+  function checkRedFlags(text){
+    if(RED_FLAG_RE.test(text)){
+      document.getElementById("red-flag-banner").classList.add("visible");
+      return true;
+    }
+    return false;
+  }
+
+  /* ===== カテゴリ→地図の対応表（AIではなくフロント側の固定コード） ===== */
+  const CATEGORY_MAP = {
+    kyukyu: {
+      type: "emergency",
+      defaultLabel: "救急（119番 / #7119）"
+    },
+    senmonkikan: {
+      type: "map",
+      url: "index.html?flags=shindan&priority=senmon",
+      btnLabel: "地図で専門医療機関を見る",
+      defaultLabel: "認知症の専門医療機関（鑑別診断）"
+    },
+    monowasure: {
+      type: "map",
+      url: "index.html?flags=monowasure",
+      btnLabel: "地図でもの忘れ外来を見る",
+      defaultLabel: "もの忘れ外来"
+    },
+    kakaritsuke: {
+      type: "map",
+      url: "index.html",
+      btnLabel: "地図で近くの医療機関を見る",
+      defaultLabel: "かかりつけ医"
+    },
+    houkatsu: {
+      type: "map",
+      url: "index.html",
+      btnLabel: "地図で医療機関を見る",
+      defaultLabel: "地域包括支援センター",
+      extraNote: "介護や生活の困りごとは、お住まいの市町村の「地域包括支援センター」でも無料で相談できます。市町村の窓口や公式サイトで、お近くのセンターをご確認ください。"
+    }
+  };
+
+  const URGENCY_LABELS = {
+    emergency: "緊急：すぐに救急要請を検討",
+    urgent: "早め：数日以内の受診・相談がおすすめ",
+    routine: "通常：予約しての受診・相談で大丈夫"
+  };
+
+  /* ===== モック応答（CONFIG.MOCK=true のとき使用） ===== */
+  const MOCK_KYUKYU_RESULT = {
+    phase: "done",
+    result: {
+      urgency: "emergency",
+      urgency_reason: "意識の低下や急激な変化など、すぐに対応が必要な可能性のある内容が含まれています。",
+      category: "kyukyu",
+      category_label: "救急（119番 / #7119）",
+      reason: "お話しいただいた内容には、早急な確認が必要かもしれない症状が含まれています。まずは救急への相談をおすすめします。",
+      map_filters: [],
+      prefer_senmon: false,
+      note_for_doctor: "・いつから症状が始まったか\n・意識の状態（呼びかけへの反応）\n・けいれん・転倒・頭部打撲の有無\n・服用中の薬",
+      advice: "ためらわずに119番へ電話してください。迷う場合は救急安心センター（#7119）に相談できます。"
+    }
+  };
+
+  const MOCK_MONOWASURE_RESULT = {
+    phase: "done",
+    result: {
+      urgency: "routine",
+      urgency_reason: "急激な変化を示す内容は含まれておらず、予約しての受診で対応できる可能性が高い内容です。",
+      category: "monowasure",
+      category_label: "もの忘れ外来",
+      reason: "同じことを繰り返し尋ねるなどの変化は、もの忘れ外来で相談できる内容かもしれません。専門の外来で一度お話を聞いてもらうことをおすすめします。",
+      map_filters: ["monowasure"],
+      prefer_senmon: false,
+      note_for_doctor: "・いつ頃から気になり始めたか\n・同じことを何度も聞く頻度（1日に何回程度か）\n・日常生活で困っている場面（買い物・お金の管理・服薬など）\n・本人の受診への気持ち\n・服用中の薬・持病",
+      advice: "まずは下の「地図で見る」から近くのもの忘れ外来を探し、電話で予約の相談をしてみてください。本人が受診を嫌がる場合は「健康診断」として誘う方法もあります。"
+    }
+  };
+
+  function mockReply(messages, forceDone){
+    const userMsgs = messages.filter(m => m.role === "user");
+    const allText = userMsgs.map(m => m.content).join(" ");
+    // 赤旗語を含む入力ならモックでも kyukyu を返す
+    if(RED_FLAG_RE.test(allText)){
+      return MOCK_KYUKYU_RESULT;
+    }
+    const n = userMsgs.length;
+    if(n === 1 && !forceDone){
+      return { phase: "asking", next_question: "いつ頃から、どのような様子が気になりますか？" };
+    }
+    if(n === 2 && !forceDone){
+      return { phase: "asking", next_question: "日常生活で困っている場面（例：買い物、お金の管理、服薬など）はありますか？" };
+    }
+    return MOCK_MONOWASURE_RESULT;
+  }
+
+  /* ===== 状態 ===== */
+  let messages = [];      // {role: "user"|"assistant", content: string}
+  let finished = false;
+  let waiting = false;
+
+  const chatEl = document.getElementById("chat");
+  const typingEl = document.getElementById("typing");
+  const inputEl = document.getElementById("user-input");
+  const sendBtn = document.getElementById("send-btn");
+  const turnNoteEl = document.getElementById("turn-note");
+  const resultPanel = document.getElementById("result-panel");
+
+  function escapeHtml(str){
+    if(str === null || str === undefined) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function questionCount(){
+    return messages.filter(m => m.role === "assistant").length;
+  }
+
+  function appendBubble(role, text){
+    const wrap = document.createElement("div");
+    wrap.className = "msg " + role;
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
+    wrap.appendChild(bubble);
+    chatEl.appendChild(wrap);
+    wrap.scrollIntoView({ block: "nearest" });
+    return bubble;
+  }
+
+  function appendErrorWithRetry(){
+    const bubble = appendBubble("system-error",
+      "整理に失敗しました。もう一度お試しください。");
+    const btn = document.createElement("button");
+    btn.className = "retry-btn";
+    btn.textContent = "再試行";
+    btn.addEventListener("click", () => {
+      btn.disabled = true;
+      requestAiReply();
+    });
+    bubble.appendChild(btn);
+  }
+
+  function setWaiting(on){
+    waiting = on;
+    typingEl.classList.toggle("visible", on);
+    sendBtn.disabled = on || finished;
+    inputEl.disabled = on || finished;
+  }
+
+  function updateTurnNote(){
+    if(finished){
+      turnNoteEl.textContent = "";
+      return;
+    }
+    const remaining = MAX_QUESTIONS - questionCount();
+    turnNoteEl.textContent =
+      `AIからの質問は最大${MAX_QUESTIONS}回までです（残り${Math.max(remaining, 0)}回）。`;
+  }
+
+  /* ===== AI呼び出し ===== */
+  async function callAi(forceDone){
+    if(CONFIG.MOCK){
+      await new Promise(r => setTimeout(r, 400)); // 通信の雰囲気だけ再現
+      return mockReply(messages, forceDone);
+    }
+    const res = await fetch(CONFIG.WORKER_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: messages, force_done: !!forceDone })
+    });
+    if(!res.ok) throw new Error("worker error: " + res.status);
+    return await res.json();
+  }
+
+  function isValidResult(result){
+    return result &&
+      typeof result === "object" &&
+      ["emergency", "urgent", "routine"].includes(result.urgency) &&
+      Object.prototype.hasOwnProperty.call(CATEGORY_MAP, result.category);
+  }
+
+  async function requestAiReply(){
+    setWaiting(true);
+    try{
+      const forceDone = questionCount() >= MAX_QUESTIONS;
+      let reply = await callAi(forceDone);
+
+      // 上限到達後にまだ質問しようとした場合は、1回だけ強制整理を要求する
+      if(reply && reply.phase === "asking" && questionCount() >= MAX_QUESTIONS){
+        reply = await callAi(true);
+      }
+
+      if(reply && reply.phase === "asking" &&
+         typeof reply.next_question === "string" && reply.next_question &&
+         questionCount() < MAX_QUESTIONS){
+        messages.push({ role: "assistant", content: reply.next_question });
+        appendBubble("ai", reply.next_question);
+        updateTurnNote();
+      }else if(reply && reply.phase === "done" && isValidResult(reply.result)){
+        finished = true;
+        appendBubble("ai", "ありがとうございます。ご相談内容を整理しました。下の結果をご覧ください。");
+        renderResult(reply.result);
+        updateTurnNote();
+      }else{
+        appendErrorWithRetry();
+      }
+    }catch(err){
+      console.error(err);
+      appendErrorWithRetry();
+    }finally{
+      setWaiting(false);
+      if(!finished) inputEl.focus();
+    }
+  }
+
+  function sendMessage(){
+    if(waiting || finished) return;
+    const text = inputEl.value.trim();
+    if(!text) return;
+
+    // 赤旗判定はAIの応答を待たずに即時実行（独立動作）
+    checkRedFlags(text);
+
+    messages.push({ role: "user", content: text });
+    appendBubble("user", text);
+    inputEl.value = "";
+    requestAiReply();
+  }
+
+  /* ===== 結果パネル ===== */
+  function renderResult(result){
+    const catInfo = CATEGORY_MAP[result.category];
+    const categoryLabel = result.category_label || catInfo.defaultLabel;
+    const urgencyLabel = URGENCY_LABELS[result.urgency];
+    const showEmergency = (catInfo.type === "emergency" || result.urgency === "emergency");
+
+    let html = `
+      <h2>ご相談内容の整理結果</h2>
+      <div class="fixed-disclaimer">
+        ※本アプリは診断を行うものではありません。緊急時は119へ。<br>
+        ※入力内容は保存されません。
+      </div>
+      <div class="result-section">
+        <span class="urgency-badge ${escapeHtml(result.urgency)}">${escapeHtml(urgencyLabel)}</span>
+        <p>${escapeHtml(result.urgency_reason)}</p>
+      </div>
+    `;
+
+    if(showEmergency){
+      html += `
+        <div class="emergency-box">
+          <strong>すぐに <a href="tel:119">119番（救急車）</a> へ電話してください。</strong><br>
+          救急車を呼ぶか迷うときは <a href="tel:%237119">救急安心センター #7119</a> に相談できます（24時間対応）。
+        </div>
+      `;
+    }
+
+    html += `
+      <div class="result-section">
+        <h3>おすすめの相談先</h3>
+        <p class="category-name">${escapeHtml(categoryLabel)}</p>
+        <p>${escapeHtml(result.reason)}</p>
+      </div>
+    `;
+
+    if(catInfo.type === "map"){
+      html += `
+        <div class="result-section">
+          <a class="map-btn" id="map-link" href="${escapeHtml(catInfo.url)}">🗺 ${escapeHtml(catInfo.btnLabel)}</a>
+          ${catInfo.extraNote ? `<div class="extra-note">${escapeHtml(catInfo.extraNote)}</div>` : ""}
+        </div>
+      `;
+    }
+
+    html += `
+      <div class="result-section">
+        <h3>医療機関に伝えるべきことメモ</h3>
+        <div class="note-box" id="doctor-note">${escapeHtml(result.note_for_doctor)}</div>
+        <button class="copy-btn" id="copy-note-btn">メモをコピー</button>
+      </div>
+      <div class="result-section">
+        <h3>次の一歩</h3>
+        <p>${escapeHtml(result.advice)}</p>
+      </div>
+      <button class="reset-btn" id="reset-btn">最初から相談し直す</button>
+    `;
+
+    resultPanel.innerHTML = html;
+    resultPanel.classList.add("visible");
+
+    document.getElementById("copy-note-btn").addEventListener("click", function(){
+      copyText(result.note_for_doctor || "", this);
+    });
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      location.href = "consult.html";
+    });
+
+    resultPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  async function copyText(text, btn){
+    let ok = false;
+    try{
+      if(navigator.clipboard && window.isSecureContext){
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      }
+    }catch(e){ /* フォールバックへ */ }
+    if(!ok){
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      try{ ok = document.execCommand("copy"); }catch(e){}
+      document.body.removeChild(ta);
+    }
+    btn.textContent = ok ? "コピーしました ✓" : "コピーできませんでした";
+    setTimeout(() => { btn.textContent = "メモをコピー"; }, 2000);
+  }
+
+  /* ===== 初期化 ===== */
+  sendBtn.addEventListener("click", sendMessage);
+  inputEl.addEventListener("keydown", e => {
+    if(e.key === "Enter" && !e.shiftKey && !e.isComposing){
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  appendBubble("ai",
+    "こんにちは。認知症やもの忘れに関する困りごとを教えてください。" +
+    "いくつか質問をして、相談できる窓口を一緒に整理します。\n" +
+    "（診断は行いません。緊急時は119番へ）");
+  updateTurnNote();
+  inputEl.focus();
+})();
+</script>
+</body>
+</html>

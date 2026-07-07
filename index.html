@@ -120,6 +120,18 @@
     font-size: 0.72rem;
     color: #cbd5e1;
   }
+  .consult-link{
+    display: inline-block;
+    margin-bottom: 8px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    background: rgba(245,158,11,0.9);
+    color: #1f2937;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  .consult-link:hover{ background: #fbbf24; }
 
   main{
     display: flex;
@@ -247,6 +259,7 @@
 
 <header>
   <h1>京都府 認知症「かかりつけ医」検索</h1>
+  <a class="consult-link" href="consult.html">💬 困りごとをAIに相談する（相談ナビ）</a>
   <div class="search-row">
     <input type="text" id="address-input" placeholder="住所を入力（例：京都市中京区三条通）">
     <button id="search-btn">検索</button>
@@ -609,6 +622,24 @@
   });
   filterCbs.forEach(cb => cb.addEventListener("change", renderAll));
   senmonPriorityCb.addEventListener("change", renderAll);
+
+  // consult.html（相談ナビ）からの遷移用: URLパラメータで初期フィルタを設定する。
+  // 例: index.html?flags=shindan,monowasure&priority=senmon
+  // チェックボックスをONにするだけで、この後の loadClinics() → renderAll() が
+  // 通常どおり描画するため、既存の検索・フィルタロジックには手を入れていない。
+  (function applyUrlParams(){
+    try{
+      const params = new URLSearchParams(location.search);
+      const flags = (params.get("flags") || "")
+        .split(",").map(s => s.trim()).filter(Boolean);
+      filterCbs.forEach(cb => {
+        if(flags.includes(cb.value) && !cb.disabled) cb.checked = true;
+      });
+      if(params.get("priority") === "senmon") senmonPriorityCb.checked = true;
+    }catch(err){
+      console.error("URLパラメータの解釈に失敗しました", err);
+    }
+  })();
 
   loadClinics();
 })();
