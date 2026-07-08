@@ -300,6 +300,12 @@
 (function(){
   "use strict";
 
+  // clinics.geojson のブラウザキャッシュ対策（キャッシュバスター）。
+  // データ更新時はこの1か所を YYYYMMDD 形式で書き換えれば全fetchに効く。
+  // build_geojson.py が再生成完了時にこの行を今日の日付へ自動更新する
+  // （書き換え対象パターン: const DATA_VERSION = "数字8桁";）。
+  const DATA_VERSION = "20260708";
+
   const FLAG_LABELS = {
     shindan: "鑑別診断",
     monowasure: "もの忘れ外来",
@@ -571,7 +577,7 @@
 
   async function loadClinics(){
     try{
-      const res = await fetch("clinics.geojson");
+      const res = await fetch("clinics.geojson?v=" + DATA_VERSION);
       if(!res.ok) throw new Error("clinics.geojson の読み込みに失敗しました");
       const geojson = await res.json();
       clinics = (geojson.features || []).filter(f =>

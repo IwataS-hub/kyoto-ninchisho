@@ -51,6 +51,7 @@ source列に "京都府認知症疾患医療センター" を設定する。
 import argparse
 import csv
 import json
+import re
 import sys
 import time
 import urllib.parse
@@ -65,6 +66,11 @@ CLINIC_FACILITY_CSV = BASE_DIR / "02-1_clinic_facility_info_20251201.csv"
 CLINIC_HOURS_CSV = BASE_DIR / "02-2_clinic_speciality_hours_20251201.csv"
 DEMENTIA_CENTERS_CSV = BASE_DIR / "kyoto_dementia_centers.csv"
 OUTPUT_GEOJSON = BASE_DIR / "clinics.geojson"
+INDEX_HTML = BASE_DIR / "index.html"
+
+# index.html 内のキャッシュバスター定義（const DATA_VERSION = "YYYYMMDD";）を
+# 特定するためのパターン。この形からずれた場合は自動書き換えを行わない。
+DATA_VERSION_RE = re.compile(r'(const DATA_VERSION = ")(\d{8})(";)')
 
 KYOTO_PREF_CODE = "26"  # JIS X 0401 都道府県コード: 26 = 京都府
 # 京都市の市区町村コードは 26100（市）と 26101〜26111（行政区）で、いずれも "261" で始まる。
@@ -333,6 +339,38 @@ def merge_dementia_centers(records, centers):
     return matched_count, added_count
 
 
+def update_data_version(index_html_path=INDEX_HTML):
+    """index.html の DATA_VERSION（clinics.geojsonのキャッシュバスター）を今日の日付に更新する。
+
+    期待パターン（const DATA_VERSION = "YYYYMMDD";）がちょうど1箇所見つかった場合のみ
+    書き換える。見つからない・複数ある場合は既存HTMLを壊さないよう何も変更せず、
+    手動更新のリマインドだけを表示する。
+    """
+    today = time.strftime("%Y%m%d")
+    reminder = f"  → index.html の DATA_VERSION を今日の日付（{today}）に手動で更新してください。"
+    try:
+        html = index_html_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        print(f"[WARN] {index_html_path.name} を読み込めませんでした（{exc}）。")
+        print(reminder)
+        return
+
+    matches = DATA_VERSION_RE.findall(html)
+    if len(matches) != 1:
+        print(f"[WARN] {index_html_path.name} 内で DATA_VERSION 定義を特定できませんでした（{len(matches)} 箇所）。")
+        print(reminder)
+        return
+
+    current = matches[0][1]
+    if current == today:
+        print(f"index.html の DATA_VERSION は既に今日の日付（{today}）です。更新不要。")
+        return
+
+    new_html = DATA_VERSION_RE.sub(lambda m: m.group(1) + today + m.group(3), html)
+    index_html_path.write_text(new_html, encoding="utf-8")
+    print(f"index.html の DATA_VERSION を {current} → {today} に更新しました（ブラウザキャッシュ対策）。")
+
+
 def main(scope):
     scope_label = "京都市内" if scope == "city" else "京都府全域"
     print(f"施設票を読み込み中（{scope_label}のみ抽出）...")
@@ -416,6 +454,8 @@ def main(scope):
     print(f"  supportdoc（認知症サポート医）: {sum(f['properties']['supportdoc'] for f in features)} 件")
     print(f"京都府認知症疾患医療センター: 名寄せ上書き {matched_count} 件 / 新規追加 {added_count} 件")
     print(f"出力先: {OUTPUT_GEOJSON}")
+    print()
+    update_data_version()
 
 
 if __name__ == "__main__":
