@@ -1,6 +1,13 @@
 """
 厚労省「医療情報ネット」全国版CSV（病院/診療所 × 施設票/診療科・時間票の4ファイル）から
-京都府の認知症対応医療機関を抽出し、clinics.geojson を生成する。
+認知症対応医療機関を抽出し、clinics.geojson を生成する。
+
+【抽出スコープ（--scope オプション）】
+- --scope city（デフォルト）: 京都市内の施設のみ抽出する（議事録2026-06-20の方針）。
+  「住所が『京都府京都市』で始まる」または「市区町村コードが京都市（26100番台 =
+  261xx: 26100 京都市 / 26101〜26111 各区）」のいずれかに該当する施設。
+  認知症疾患医療センター(kyoto_dementia_centers.csv)も京都市内のもののみ統合する。
+- --scope pref: 従来どおり京都府全域（都道府県コード26）。
 
 【データソースに関する制約・判断根拠】
 - 4ファイルのいずれにも電話番号(TEL)の列が存在しない。
@@ -41,6 +48,7 @@ source列に "京都府認知症疾患医療センター" を設定する。
 医療情報ネット由来のレコードには area="" 、source="医療情報ネット" を既定値として補う。
 """
 
+import argparse
 import csv
 import json
 import sys
@@ -59,6 +67,10 @@ DEMENTIA_CENTERS_CSV = BASE_DIR / "kyoto_dementia_centers.csv"
 OUTPUT_GEOJSON = BASE_DIR / "clinics.geojson"
 
 KYOTO_PREF_CODE = "26"  # JIS X 0401 都道府県コード: 26 = 京都府
+# 京都市の市区町村コードは 26100（市）と 26101〜26111（行政区）で、いずれも "261" で始まる。
+# 京都市以外の府内市町村は 26201（福知山市）以降のため "261" 前方一致で京都市を判定できる。
+KYOTO_CITY_CODE_PREFIX = "261"
+KYOTO_CITY_ADDR_PREFIX = "京都府京都市"
 
 # 診療科目名 or 施設名にこれらの文字列を含む施設を「専門」(level=専門)とみなす（厳密一致）
 STRICT_KEYWORDS = ("認知症", "もの忘れ", "物忘れ")
@@ -87,8 +99,23 @@ LEGAL_ENTITY_PREFIXES = (
 )
 
 
-def load_kyoto_facilities(path):
-    """施設票(facility_info系)を読み込み、京都府(都道府県コード==26)の施設だけを dict で返す。"""
+def is_kyoto_city(address, city_code):
+    """住所または市区町村コードから京都市内の施設かどうかを判定する。
+
+    住所が「京都府京都市」で始まる、または市区町村コードが京都市
+    （26100番台 = "261" 前方一致）のいずれかで京都市内とみなす。
+    """
+    if address.strip().startswith(KYOTO_CITY_ADDR_PREFIX):
+        return True
+    return city_code.strip().startswith(KYOTO_CITY_CODE_PREFIX)
+
+
+def load_kyoto_facilities(path, scope):
+    """施設票(facility_info系)を読み込み、スコープ内の施設だけを dict で返す。
+
+    scope="pref": 京都府全域（都道府県コード==26）
+    scope="city": 上記のうち京都市内（is_kyoto_city 判定）のみ
+    """
     facilities = {}
     with path.open(encoding="utf-8-sig", newline="") as fh:
         reader = csv.reader(fh)
@@ -97,6 +124,7 @@ def load_kyoto_facilities(path):
         idx_name = header.index("正式名称")
         idx_abbr = header.index("略称")
         idx_pref = header.index("都道府県コード")
+        idx_city = header.index("市区町村コード")
         idx_address = header.index("所在地")
         idx_lat = header.index("所在地座標（緯度）")
         idx_lon = header.index("所在地座標（経度）")
@@ -104,6 +132,8 @@ def load_kyoto_facilities(path):
 
         for row in reader:
             if row[idx_pref] != KYOTO_PREF_CODE:
+                continue
+            if scope == "city" and not is_kyoto_city(row[idx_address], row[idx_city]):
                 continue
             facility_id = row[idx_id]
             facilities[facility_id] = {
@@ -236,12 +266,18 @@ def normalize_name(name):
     return normalized
 
 
-def load_dementia_centers(path):
-    """京都府認知症疾患医療センターCSVを読み込み、bool変換済みのレコード一覧を返す。"""
+def load_dementia_centers(path, scope):
+    """京都府認知症疾患医療センターCSVを読み込み、bool変換済みのレコード一覧を返す。
+
+    scope="city" の場合は京都市内のセンター（住所判定）のみに絞り込む。
+    センターCSVには市区町村コード列が無いため、住所の前方一致のみで判定する。
+    """
     centers = []
     with path.open(encoding="utf-8-sig", newline="") as fh:
         reader = csv.DictReader(fh)
         for row in reader:
+            if scope == "city" and not is_kyoto_city(row["address"], ""):
+                continue
             centers.append({
                 "name": row["name"].strip(),
                 "area": row["area"].strip(),
@@ -297,12 +333,13 @@ def merge_dementia_centers(records, centers):
     return matched_count, added_count
 
 
-def main():
-    print("施設票を読み込み中（京都府のみ抽出）...")
-    hospital_facilities = load_kyoto_facilities(HOSPITAL_FACILITY_CSV)
-    clinic_facilities = load_kyoto_facilities(CLINIC_FACILITY_CSV)
-    print(f"  病院（京都府）: {len(hospital_facilities)} 件")
-    print(f"  診療所（京都府）: {len(clinic_facilities)} 件")
+def main(scope):
+    scope_label = "京都市内" if scope == "city" else "京都府全域"
+    print(f"施設票を読み込み中（{scope_label}のみ抽出）...")
+    hospital_facilities = load_kyoto_facilities(HOSPITAL_FACILITY_CSV, scope)
+    clinic_facilities = load_kyoto_facilities(CLINIC_FACILITY_CSV, scope)
+    print(f"  病院（{scope_label}）: {len(hospital_facilities)} 件")
+    print(f"  診療所（{scope_label}）: {len(clinic_facilities)} 件")
 
     print("診療科目名を読み込み中...")
     hospital_depts = load_dept_names(HOSPITAL_HOURS_CSV, hospital_facilities.keys())
@@ -311,10 +348,11 @@ def main():
     print("施設票と診療科目名を結合し、認知症/もの忘れ関連施設を抽出中...")
     records = build_dementia_features(hospital_facilities, hospital_depts)
     records += build_dementia_features(clinic_facilities, clinic_depts)
-    print(f"  京都府の認知症対応施設: {len(records)} 件")
+    print(f"  {scope_label}の認知症対応施設: {len(records)} 件")
 
-    print("京都府認知症疾患医療センターを統合中...")
-    centers = load_dementia_centers(DEMENTIA_CENTERS_CSV)
+    print(f"京都府認知症疾患医療センターを統合中（{scope_label}のセンターのみ）...")
+    centers = load_dementia_centers(DEMENTIA_CENTERS_CSV, scope)
+    print(f"  対象センター: {len(centers)} 件")
     matched_count, added_count = merge_dementia_centers(records, centers)
     print(f"  既存施設と名寄せして上書き: {matched_count} 件")
     print(f"  新規追加: {added_count} 件")
@@ -366,7 +404,8 @@ def main():
 
     print()
     print("=== 結果サマリー ===")
-    print(f"京都府の認知症/もの忘れ関連施設（座標確定分）: {len(features)} 件")
+    print(f"抽出スコープ: {scope_label}（--scope {scope}）")
+    print(f"{scope_label}の認知症/もの忘れ関連施設（座標確定分）: {len(features)} 件")
     if skipped_no_coords:
         print(f"  ※座標が確定できず出力から除外: {skipped_no_coords} 件")
     print(f"  level=専門（診療科目名/施設名に明記）: {sum(f['properties']['level'] == '専門' for f in features)} 件")
@@ -380,4 +419,14 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+        description="医療情報ネットCSVから認知症対応医療機関のclinics.geojsonを生成する"
+    )
+    parser.add_argument(
+        "--scope",
+        choices=["city", "pref"],
+        default="city",
+        help="抽出範囲: city=京都市内のみ（デフォルト） / pref=京都府全域",
+    )
+    args = parser.parse_args()
+    main(args.scope)

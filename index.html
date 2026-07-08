@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>京都府 認知症「かかりつけ医」検索</title>
+<title>京都市 認知症「かかりつけ医」検索</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
   :root{
@@ -258,7 +258,7 @@
 <body>
 
 <header>
-  <h1>京都府 認知症「かかりつけ医」検索</h1>
+  <h1>京都市 認知症「かかりつけ医」検索</h1>
   <a class="consult-link" href="consult.html">💬 困りごとをAIに相談する（相談ナビ）</a>
   <div class="search-row">
     <input type="text" id="address-input" placeholder="住所を入力（例：京都市中京区三条通）">
@@ -307,10 +307,12 @@
     supportdoc: "認知症サポート医"
   };
 
-  // 京都府全域（北は丹後・舞鶴、南は木津川）が収まる固定の初期表示位置。
+  // 京都市全域が収まる固定の初期表示位置（議事録2026-06-20の方針で市内フォーカス）。
   // fitBounds が有効な座標を1件も得られなかった場合のフォールバックにも使う。
-  const KYOTO_CENTER = [35.3, 135.5];
-  const KYOTO_INITIAL_ZOOM = 9;
+  // ※データは clinics.geojson の生成スコープ（build_geojson.py --scope）に従うため、
+  //   実際の表示範囲は fitMapToClinics() が市内施設の座標から fitBounds で計算する。
+  const KYOTO_CENTER = [35.01, 135.76];
+  const KYOTO_INITIAL_ZOOM = 12;
   const ADDRESS_SEARCH_ZOOM = 13;
 
   const map = L.map("map").setView(KYOTO_CENTER, KYOTO_INITIAL_ZOOM);

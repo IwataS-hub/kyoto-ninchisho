@@ -9,6 +9,7 @@
 
 # OS/エディタの一時ファイル
 .DS_Store
+__pycache__/
 .claude/settings.local.json
 .claude/launch.json
 
