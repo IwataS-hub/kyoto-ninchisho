@@ -304,7 +304,7 @@
   // データ更新時はこの1か所を YYYYMMDD 形式で書き換えれば全fetchに効く。
   // build_geojson.py が再生成完了時にこの行を今日の日付へ自動更新する
   // （書き換え対象パターン: const DATA_VERSION = "数字8桁";）。
-  const DATA_VERSION = "20260708";
+  const DATA_VERSION = "20260710";
 
   const FLAG_LABELS = {
     shindan: "鑑別診断",
@@ -398,7 +398,9 @@
     if(props.level === "専門"){
       html += `<span class="badge senmon">認知症専門</span>`;
     }
-    if(props.source === "京都府認知症疾患医療センター"){
+    // source はあんしんナビ「もの忘れ外来一覧」等と併記されることがある
+    // （例: "京都府認知症疾患医療センター / きょうと…"）ため部分一致で判定する
+    if((props.source || "").includes("京都府認知症疾患医療センター")){
       html += `<span class="badge center">認知症疾患医療センター</span>`;
     }
     return html;

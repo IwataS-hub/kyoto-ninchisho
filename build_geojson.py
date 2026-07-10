@@ -65,6 +65,7 @@ HOSPITAL_HOURS_CSV = BASE_DIR / "01-2_hospital_speciality_hours_20251201.csv"
 CLINIC_FACILITY_CSV = BASE_DIR / "02-1_clinic_facility_info_20251201.csv"
 CLINIC_HOURS_CSV = BASE_DIR / "02-2_clinic_speciality_hours_20251201.csv"
 DEMENTIA_CENTERS_CSV = BASE_DIR / "kyoto_dementia_centers.csv"
+MONOWASURE_HOSPITALS_CSV = BASE_DIR / "kyoto_city_monowasure.csv"
 OUTPUT_GEOJSON = BASE_DIR / "clinics.geojson"
 INDEX_HTML = BASE_DIR / "index.html"
 
@@ -73,8 +74,10 @@ INDEX_HTML = BASE_DIR / "index.html"
 DATA_VERSION_RE = re.compile(r'(const DATA_VERSION = ")(\d{8})(";)')
 
 KYOTO_PREF_CODE = "26"  # JIS X 0401 都道府県コード: 26 = 京都府
-# 京都市の市区町村コードは 26100（市）と 26101〜26111（行政区）で、いずれも "261" で始まる。
-# 京都市以外の府内市町村は 26201（福知山市）以降のため "261" 前方一致で京都市を判定できる。
+# 京都市の全国地方公共団体コードは 26100（市）と 26101〜26111（行政区）。
+# ただし医療情報ネットCSVの「市区町村コード」列は都道府県部を除いた3桁
+# （例: 上京区=102、福知山市=201）で収録されているため、
+# 「都道府県コード26 かつ 市区町村コードが1xx」も京都市と判定する。
 KYOTO_CITY_CODE_PREFIX = "261"
 KYOTO_CITY_ADDR_PREFIX = "京都府京都市"
 
@@ -109,11 +112,16 @@ def is_kyoto_city(address, city_code):
     """住所または市区町村コードから京都市内の施設かどうかを判定する。
 
     住所が「京都府京都市」で始まる、または市区町村コードが京都市
-    （26100番台 = "261" 前方一致）のいずれかで京都市内とみなす。
+    （26100番台）のいずれかで京都市内とみなす。コード列は5桁（261xx）と
+    3桁（都道府県部を除いた 1xx。都道府県コード26で絞り込み済みの文脈で使う）
+    の両方の形式に対応する。
     """
     if address.strip().startswith(KYOTO_CITY_ADDR_PREFIX):
         return True
-    return city_code.strip().startswith(KYOTO_CITY_CODE_PREFIX)
+    code = city_code.strip()
+    if code.startswith(KYOTO_CITY_CODE_PREFIX):
+        return True
+    return len(code) == 3 and code.startswith("1")
 
 
 def load_kyoto_facilities(path, scope):
@@ -194,16 +202,24 @@ def is_valid_kyoto_coords(lat, lon):
     return True
 
 
-def _request_gsi(address):
-    """国土地理院ジオコーディングAPIに1回問い合わせる。失敗時はNone。"""
-    url = GSI_GEOCODE_URL + urllib.parse.quote(address)
+def _request_gsi_all(query):
+    """国土地理院ジオコーディングAPIに1回問い合わせ、候補リスト全体を返す。失敗時は空リスト。"""
+    url = GSI_GEOCODE_URL + urllib.parse.quote(query)
     try:
         with urllib.request.urlopen(url, timeout=10) as resp:
             data = json.loads(resp.read().decode("utf-8"))
-        if data:
-            return data[0]["geometry"]["coordinates"]  # [lon, lat]
+        if isinstance(data, list):
+            return data
     except Exception as exc:
-        print(f"  [WARN] ジオコーディング失敗: {address!r} ({exc})", file=sys.stderr)
+        print(f"  [WARN] ジオコーディング失敗: {query!r} ({exc})", file=sys.stderr)
+    return []
+
+
+def _request_gsi(address):
+    """国土地理院ジオコーディングAPIに1回問い合わせる。失敗時はNone。"""
+    data = _request_gsi_all(address)
+    if data:
+        return data[0]["geometry"]["coordinates"]  # [lon, lat]
     return None
 
 
@@ -270,6 +286,22 @@ def normalize_name(name):
     for prefix in LEGAL_ENTITY_PREFIXES:
         normalized = normalized.replace(prefix, "")
     return normalized
+
+
+def core_name(name):
+    """スペース区切りの末尾要素（=法人名を除いた施設名部分）を正規化して返す。
+
+    医療情報ネット・あんしんナビとも「法人格＋法人名＋スペース＋施設名」の表記が
+    多い一方、片側だけ法人名を含まないケースがある（例: 医療情報ネット「室町病院」
+    vs あんしんナビ「医療法人幸生会 室町病院」）。その名寄せ用の第2キーとして、
+    スペース区切りの最後の要素を normalize_name して使う。
+    完全一致でのみ比較する（後方一致だと「武田病院」が「京都武田病院」に
+    誤マッチするため使わない）。「北山病院」と「第二北山病院」は末尾要素が
+    異なる文字列になるので誤一致しない。スペースが無い名前では normalize_name と
+    同じ結果になる。
+    """
+    parts = re.split(r"[\s　]+", name.strip())
+    return normalize_name(parts[-1])
 
 
 def load_dementia_centers(path, scope):
@@ -339,6 +371,233 @@ def merge_dementia_centers(records, centers):
     return matched_count, added_count
 
 
+def load_monowasure_hospitals(path):
+    """きょうと認知症あんしんナビ「もの忘れ外来一覧」CSV（京都市内の病院）を読み込む。"""
+    hospitals = []
+    with path.open(encoding="utf-8-sig", newline="") as fh:
+        reader = csv.DictReader(fh)
+        for row in reader:
+            hospitals.append({
+                "name": row["name"].strip(),
+                "ward": row["ward"].strip(),   # 例: "京都市北区"
+                "tel": row["tel"].strip(),
+                "source": row["source"].strip(),
+            })
+    return hospitals
+
+
+# 法人名の末尾によく現れる語。suffix一致名寄せ（第3パス）で、除去される接頭辞が
+# 「法人名らしい」ことの確認に使う（例:「愛智会」「地域医療機能推進機構」）。
+CORPORATE_SUFFIXES = ("会", "法人", "機構", "協会", "財団", "社団", "組合")
+
+# 施設名POIジオコーディングの採用条件: 区の代表点からこの距離以内であること。
+# 同名施設の誤マッチ（例: 長崎県の島原病院）を弾きつつ、南北に長い左京区・右京区の
+# 市街地部の施設は拾える距離として設定。
+POI_MATCH_MAX_KM = 15.0
+
+
+def haversine_km(lat1, lon1, lat2, lon2):
+    """2点間の大円距離(km)。"""
+    from math import atan2, cos, radians, sin, sqrt
+    r = 6371.0
+    dlat = radians(lat2 - lat1)
+    dlon = radians(lon2 - lon1)
+    a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
+    return r * 2 * atan2(sqrt(a), sqrt(1 - a))
+
+
+def geocode_poi(simple_name, ward, ward_coords_cache):
+    """国土地理院APIで施設名POIを検索し、[lon, lat] を返す。特定できなければ None。
+
+    AddressSearch は住所だけでなく主要施設名のPOIも収載しているが、
+    「区名＋施設名」で問い合わせると住所前方一致（区の代表点）が最上位に来て
+    しまい、区役所付近の不正確な座標を拾ってしまう。そのため:
+    1) 施設名単独で問い合わせ、title に施設名を含む候補だけを採用する
+       （住所の部分一致候補は title が「京都府京都市北区」等になるため除外される）
+    2) 同名・類似名POIの誤マッチを防ぐため、区の代表点から POI_MATCH_MAX_KM
+       以内であることを必須にする（府内妥当範囲チェックだけでは大阪等の
+       同名施設を弾けない）
+    確実に特定できない場合は None を返し、呼び出し側で「未特定」として扱う
+    （区代表点などの不正確な座標で登録するより、追加しない方が安全のため）。
+    """
+    if ward not in ward_coords_cache:
+        time.sleep(GEOCODE_SLEEP_SEC)
+        ward_coords_cache[ward] = _request_gsi(ward)  # [lon, lat] or None
+    ward_coords = ward_coords_cache[ward]
+    if ward_coords is None:
+        return None
+
+    time.sleep(GEOCODE_SLEEP_SEC)
+    for cand in _request_gsi_all(simple_name):
+        title = (cand.get("properties") or {}).get("title") or ""
+        if simple_name not in title:
+            continue
+        coords = cand["geometry"]["coordinates"]  # [lon, lat]
+        if not is_valid_kyoto_coords(coords[1], coords[0]):
+            continue
+        if haversine_km(ward_coords[1], ward_coords[0], coords[1], coords[0]) <= POI_MATCH_MAX_KM:
+            return coords
+    return None
+
+
+def _matches_with_corporate_prefix(full_name_normalized, core):
+    """正規化済み正式名称が「法人名＋施設名」の形で core と一致するかを判定する。
+
+    医療情報ネットの正式名称にはスペース無しで法人名を含むもの
+    （例:「医療法人愛智会京都北野病院」→ normalize後「愛智会京都北野病院」）があり、
+    core_name の完全一致では拾えない。単純な後方一致だと「三幸会第二北山病院」が
+    「北山病院」に誤マッチするため、除去される接頭辞が法人名らしい
+    （会・機構・協会等で終わる）場合のみ一致とみなす。
+    例: 「愛智会京都北野病院」vs「京都北野病院」→ 接頭辞「愛智会」→ 一致
+        「三幸会第二北山病院」vs「北山病院」→ 接頭辞「三幸会第二」→ 不一致
+        「恵心会京都武田病院」vs「武田病院」→ 接頭辞「恵心会京都」→ 不一致
+    """
+    if not full_name_normalized.endswith(core):
+        return False
+    prefix = full_name_normalized[: len(full_name_normalized) - len(core)]
+    if not prefix:
+        return True  # 完全一致（通常は前段のパスで処理済み）
+    return prefix.endswith(CORPORATE_SUFFIXES)
+
+
+def _build_name_indexes(items, name_keys):
+    """名寄せ用に (normalize_name索引, core_name索引) の2つを作る。同名はリストで保持。"""
+    full_index = {}
+    core_index = {}
+    for item in items:
+        for key in name_keys:
+            label = item.get(key) or ""
+            if not label:
+                continue
+            full_index.setdefault(normalize_name(label), []).append(item)
+            core_index.setdefault(core_name(label), []).append(item)
+    return full_index, core_index
+
+
+def _find_unique(full_index, core_index, hosp):
+    """病院1件を3段階で検索する。
+
+    1) normalize_name の完全一致
+    2) core_name（スペース区切り末尾＝施設名部分）の完全一致
+    3) 法人名らしい接頭辞を除くと core_name に一致（_matches_with_corporate_prefix）
+    いずれも、誤マッチ防止のため ward（区名）が住所に含まれることを必須条件にし、
+    候補がちょうど1件のときだけ採用する（複数一致は曖昧として不採用）。
+    """
+    core = core_name(hosp["name"])
+    for index, key in (
+        (full_index, normalize_name(hosp["name"])),
+        (core_index, core),
+    ):
+        candidates = {
+            id(item): item
+            for item in index.get(key, [])
+            if hosp["ward"] in item["address"]
+        }
+        if len(candidates) == 1:
+            return next(iter(candidates.values()))
+
+    candidates = {
+        id(item): item
+        for norm_label, items in full_index.items()
+        if _matches_with_corporate_prefix(norm_label, core)
+        for item in items
+        if hosp["ward"] in item["address"]
+    }
+    if len(candidates) == 1:
+        return next(iter(candidates.values()))
+    return None
+
+
+def merge_monowasure_hospitals(records, hospitals, facilities):
+    """あんしんナビ「もの忘れ外来一覧」（京都市内の病院）を統合する。
+
+    1) 既存レコード（センター統合済みの認知症対応施設）に名寄せ
+       → monowasure=True / level="専門" に昇格、telが空なら補完、source追記
+    2) 一致しない場合は医療情報ネット施設票（スコープ内全施設）から名称＋区名で検索し、
+       住所・座標・URLを取得して新規追加
+    3) それでも見つからなければ国土地理院の施設名POIジオコーディング（geocode_poi）で
+       座標化して追加
+    4) 座標が確実に特定できない場合は追加せず「特定できなかった施設」として報告する
+
+    戻り値: (matched, from_facility, geocoded, unresolved) 施設名のリスト4つ
+    """
+    rec_full, rec_core = _build_name_indexes(records, ("name",))
+    fac_full, fac_core = _build_name_indexes(list(facilities.values()), ("name", "abbr"))
+
+    matched, from_facility, geocoded, unresolved = [], [], [], []
+    ward_coords_cache = {}
+
+    def register(new_rec):
+        """新規レコードを records と索引に追加する（後続行からの重複追加を防ぐ）。"""
+        records.append(new_rec)
+        rec_full.setdefault(normalize_name(new_rec["name"]), []).append(new_rec)
+        rec_core.setdefault(core_name(new_rec["name"]), []).append(new_rec)
+
+    for hosp in hospitals:
+        # 1) 既存レコードへの名寄せ（府立医大・北山病院など既に「専門」の施設もここで
+        #    吸収されるため重複追加は起きない）
+        rec = _find_unique(rec_full, rec_core, hosp)
+        if rec is not None:
+            rec["monowasure"] = True
+            rec["level"] = "専門"
+            if not rec["tel"]:
+                rec["tel"] = hosp["tel"]
+            if hosp["source"] not in rec["source"]:
+                rec["source"] = (
+                    rec["source"] + " / " + hosp["source"] if rec["source"] else hosp["source"]
+                )
+            matched.append(hosp["name"])
+            continue
+
+        # 2) 医療情報ネット施設票（全施設）から名称＋区名で補完
+        fac = _find_unique(fac_full, fac_core, hosp)
+        if fac is not None:
+            register({
+                "id": None,
+                "name": hosp["name"],
+                "address": fac["address"],
+                "tel": hosp["tel"] or fac["url"],
+                "lat": fac["lat"],
+                "lon": fac["lon"],
+                "level": "専門",
+                "shindan": False,
+                "monowasure": True,
+                "zaitaku": False,
+                "supportdoc": False,
+                "area": "",
+                "source": hosp["source"],
+            })
+            from_facility.append(hosp["name"])
+            continue
+
+        # 3) 国土地理院の施設名POIジオコーディングで座標化
+        simple_name = re.split(r"[\s　]+", hosp["name"].strip())[-1]
+        coords = geocode_poi(simple_name, hosp["ward"], ward_coords_cache)
+        if coords is not None:
+            register({
+                "id": None,
+                "name": hosp["name"],
+                "address": "京都府" + hosp["ward"],  # 詳細住所は元データ未収載のため区まで
+                "tel": hosp["tel"],
+                "lat": coords[1],
+                "lon": coords[0],
+                "level": "専門",
+                "shindan": False,
+                "monowasure": True,
+                "zaitaku": False,
+                "supportdoc": False,
+                "area": "",
+                "source": hosp["source"],
+            })
+            geocoded.append(hosp["name"])
+            continue
+
+        # 4) 特定できず（座標なしのレコードは追加しない）
+        unresolved.append(hosp["name"])
+
+    return matched, from_facility, geocoded, unresolved
+
+
 def update_data_version(index_html_path=INDEX_HTML):
     """index.html の DATA_VERSION（clinics.geojsonのキャッシュバスター）を今日の日付に更新する。
 
@@ -394,6 +653,21 @@ def main(scope):
     matched_count, added_count = merge_dementia_centers(records, centers)
     print(f"  既存施設と名寄せして上書き: {matched_count} 件")
     print(f"  新規追加: {added_count} 件")
+
+    print("あんしんナビ「もの忘れ外来一覧」（京都市内の病院）を統合中...")
+    monowasure_hospitals = load_monowasure_hospitals(MONOWASURE_HOSPITALS_CSV)
+    all_facilities = {**hospital_facilities, **clinic_facilities}
+    mono_matched, mono_from_facility, mono_geocoded, mono_unresolved = (
+        merge_monowasure_hospitals(records, monowasure_hospitals, all_facilities)
+    )
+    print(f"  リスト掲載: {len(monowasure_hospitals)} 件")
+    print(f"  名寄せで既存施設にマッチ（専門へ昇格）: {len(mono_matched)} 件")
+    print(f"  医療情報ネット施設票から補完して新規追加: {len(mono_from_facility)} 件")
+    print(f"  ジオコーディングで座標化して新規追加: {len(mono_geocoded)} 件")
+    if mono_unresolved:
+        print(f"  [WARN] 特定できなかった施設（未追加）: {len(mono_unresolved)} 件")
+        for name in mono_unresolved:
+            print(f"    - {name}")
 
     print("緯度経度が無効な施設をジオコーディング中...")
     geocoded_count = 0
@@ -453,6 +727,11 @@ def main(scope):
     print(f"  zaitaku（訪問診療・在宅） : {sum(f['properties']['zaitaku'] for f in features)} 件")
     print(f"  supportdoc（認知症サポート医）: {sum(f['properties']['supportdoc'] for f in features)} 件")
     print(f"京都府認知症疾患医療センター: 名寄せ上書き {matched_count} 件 / 新規追加 {added_count} 件")
+    print(
+        f"あんしんナビ もの忘れ外来一覧({len(monowasure_hospitals)}件): "
+        f"名寄せ {len(mono_matched)} 件 / 施設票補完 {len(mono_from_facility)} 件 / "
+        f"ジオコーディング {len(mono_geocoded)} 件 / 未特定 {len(mono_unresolved)} 件"
+    )
     print(f"出力先: {OUTPUT_GEOJSON}")
     print()
     update_data_version()
