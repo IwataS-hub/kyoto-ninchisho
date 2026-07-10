@@ -38,6 +38,17 @@ true にせず、診療科目名または施設名に「認知症」「もの忘
 - "関連": 上記に該当しないが、精神科・神経内科・脳神経内科・老年科など
   認知症診療と関連が深い診療科で拾った施設（広い条件のみで一致）。
 
+【properties.stage_capability（対応ステージの目安）】
+AI相談（進行度評価型問診エンジン・北川設計書）との接続用に、各施設へ
+「どの進行段階の相談・受診に対応できそうか」の目安を配列で付与する
+（複数該当可。例: ["early","moderate"]）。あくまで公開データからの推定であり、
+受診可否は施設への事前確認が必要（アプリ側でもその旨を注記する）。
+- 病床数の列は病院票(01-1)に「一般病床」「療養病床」「精神病床」が数値で存在する
+  ことを確認済み（数値>0 で「病床あり」と判定）。
+- 診療所票(02-1)には「一般病床」「療養病床」のみで「精神病床」列が存在しないため、
+  診療所の精神病床は 0 扱いとする（READMEにも明記）。
+- 判定ロジックの詳細は compute_stage_capability() のコメントを参照。
+
 【京都府認知症疾患医療センター(kyoto_dementia_centers.csv)の統合】
 医療情報ネット由来の193件に、京都府が指定する認知症疾患医療センター9件を統合する。
 名寄せは「全角/半角スペースの除去」＋「法人格・所属法人名（医療法人◯◯会、
@@ -92,6 +103,12 @@ MONOWASURE_KEYWORDS = ("もの忘れ", "物忘れ", "認知症外来")
 # zaitaku（訪問診療・在宅）: 診療科目名のみで判定（施設票に該当列が無いため）
 ZAITAKU_KEYWORDS = ("在宅", "訪問")
 
+# stage_capability の early（鑑別・初期外来）判定に使う診療科目名。
+# 「神経内科」は「脳神経内科」の部分文字列のため、部分一致でどちらも拾える。
+STAGE_EARLY_DEPT_KEYWORDS = ("神経内科", "脳神経内科", "脳神経外科")
+# stage_capability の moderate 判定（精神科×もの忘れ外来）に使う診療科目名
+STAGE_PSYCHIATRY_DEPT_KEYWORDS = ("精神科",)
+
 GSI_GEOCODE_URL = "https://msearch.gsi.go.jp/address-search/AddressSearch?q="
 GEOCODE_SLEEP_SEC = 0.3
 
@@ -124,11 +141,22 @@ def is_kyoto_city(address, city_code):
     return len(code) == 3 and code.startswith("1")
 
 
+def parse_bed_count(value):
+    """病床数セルを int に変換する。空欄・非数値は 0 扱い。"""
+    try:
+        return int(str(value).strip() or 0)
+    except ValueError:
+        return 0
+
+
 def load_kyoto_facilities(path, scope):
     """施設票(facility_info系)を読み込み、スコープ内の施設だけを dict で返す。
 
     scope="pref": 京都府全域（都道府県コード==26）
     scope="city": 上記のうち京都市内（is_kyoto_city 判定）のみ
+
+    stage_capability 判定用に「療養病床」「精神病床」も読み込む。
+    診療所票(02-1)には「精神病床」列が存在しないため、その場合は 0 扱いとする。
     """
     facilities = {}
     with path.open(encoding="utf-8-sig", newline="") as fh:
@@ -143,6 +171,8 @@ def load_kyoto_facilities(path, scope):
         idx_lat = header.index("所在地座標（緯度）")
         idx_lon = header.index("所在地座標（経度）")
         idx_url = header.index("案内用ホームページアドレス")
+        idx_ryoyo = header.index("療養病床") if "療養病床" in header else None
+        idx_seishin = header.index("精神病床") if "精神病床" in header else None
 
         for row in reader:
             if row[idx_pref] != KYOTO_PREF_CODE:
@@ -157,6 +187,8 @@ def load_kyoto_facilities(path, scope):
                 "lat": row[idx_lat].strip(),
                 "lon": row[idx_lon].strip(),
                 "url": row[idx_url].strip(),
+                "ryoyo_beds": parse_bed_count(row[idx_ryoyo]) if idx_ryoyo is not None else 0,
+                "seishin_beds": parse_bed_count(row[idx_seishin]) if idx_seishin is not None else 0,
             }
     return facilities
 
@@ -276,6 +308,10 @@ def build_dementia_features(facilities, dept_names):
             "monowasure": matches_any(texts, MONOWASURE_KEYWORDS),
             "zaitaku": matches_any(depts, ZAITAKU_KEYWORDS),
             "supportdoc": False,  # このデータセットには認知症サポート医の登録情報が無い
+            # stage_capability の判定材料（出力前に compute_stage_capability で配列へ変換）
+            "depts": depts,
+            "ryoyo_beds": info["ryoyo_beds"],
+            "seishin_beds": info["seishin_beds"],
         })
     return records
 
@@ -369,6 +405,47 @@ def merge_dementia_centers(records, centers):
             name_index[key] = new_rec
             added_count += 1
     return matched_count, added_count
+
+
+def is_dementia_center(rec):
+    """京都府指定の認知症疾患医療センター（統合済みレコード）かどうか。source列で判定する。"""
+    return "京都府認知症疾患医療センター" in (rec.get("source") or "")
+
+
+def compute_stage_capability(rec):
+    """施設の「対応ステージの目安」stage_capability（配列・複数該当可）を推定する。
+
+    推定ロジック（北川設計書 C-2。公開データからの推定であり、あくまで目安）:
+    - early（鑑別・初期外来）:
+        認知症疾患医療センター、もの忘れ外来あり(monowasure=True)、
+        または診療科目に神経内科/脳神経内科/脳神経外科がある
+    - moderate（中等度・BPSD対応）:
+        認知症疾患医療センター、精神病床あり(>0)、
+        または「精神科の診療科目 かつ もの忘れ外来」
+    - severe（重度・長期/入院）:
+        認知症疾患医療センター、療養病床あり(>0)、または精神病床あり(>0)
+    病床数は病院票(01-1)のみに列が存在し数値で判定できる。診療所票(02-1)には
+    精神病床列が無いため 0 扱い（＝診療所は病床条件では moderate/severe にならない）。
+    センターCSV由来・あんしんナビ由来の新規追加レコードには診療科・病床の情報が無いため、
+    センター指定＋もの忘れ外来の有無のみで判定する（.get で欠損を許容）。
+
+    TODO(チーム確認): この推定ロジックの医学的妥当性（特に「精神病床あり=BPSD対応可」
+    「療養病床あり=重度・長期対応可」とみなす近似が実態に合うか）。
+    """
+    depts = rec.get("depts") or ()
+    seishin_beds = rec.get("seishin_beds") or 0
+    ryoyo_beds = rec.get("ryoyo_beds") or 0
+    center = is_dementia_center(rec)
+    capability = []
+    if center or rec["monowasure"] or matches_any(depts, STAGE_EARLY_DEPT_KEYWORDS):
+        capability.append("early")
+    if center or seishin_beds > 0 or (
+        rec["monowasure"] and matches_any(depts, STAGE_PSYCHIATRY_DEPT_KEYWORDS)
+    ):
+        capability.append("moderate")
+    if center or ryoyo_beds > 0 or seishin_beds > 0:
+        capability.append("severe")
+    return capability
 
 
 def load_monowasure_hospitals(path):
@@ -566,6 +643,11 @@ def merge_monowasure_hospitals(records, hospitals, facilities):
                 "supportdoc": False,
                 "area": "",
                 "source": hosp["source"],
+                # 施設票から stage_capability の判定材料も引き継ぐ
+                # （depts は main() で施設票に付与済みの診療科目名）
+                "depts": fac.get("depts") or set(),
+                "ryoyo_beds": fac.get("ryoyo_beds", 0),
+                "seishin_beds": fac.get("seishin_beds", 0),
             })
             from_facility.append(hosp["name"])
             continue
@@ -657,6 +739,11 @@ def main(scope):
     print("あんしんナビ「もの忘れ外来一覧」（京都市内の病院）を統合中...")
     monowasure_hospitals = load_monowasure_hospitals(MONOWASURE_HOSPITALS_CSV)
     all_facilities = {**hospital_facilities, **clinic_facilities}
+    # 施設票由来の新規追加レコード（merge_monowasure_hospitals の第2パス）でも
+    # stage_capability を判定できるよう、施設票に診療科目名を付与しておく
+    all_depts = {**hospital_depts, **clinic_depts}
+    for facility_id, info in all_facilities.items():
+        info["depts"] = all_depts.get(facility_id, set())
     mono_matched, mono_from_facility, mono_geocoded, mono_unresolved = (
         merge_monowasure_hospitals(records, monowasure_hospitals, all_facilities)
     )
@@ -706,6 +793,7 @@ def main(scope):
                 "monowasure": rec["monowasure"],
                 "zaitaku": rec["zaitaku"],
                 "supportdoc": rec["supportdoc"],
+                "stage_capability": compute_stage_capability(rec),
                 "source": rec["source"],
             },
         })
@@ -726,6 +814,11 @@ def main(scope):
     print(f"  monowasure（もの忘れ外来）: {sum(f['properties']['monowasure'] for f in features)} 件")
     print(f"  zaitaku（訪問診療・在宅） : {sum(f['properties']['zaitaku'] for f in features)} 件")
     print(f"  supportdoc（認知症サポート医）: {sum(f['properties']['supportdoc'] for f in features)} 件")
+    for stage, label in (("early", "初期"), ("moderate", "中等度"), ("severe", "重度")):
+        count = sum(stage in f["properties"]["stage_capability"] for f in features)
+        print(f"  stage_capability={stage}（{label}対応の目安）: {count} 件")
+    none_count = sum(not f["properties"]["stage_capability"] for f in features)
+    print(f"  stage_capability なし（目安判定できず）: {none_count} 件")
     print(f"京都府認知症疾患医療センター: 名寄せ上書き {matched_count} 件 / 新規追加 {added_count} 件")
     print(
         f"あんしんナビ もの忘れ外来一覧({len(monowasure_hospitals)}件): "

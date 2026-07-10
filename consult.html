@@ -16,6 +16,14 @@
     - 赤旗語（意識障害・けいれん等）はフロント側でルールベース判定し、
       AIの応答とは独立に救急案内バナーを即時表示します
     - 入力内容はどこにも保存されません（Workerもログに本文を残しません）
+
+  ■ 進行度評価型問診エンジン（北川設計書に基づく）
+    - AI（Worker）は内部でFASTステージ相当の進行度を推定しますが、
+      推定値・病名・「認知症」の断定は利用者の画面に一切表示しません。
+    - 推定は (1) 地図リンクの ?stage= パラメータ（対応施設の優先表示）と
+      (2)「医療機関に伝えるメモ」（医療者が読む欄）の記載にのみ使います。
+    - result.stage_estimate / stage_band / respondent / inserted_risk を
+      利用者向けUIに描画しないこと（renderResult のコメント参照）。
 -->
 <html lang="ja">
 <head>
@@ -387,7 +395,8 @@
   };
 
   // AIが行う質問の上限（無限問診の防止）。上限到達後は強制的に整理フェーズへ。
-  const MAX_QUESTIONS = 4;
+  // 進行度評価型問診エンジン（4段階問診＋差し込み質問）に合わせて 8 問（北川設計書 A-3）。
+  const MAX_QUESTIONS = 8;
 
   /* ===== 赤旗ルールベース判定（AIとは独立に動く） ===== */
   const RED_FLAG_RE = new RegExp([
@@ -450,52 +459,253 @@
     routine: "通常：予約しての受診・相談で大丈夫"
   };
 
-  /* ===== モック応答（CONFIG.MOCK=true のとき使用） ===== */
-  const MOCK_KYUKYU_RESULT = {
+  /* ===== モック応答（CONFIG.MOCK=true のとき使用） =====
+     進行度評価型問診エンジン（北川設計書）の縮小版シナリオ:
+       1. 通常（家族経路）: 本人/家族確認 → 4段階を模した3問 → stage_band:"moderate" の結果
+       2. せん妄差し込み  : 「数日前から急に…」→ 確認質問1問 → kyukyu（inserted_risk:"delirium"）
+       3. iNPH差し込み    : 「よく転ぶ」等 → 確認質問1問 → 鑑別推奨（shindan＋stage_band:"early"）
+     加えて、本人経路（前向き文言）と情報不足フェイルセーフも内蔵する。
+     ※ stage_estimate 等の推定値は、結果パネルでは描画されない（renderResult 参照）。 */
+
+  // 差し込み①: 急性発症・せん妄の疑い（日〜週単位の急な変化）
+  const MOCK_DELIRIUM_RE = /(数日|昨日|一昨日|今朝|先週).{0,12}急|急に.{0,10}(ぼんやり|反応|もうろう|眠|様子)/;
+  // 差し込み③: 可逆性の原因（iNPH等）の疑い（歩行の変化）
+  const MOCK_FALL_RE = /転(ぶ|ん|び|倒し)|ふらふら|フラフラ|すり足|小刻み/;
+  // 回答者の推定（情報の先取り: 最初の発話に続柄が含まれていれば確認質問を省略）
+  const MOCK_FAMILY_RE = /母|父|祖母|祖父|妻|夫|義母|義父|おばあ|おじい|家内|主人|家族|本人ではな/;
+  const MOCK_SELF_RE = /私自身|自分自身|わたし自身|自分のこと|本人です|私のこと/;
+  // 情報不足とみなす短い回答（フェイルセーフ用）
+  const MOCK_VACUOUS_RE = /^(特に|とくに)?(ない|なし|ありません|わからない|分からない|大丈夫|うーん)(です)?(。)?$/;
+
+  const MOCK_Q_RESPONDENT =
+    "本日お答えいただいているのはご本人様でしょうか？それともご家族や身近な方でしょうか？";
+  const MOCK_Q_DELIRIUM =
+    "1つ確認させてください。ここ数日での変化とのことですが、意識がぼんやりする・発熱・手足の動かしにくさ・ろれつが回りにくい、といった様子はありますか？";
+  const MOCK_Q_INPH =
+    "歩き方について1つ確認させてください。すり足や小刻みな歩き方、尿もれ（トイレが間に合わない）などはみられますか？";
+
+  // 家族経路: 客観的な出来事を具体的に引き出す（第1〜3段階を模した3問）
+  const MOCK_FLOW_FAMILY = [
+    "ありがとうございます。差し支えなければ、その方のご年齢と、どなたかと同居されているか、いつごろから気になり始めたかを教えてください。",
+    "毎日のご様子で教えてください。お金の管理や料理の段取り、買い物などで、以前と比べて難しくなったと感じる場面はありますか？（例：家電の操作を間違える、同じものを何度も買ってくる など）",
+    "お洋服についてはいかがでしょう。季節に合った服を選べていますか？（例：真夏に厚着をしている、着る順番に迷う など）"
+  ];
+  // 本人経路: 自尊心の保護を最優先した間接的な聞き方（2問）
+  const MOCK_FLOW_SELF = [
+    "ありがとうございます。差し支えなければ、ご年齢と、どなたかと同居されているか、いつごろから気になり始めたかを教えてください。",
+    "最近、お金の手続きや買い物などをお一人でなさるとき、「少しややこしいな」「戸惑うな」と感じる瞬間はありますか？"
+  ];
+
+  function mockDetectRespondent(userMsgs, assistantMsgs){
+    // 回答者確認の質問への返答があればそれを最優先で解釈する
+    const idx = assistantMsgs.findIndex(m => m.content === MOCK_Q_RESPONDENT);
+    if(idx >= 0){
+      const answer = userMsgs[idx + 1] ? userMsgs[idx + 1].content : "";
+      if(MOCK_SELF_RE.test(answer) || /本人/.test(answer)) return "self";
+      if(answer) return "family";
+    }
+    const first = userMsgs[0] ? userMsgs[0].content : "";
+    if(MOCK_SELF_RE.test(first)) return "self";
+    if(MOCK_FAMILY_RE.test(first)) return "family";
+    return null; // 未確定（確認質問が必要）
+  }
+
+  function mockKyukyuResult(insertedRisk, respondent){
+    return {
+      phase: "done",
+      result: {
+        urgency: "emergency",
+        urgency_reason: "意識の低下や急激な変化など、すぐに対応が必要な可能性のある内容が含まれています。",
+        category: "kyukyu",
+        category_label: "救急（119番 / #7119）",
+        reason: "お話しいただいた内容には、早急な確認が必要かもしれない症状が含まれています。まずは救急への相談をおすすめします。",
+        map_filters: [],
+        prefer_senmon: false,
+        respondent: respondent || "family",
+        stage_estimate: {
+          fast: "unknown",
+          confidence: "low",
+          basis: "急性の変化のため進行度の評価は保留（急性疾患・せん妄等の除外が優先）。"
+        },
+        stage_band: "unknown",
+        inserted_risk: insertedRisk,
+        note_for_doctor: "・回答者: ご家族等\n・数日単位の急な変化（ぼんやりする・反応が鈍い等）の訴えあり\n・意識の状態（呼びかけへの反応）・発熱・麻痺・ろれつの確認を推奨\n・進行度の目安: 判定保留（急性の変化のため）※AIによる参考推定であり診断ではありません\n・差し込みで確認したリスク: 急性発症・せん妄の疑い",
+        advice: "ためらわずに119番へ電話してください。迷う場合は救急安心センター（#7119）に相談できます。"
+      }
+    };
+  }
+
+  const MOCK_MODERATE_FAMILY_RESULT = {
     phase: "done",
     result: {
-      urgency: "emergency",
-      urgency_reason: "意識の低下や急激な変化など、すぐに対応が必要な可能性のある内容が含まれています。",
-      category: "kyukyu",
-      category_label: "救急（119番 / #7119）",
-      reason: "お話しいただいた内容には、早急な確認が必要かもしれない症状が含まれています。まずは救急への相談をおすすめします。",
-      map_filters: [],
+      urgency: "urgent",
+      urgency_reason: "生活のいくつかの場面で手助けが必要になってきている様子がうかがえるため、早めの相談をおすすめします。",
+      category: "monowasure",
+      category_label: "もの忘れ外来",
+      reason: "お金の管理や服選びなど、暮らしの中での変化についてご相談いただいた内容は、もの忘れ外来で相談できる窓口の内容にあたります。一度、専門の外来でお話を聞いてもらうことをおすすめします。",
+      map_filters: ["monowasure"],
       prefer_senmon: false,
-      note_for_doctor: "・いつから症状が始まったか\n・意識の状態（呼びかけへの反応）\n・けいれん・転倒・頭部打撲の有無\n・服用中の薬",
-      advice: "ためらわずに119番へ電話してください。迷う場合は救急安心センター（#7119）に相談できます。"
+      respondent: "family",
+      stage_estimate: {
+        fast: "5",
+        confidence: "medium",
+        basis: "金銭管理・料理の段取り等のIADL低下に加え、季節に合った服選びの混乱がみられるため。"
+      },
+      stage_band: "moderate",
+      inserted_risk: "none",
+      note_for_doctor: "・回答者: ご家族\n・経過: 約1年前から徐々に進行\n・短期記憶: 同じことを何度も聞く（1日に何度も）\n・生活機能: お金の管理・料理の段取りに手助けが必要になっている\n・着衣: 季節に合わない服装（真夏の厚着など）がみられる\n・進行度の目安: FAST 5相当（確からしさ: 中）※AIによる参考推定であり診断ではありません\n・推定根拠: IADLの低下に加え、季節に合った服選びの混乱がみられるため\n・差し込みで確認したリスク: なし",
+      advice: "まずは下の「地図で見る」から相談しやすい医療機関を探し、電話で予約の相談をしてみてください。介護のご負担について、お住まいの地域包括支援センターにも無料で相談できます。"
     }
   };
 
-  const MOCK_MONOWASURE_RESULT = {
+  // TODO(チーム確認): MCI相当（軽度）の本人回答者向け文言。「脳の健康チェック」という
+  //   前向き表現（不安を煽らない）の最終決定はチームで確認する。
+  const MOCK_EARLY_SELF_RESULT = {
     phase: "done",
     result: {
       urgency: "routine",
-      urgency_reason: "急激な変化を示す内容は含まれておらず、予約しての受診で対応できる可能性が高い内容です。",
-      category: "monowasure",
-      category_label: "もの忘れ外来",
-      reason: "同じことを繰り返し尋ねるなどの変化は、もの忘れ外来で相談できる内容かもしれません。専門の外来で一度お話を聞いてもらうことをおすすめします。",
-      map_filters: ["monowasure"],
+      urgency_reason: "急いで対応が必要な内容は含まれておらず、予約しての相談で大丈夫な内容です。",
+      category: "kakaritsuke",
+      category_label: "かかりつけ医（脳の健康チェック）",
+      reason: "日々の手続きで少し戸惑う瞬間があるとのこと、率直にお話しいただきありがとうございます。これからの健康維持のための「脳の健康チェック」として、身近な医療機関で一度相談してみるのがおすすめです。",
+      map_filters: [],
       prefer_senmon: false,
-      note_for_doctor: "・いつ頃から気になり始めたか\n・同じことを何度も聞く頻度（1日に何回程度か）\n・日常生活で困っている場面（買い物・お金の管理・服薬など）\n・本人の受診への気持ち\n・服用中の薬・持病",
-      advice: "まずは下の「地図で見る」から近くのもの忘れ外来を探し、電話で予約の相談をしてみてください。本人が受診を嫌がる場合は「健康診断」として誘う方法もあります。"
+      respondent: "self",
+      stage_estimate: {
+        fast: "3",
+        confidence: "low",
+        basis: "手続き等で戸惑う自覚はあるが、生活機能は概ね保たれている様子のため（MCI相当の可能性）。"
+      },
+      stage_band: "early",
+      inserted_risk: "none",
+      note_for_doctor: "・回答者: ご本人\n・経過: 最近、手続きや買い物で戸惑う瞬間があるとの自覚\n・生活機能: 日常生活は自立している様子\n・進行度の目安: FAST 3相当（確からしさ: 低）※AIによる参考推定であり診断ではありません\n・推定根拠: 戸惑いの自覚はあるが生活機能は概ね保たれているため\n・差し込みで確認したリスク: なし",
+      advice: "健康診断と同じ感覚で、かかりつけ医に「最近少し気になることがある」とお話しになるところから始めてみてください。下の「地図で見る」から相談しやすい医療機関を探せます。"
     }
   };
 
+  const MOCK_INPH_RESULT = {
+    phase: "done",
+    result: {
+      urgency: "urgent",
+      urgency_reason: "歩き方の変化ともの忘れが同時にみられる場合、早めに調べてもらうことが望ましいためです。",
+      category: "senmonkikan",
+      category_label: "鑑別診断ができる専門医療機関（脳神経外科など）",
+      reason: "もの忘れとあわせて、転びやすさやすり足などの歩き方の変化がみられる場合、検査で調べられる「治療につながる原因」が隠れていることもあります。鑑別診断ができる専門医療機関（脳神経外科など）への相談をおすすめします。",
+      map_filters: ["shindan"],
+      prefer_senmon: true,
+      respondent: "family",
+      stage_estimate: {
+        fast: "3",
+        confidence: "low",
+        basis: "歩行障害（転倒・すり足）ともの忘れの併存。可逆性の原因（iNPH等）の鑑別が優先されるため、認知機能低下の程度の評価は暫定。"
+      },
+      stage_band: "early",
+      inserted_risk: "inph",
+      note_for_doctor: "・回答者: ご家族等\n・経過: 最近、転倒の増加とすり足歩行が出現\n・歩行: すり足・小刻み歩行の訴えあり（尿もれの有無は要確認）\n・もの忘れの併存あり\n・進行度の目安: FAST 3相当・暫定（確からしさ: 低）※AIによる参考推定であり診断ではありません\n・差し込みで確認したリスク: 歩行障害＋認知機能低下 → 可逆性疾患（特発性正常圧水頭症等）の鑑別を推奨",
+      advice: "歩き方の変化は調べられる原因が見つかることもあります。下の「地図で見る」から鑑別診断に対応する医療機関を探し、早めに電話で相談してみてください。"
+    }
+  };
+
+  // 情報不足フェイルセーフ: 無理に推定せず、慎重側（相談を促す方向）に倒す
+  const MOCK_UNKNOWN_RESULT = {
+    phase: "done",
+    result: {
+      urgency: "routine",
+      urgency_reason: "緊急を疑う内容は含まれていませんでしたが、詳しい様子の把握が難しいため、念のための相談をおすすめしています。",
+      category: "kakaritsuke",
+      category_label: "かかりつけ医",
+      reason: "お話からは具体的なご様子の正確な把握が難しいため、無理に判断はせず、念のため一度、身近なかかりつけ医に相談されることをおすすめします。",
+      map_filters: [],
+      prefer_senmon: false,
+      respondent: "family",
+      stage_estimate: {
+        fast: "unknown",
+        confidence: "low",
+        basis: "具体的なエピソードが得られず推定困難。"
+      },
+      stage_band: "unknown",
+      inserted_risk: "none",
+      note_for_doctor: "・回答者: ご家族等\n・問診では具体的な生活場面の変化を確認できませんでした\n・進行度の目安: 判定保留（情報不足のため）※AIによる参考推定であり診断ではありません\n・受診時に、気になり始めた時期・具体的な場面を改めてご確認ください",
+      advice: "気になることがあってこのページを開かれたと思いますので、念のため、かかりつけ医に「最近少し気になる」とお話しになってみてください。具体的な場面をメモしておくと相談がスムーズです。"
+    }
+  };
+
+  // 差し込み質問（insertQuestion）への回答を返す。未質問なら null。
+  function mockInsertAnswer(userMsgs, assistantMsgs, insertQuestion){
+    const idx = assistantMsgs.findIndex(m => m.content === insertQuestion);
+    if(idx === -1) return null;
+    // messages は user/assistant の交互列のため、assistantMsgs[i] への回答は userMsgs[i+1]
+    return userMsgs[idx + 1] ? userMsgs[idx + 1].content : "";
+  }
+
+  const MOCK_NEGATIVE_RE = /いいえ|ない(です)?|ありません|なし|見られない|みられない/;
+
   function mockReply(messages, forceDone){
     const userMsgs = messages.filter(m => m.role === "user");
+    const assistantMsgs = messages.filter(m => m.role === "assistant");
     const allText = userMsgs.map(m => m.content).join(" ");
-    // 赤旗語を含む入力ならモックでも kyukyu を返す
-    if(RED_FLAG_RE.test(allText)){
-      return MOCK_KYUKYU_RESULT;
+    const respondent = mockDetectRespondent(userMsgs, assistantMsgs);
+
+    // 差し込み①: 急性発症・せん妄の疑い → 確認質問を1問だけ挿入。
+    // 該当（否定でない回答）なら kyukyu で打ち切り、否定なら基本の流れに戻る。
+    if(MOCK_DELIRIUM_RE.test(allText)){
+      const answer = mockInsertAnswer(userMsgs, assistantMsgs, MOCK_Q_DELIRIUM);
+      if(answer === null && !forceDone){
+        return { phase: "asking", next_question: MOCK_Q_DELIRIUM };
+      }
+      if(answer === null || !MOCK_NEGATIVE_RE.test(answer)){
+        return mockKyukyuResult("delirium", respondent);
+      }
+      // 否定 → 通常フローへ復帰
     }
-    const n = userMsgs.length;
-    if(n === 1 && !forceDone){
-      return { phase: "asking", next_question: "いつ頃から、どのような様子が気になりますか？" };
+    // 明確な赤旗語（意識がない・けいれん等）は差し込みを挟まず即 kyukyu（従来どおり）
+    else if(RED_FLAG_RE.test(allText)){
+      return mockKyukyuResult("none", respondent);
     }
-    if(n === 2 && !forceDone){
-      return { phase: "asking", next_question: "日常生活で困っている場面（例：買い物、お金の管理、服薬など）はありますか？" };
+
+    // 差し込み③: 歩行の変化 → 確認質問を1問挿入。該当なら鑑別推奨（shindan＋early）。
+    if(MOCK_FALL_RE.test(allText)){
+      const answer = mockInsertAnswer(userMsgs, assistantMsgs, MOCK_Q_INPH);
+      if(answer === null && !forceDone){
+        return { phase: "asking", next_question: MOCK_Q_INPH };
+      }
+      if(answer === null || !MOCK_NEGATIVE_RE.test(answer)){
+        return MOCK_INPH_RESULT;
+      }
+      // 否定 → 通常フローへ復帰
     }
-    return MOCK_MONOWASURE_RESULT;
+
+    // フェイルセーフ: 回答者確認より後の回答が「特にない」等の短文2連続なら、無理に推定しない
+    const respondentQIdx = assistantMsgs.findIndex(m => m.content === MOCK_Q_RESPONDENT);
+    const substantiveAnswers = userMsgs.slice(respondentQIdx >= 0 ? respondentQIdx + 2 : 1);
+    const vacuousCount = substantiveAnswers.filter(
+      m => MOCK_VACUOUS_RE.test(m.content.trim()) || m.content.trim().length <= 2
+    ).length;
+    if(vacuousCount >= 2){
+      return MOCK_UNKNOWN_RESULT;
+    }
+
+    // 導入: 回答者（ご本人 / ご家族）の確認。最初の発話から明らかな場合は省略される
+    if(respondent === null){
+      if(forceDone) return MOCK_UNKNOWN_RESULT;
+      return { phase: "asking", next_question: MOCK_Q_RESPONDENT };
+    }
+
+    // 4段階問診（モックでは経路別に2〜3問へ簡略化）。
+    // 差し込み質問を挟んだ場合も、既に聞いた位置の続きから再開する。
+    const flow = respondent === "self" ? MOCK_FLOW_SELF : MOCK_FLOW_FAMILY;
+    const doneResult = respondent === "self" ? MOCK_EARLY_SELF_RESULT : MOCK_MODERATE_FAMILY_RESULT;
+    if(forceDone) return doneResult;
+    let lastFlowIdx = -1;
+    assistantMsgs.forEach(m => {
+      const i = flow.indexOf(m.content);
+      if(i > lastFlowIdx) lastFlowIdx = i;
+    });
+    const nextQuestion = flow[lastFlowIdx + 1];
+    if(nextQuestion){
+      return { phase: "asking", next_question: nextQuestion };
+    }
+    return doneResult;
   }
 
   /* ===== 状態 ===== */
@@ -636,6 +846,26 @@
   }
 
   /* ===== 結果パネル ===== */
+
+  // 地図リンクURLを組み立てる。stage_band が early/moderate/severe のときのみ
+  // ?stage= を付与する（unknown・欠損時は付与しない）。
+  // stage_band は対応施設の優先表示のためだけに使い、画面には描画しない。
+  const STAGE_BANDS_FOR_MAP = ["early", "moderate", "severe"];
+  function buildMapUrl(catInfo, result){
+    const base = catInfo.url;
+    const band = result && result.stage_band;
+    if(!STAGE_BANDS_FOR_MAP.includes(band)) return base;
+    return base + (base.includes("?") ? "&" : "?") + "stage=" + encodeURIComponent(band);
+  }
+
+  /* 設計原則（北川設計書・厳守）:
+     result.stage_estimate / stage_band / respondent / inserted_risk（進行度の内部推定）は
+     利用者向けUIに描画しない。利用者に見せるのは従来どおり
+     「相談先カテゴリ＋理由＋次の一歩」のみ。
+     推定の内容は note_for_doctor（医療機関に伝えるメモ＝医療者が読む欄）の
+     テキストとしてのみ画面・コピーに含まれる。
+     TODO(チーム確認): メモ欄は画面にも表示されるため、FAST目安の記載を
+     「コピー時のみ含める」方式に変えるかどうかはチームで確認する。 */
   function renderResult(result){
     const catInfo = CATEGORY_MAP[result.category];
     const categoryLabel = result.category_label || catInfo.defaultLabel;
@@ -674,7 +904,7 @@
     if(catInfo.type === "map"){
       html += `
         <div class="result-section">
-          <a class="map-btn" id="map-link" href="${escapeHtml(catInfo.url)}">🗺 ${escapeHtml(catInfo.btnLabel)}</a>
+          <a class="map-btn" id="map-link" href="${escapeHtml(buildMapUrl(catInfo, result))}">🗺 ${escapeHtml(catInfo.btnLabel)}</a>
           ${catInfo.extraNote ? `<div class="extra-note">${escapeHtml(catInfo.extraNote)}</div>` : ""}
         </div>
       `;

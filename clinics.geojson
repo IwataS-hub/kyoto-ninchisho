@@ -20,6 +20,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -42,6 +45,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -64,6 +70,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -86,6 +95,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -108,6 +120,11 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate",
+          "severe"
+        ],
         "source": "京都府認知症疾患医療センター / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -130,6 +147,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -152,6 +172,10 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "severe"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -174,6 +198,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -196,6 +224,11 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate",
+          "severe"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -218,6 +251,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -240,6 +276,10 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "severe"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -262,6 +302,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -284,6 +328,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -306,6 +354,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -328,6 +379,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -350,6 +404,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -372,6 +430,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -394,6 +455,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -416,6 +480,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -438,6 +505,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "severe"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -460,6 +531,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -482,6 +557,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -504,6 +582,10 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "severe"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -526,6 +608,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -548,6 +633,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -570,6 +658,11 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate",
+          "severe"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -592,6 +685,11 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate",
+          "severe"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -614,6 +712,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -636,6 +737,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -658,6 +763,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -680,6 +788,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "severe"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -702,6 +814,11 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate",
+          "severe"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -724,6 +841,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -746,6 +867,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -768,6 +892,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -790,6 +917,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -812,6 +942,10 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "moderate",
+          "severe"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -834,6 +968,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -856,6 +993,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -878,6 +1018,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -900,6 +1043,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -922,6 +1068,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -944,6 +1093,11 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate",
+          "severe"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -966,6 +1120,11 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate",
+          "severe"
+        ],
         "source": "京都府認知症疾患医療センター / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -988,6 +1147,11 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate",
+          "severe"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -1010,6 +1174,11 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate",
+          "severe"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -1032,6 +1201,11 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate",
+          "severe"
+        ],
         "source": "医療情報ネット / きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -1054,6 +1228,10 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "severe"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1076,6 +1254,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1098,6 +1277,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1120,6 +1300,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1142,6 +1325,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1164,6 +1348,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1186,6 +1373,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1208,6 +1398,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1230,6 +1423,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1252,6 +1446,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1274,6 +1471,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1296,6 +1496,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1318,6 +1521,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1340,6 +1544,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1362,6 +1569,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1384,6 +1592,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1406,6 +1615,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1428,6 +1638,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1450,6 +1663,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1472,6 +1688,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1494,6 +1711,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1516,6 +1734,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1538,6 +1757,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1560,6 +1780,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1582,6 +1803,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1604,6 +1828,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1626,6 +1851,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1648,6 +1876,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1670,6 +1899,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1692,6 +1924,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1714,6 +1949,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1736,6 +1972,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1758,6 +1997,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1780,6 +2020,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1802,6 +2043,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1824,6 +2068,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1846,6 +2091,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1868,6 +2114,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1890,6 +2137,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1912,6 +2162,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -1934,6 +2185,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1956,6 +2210,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -1978,6 +2235,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2000,6 +2260,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2022,6 +2285,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2044,6 +2310,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2066,6 +2335,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2088,6 +2360,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2110,6 +2385,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2132,6 +2410,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2154,6 +2433,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2176,6 +2458,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2198,6 +2481,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2220,6 +2506,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2242,6 +2531,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2264,6 +2554,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2286,6 +2579,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2308,6 +2604,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2330,6 +2627,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2352,6 +2650,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2374,6 +2673,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2396,6 +2696,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2418,6 +2721,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2440,6 +2746,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2462,6 +2771,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2484,6 +2794,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2506,6 +2819,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2528,6 +2842,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2550,6 +2865,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2572,6 +2888,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2594,6 +2911,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2616,6 +2934,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2638,6 +2957,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2660,6 +2980,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2682,6 +3003,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "moderate"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2704,6 +3029,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2726,6 +3054,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2748,6 +3079,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2770,6 +3104,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2792,6 +3127,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2814,6 +3150,7 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [],
         "source": "医療情報ネット"
       }
     },
@@ -2836,6 +3173,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2858,6 +3198,9 @@
         "monowasure": false,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "医療情報ネット"
       }
     },
@@ -2880,6 +3223,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -2902,6 +3248,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -2924,6 +3273,10 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early",
+          "severe"
+        ],
         "source": "きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -2946,6 +3299,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     },
@@ -2968,6 +3324,9 @@
         "monowasure": true,
         "zaitaku": false,
         "supportdoc": false,
+        "stage_capability": [
+          "early"
+        ],
         "source": "きょうと認知症あんしんナビ もの忘れ外来一覧"
       }
     }

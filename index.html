@@ -208,6 +208,21 @@
     color: #fff;
     font-weight: bold;
   }
+  .badge.stage{
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+  }
+  .stage-note{
+    margin-top: 6px;
+    padding: 6px 10px;
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #065f46;
+    line-height: 1.6;
+  }
   .empty-msg{
     color: #6b7280;
     font-size: 0.9rem;
@@ -304,7 +319,7 @@
   // データ更新時はこの1か所を YYYYMMDD 形式で書き換えれば全fetchに効く。
   // build_geojson.py が再生成完了時にこの行を今日の日付へ自動更新する
   // （書き換え対象パターン: const DATA_VERSION = "数字8桁";）。
-  const DATA_VERSION = "20260710";
+  const DATA_VERSION = "20260711";
 
   const FLAG_LABELS = {
     shindan: "鑑別診断",
@@ -312,6 +327,12 @@
     zaitaku: "訪問診療・在宅",
     supportdoc: "認知症サポート医"
   };
+
+  // AI相談（進行度評価型問診エンジン）からの遷移用: URLパラメータ ?stage=early|moderate|severe
+  // 該当する stage_capability を持つ施設を「絞り込まず」並び順で上位化する
+  // （フィルタにしないのは候補ゼロを防ぐため）。既存の flags / priority とは独立に併用できる。
+  const STAGE_LABELS = { early: "初期", moderate: "中等度", severe: "重度" };
+  let stagePriority = null; // "early" | "moderate" | "severe" | null（URLパラメータで設定）
 
   // 京都市全域が収まる固定の初期表示位置（議事録2026-06-20の方針で市内フォーカス）。
   // fitBounds が有効な座標を1件も得られなかった場合のフォールバックにも使う。
@@ -391,6 +412,21 @@
     }
     const url = /^https?:\/\//i.test(tel) ? tel : `https://${tel}`;
     return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">公式サイト</a>`;
+  }
+
+  function hasStageCapability(props, stage){
+    return Array.isArray(props.stage_capability) && props.stage_capability.includes(stage);
+  }
+
+  // 施設カード用: 対応ステージの目安バッジ（初期/中等度/重度対応の目安）。
+  // stage_capability は公開データからの推定のため、あくまで「目安」と表記する。
+  function stageBadgesHtml(props){
+    if(!Array.isArray(props.stage_capability)) return "";
+    return props.stage_capability
+      .map(s => STAGE_LABELS[s])
+      .filter(Boolean)
+      .map(label => `<span class="badge stage">${escapeHtml(label)}対応の目安</span>`)
+      .join("");
   }
 
   function extraBadgesHtml(props){
@@ -486,10 +522,16 @@
       item => item.feature.properties.level === "専門"
     ).length;
 
+    // ?stage= 指定時のみ表示する注記（優先表示は絞り込みではないことも含め「目安」と明示）
+    const stageNoteHtml = stagePriority
+      ? `<div class="stage-note">${escapeHtml(STAGE_LABELS[stagePriority])}の段階に対応の目安がある施設を優先表示しています（目安です。受診前にご確認ください）</div>`
+      : "";
+
     listEl.innerHTML = `
       <div id="list-meta">
         <div id="result-count">該当 ${totalCount}件（うち専門 ${senmonCount}件）</div>
         <div class="dist-note">※直線距離からの概算です。実際の道路距離・所要時間とは異なります</div>
+        ${stageNoteHtml}
       </div>
     `;
 
@@ -512,7 +554,7 @@
       const badgesHtml = extraBadgesHtml(props) + Object.keys(FLAG_LABELS)
         .filter(k => props[k])
         .map(k => `<span class="badge">${FLAG_LABELS[k]}</span>`)
-        .join("");
+        .join("") + stageBadgesHtml(props);
 
       const distHtml = (distanceKm === null)
         ? ""
@@ -557,6 +599,16 @@
         const aSenmon = a.feature.properties.level === "専門" ? 1 : 0;
         const bSenmon = b.feature.properties.level === "専門" ? 1 : 0;
         return bSenmon - aSenmon;
+      });
+    }
+
+    if(stagePriority){
+      // ?stage= 指定時: 該当 stage_capability を持つ施設を最上位へ（絞り込みはしない）。
+      // 安定ソートを最後に適用するため stage が第1キー、専門優先・距離順が第2・第3キーになる。
+      items = items.slice().sort((a, b) => {
+        const aHit = hasStageCapability(a.feature.properties, stagePriority) ? 1 : 0;
+        const bHit = hasStageCapability(b.feature.properties, stagePriority) ? 1 : 0;
+        return bHit - aHit;
       });
     }
 
@@ -646,6 +698,11 @@
         if(flags.includes(cb.value) && !cb.disabled) cb.checked = true;
       });
       if(params.get("priority") === "senmon") senmonPriorityCb.checked = true;
+      // ?stage=early|moderate|severe（AI相談の進行度推定に基づく優先表示。想定外の値は無視）
+      const stage = params.get("stage");
+      if(stage && Object.prototype.hasOwnProperty.call(STAGE_LABELS, stage)){
+        stagePriority = stage;
+      }
     }catch(err){
       console.error("URLパラメータの解釈に失敗しました", err);
     }

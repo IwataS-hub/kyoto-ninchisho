@@ -6,8 +6,11 @@
 
 - **APIキーの秘匿**: Gemini APIキーはこのWorkerの環境変数（secret）にのみ置き、
   フロントエンドやリポジトリには一切含めません。
-- **安全制約の固定**: 「診断しない・薬剤を提案しない・最大4問・緊急時は打ち切り」等の
+- **安全制約の固定**: 「診断しない・薬剤を提案しない・最大8問・緊急時は打ち切り」等の
   システムプロンプトをWorker側に持つため、フロント改ざんでは制約を外せません。
+- **進行度評価型問診エンジン**（北川設計書）: 本人/家族の確認 → 4段階問診 →
+  内部でのFASTステージ相当の推定（利用者向け文章への記載はプロンプトで禁止）と
+  危険兆候（せん妄/BPSD/歩行変化）の差し込み質問を実装しています。
 - **出力形式の強制**: Gemini の `responseSchema` で応答JSONの形を強制します。
 - **プライバシー**: 相談本文はGemini APIへの転送にのみ使い、保存やログ出力は行いません。
 - **CORS**: `https://iwatas-hub.github.io` と `http://localhost` / `http://127.0.0.1` のみ許可。
@@ -62,4 +65,11 @@ npx wrangler dev
 
 - `POST /` — リクエスト: `{"messages": [{"role": "user|assistant", "content": "..."}], "force_done": false}`
 - レスポンス: consult.html と共有しているJSON契約（`phase` / `next_question` / `result`）
+- `result` には従来のフィールドに加え、進行度評価型問診エンジンの内部データが含まれる:
+  - `respondent`: `"self" | "family"`（回答者種別）
+  - `stage_estimate`: `{ "fast": "3|4|5|6-7|unknown", "confidence": "low|medium|high", "basis": "..." }`
+  - `stage_band`: `"early" | "moderate" | "severe" | "unknown"`（fast 3-4=early / 5=moderate / 6-7=severe）
+  - `inserted_risk`: `"none" | "delirium" | "bpsd" | "inph"`（差し込み質問で確認したリスク）
+  - これらは**利用者向けUIに描画しない**内部データ（`stage_band` は地図リンクの
+    `?stage=` にのみ使用。詳細はリポジトリ直下の README を参照）
 - エラー時: `{"error": "..."}` を 4xx/5xx で返す
