@@ -281,6 +281,20 @@
     white-space: pre-wrap;
     word-break: break-word;
   }
+  /* 「医療機関の方向けの詳細情報」折りたたみ（FAST推定行の分離表示） */
+  .note-details{
+    margin-top: 8px;
+  }
+  .note-details summary{
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: #1d4ed8;
+    padding: 4px 2px;
+  }
+  .note-details summary:hover{ text-decoration: underline; }
+  .note-details .note-box{
+    margin-top: 6px;
+  }
   .copy-btn{
     margin-top: 8px;
     padding: 7px 16px;
@@ -864,8 +878,25 @@
      「相談先カテゴリ＋理由＋次の一歩」のみ。
      推定の内容は note_for_doctor（医療機関に伝えるメモ＝医療者が読む欄）の
      テキストとしてのみ画面・コピーに含まれる。
-     TODO(チーム確認): メモ欄は画面にも表示されるため、FAST目安の記載を
-     「コピー時のみ含める」方式に変えるかどうかはチームで確認する。 */
+     メモ欄のFAST表示: 実装済み（チームへは事後共有）。FAST推定の行（進行度の目安・
+     確からしさ・推定根拠）は「医療機関の方向けの詳細情報（タップで表示）」の
+     折りたたみに分離し、デフォルトは閉じた状態。コピーは折りたたみ内も含めた全文
+     （画面で見られる内容とコピー内容を一致させるため）。 */
+
+  // メモ本文から FAST 推定の行（進行度の目安・確からしさ・推定根拠）を分離する。
+  // 折りたたみ側に回す行の判定は行単位の部分一致（worker/モックのメモ書式に対応）。
+  const NOTE_STAGE_LINE_RE = /進行度の目安|FAST|推定根拠/;
+  function splitDoctorNote(noteText){
+    const lines = String(noteText || "").split("\n");
+    const main = [];
+    const stage = [];
+    lines.forEach(line => (NOTE_STAGE_LINE_RE.test(line) ? stage : main).push(line));
+    // 万一メモ全体がFAST行のみだった場合は分離せず、従来どおり全文を本体に表示する
+    if(!main.join("").trim()){
+      return { main: String(noteText || ""), stage: "" };
+    }
+    return { main: main.join("\n"), stage: stage.join("\n") };
+  }
   function renderResult(result){
     const catInfo = CATEGORY_MAP[result.category];
     const categoryLabel = result.category_label || catInfo.defaultLabel;
@@ -910,10 +941,22 @@
       `;
     }
 
+    // FAST推定の行は折りたたみ（デフォルト閉）に分離。コピーは全文（表示順と同じ並び）。
+    const noteParts = splitDoctorNote(result.note_for_doctor);
+    const noteCopyText = noteParts.stage
+      ? noteParts.main + "\n" + noteParts.stage
+      : noteParts.main;
+    const noteDetailsHtml = noteParts.stage ? `
+        <details class="note-details" id="doctor-note-details">
+          <summary>医療機関の方向けの詳細情報（タップで表示）</summary>
+          <div class="note-box" id="doctor-note-stage">${escapeHtml(noteParts.stage)}</div>
+        </details>` : "";
+
     html += `
       <div class="result-section">
         <h3>医療機関に伝えるべきことメモ</h3>
-        <div class="note-box" id="doctor-note">${escapeHtml(result.note_for_doctor)}</div>
+        <div class="note-box" id="doctor-note">${escapeHtml(noteParts.main)}</div>
+        ${noteDetailsHtml}
         <button class="copy-btn" id="copy-note-btn">メモをコピー</button>
       </div>
       <div class="result-section">
@@ -927,7 +970,7 @@
     resultPanel.classList.add("visible");
 
     document.getElementById("copy-note-btn").addEventListener("click", function(){
-      copyText(result.note_for_doctor || "", this);
+      copyText(noteCopyText || "", this);
     });
     document.getElementById("reset-btn").addEventListener("click", () => {
       location.href = "consult.html";
