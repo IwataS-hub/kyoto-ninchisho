@@ -404,8 +404,8 @@
      MOCK: true  … 内蔵ダミー応答で動作（Worker不要・APIキー不要）
      MOCK: false … WORKER_URL の Cloudflare Worker 経由で Gemini を呼ぶ */
   const CONFIG = {
-    WORKER_URL: "",
-    MOCK: true
+    WORKER_URL: "https://kyoto-ninchisho-consult.iwatas.workers.dev",
+    MOCK: false
   };
 
   // AIが行う質問の上限（無限問診の防止）。上限到達後は強制的に整理フェーズへ。
