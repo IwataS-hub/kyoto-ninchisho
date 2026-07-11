@@ -14,7 +14,10 @@
  * デプロイ手順は worker/README.md を参照。
  */
 
-const GEMINI_MODEL = "gemini-2.0-flash";
+// モデル名は Gemini API の ListModels で generateContent 対応を確認済みのものを指定する。
+// gemini-2.0-flash は API 上に存在するが無料枠クォータが利用できず 429（quota exceeded）
+// になるため、現行世代の軽量モデル gemini-3.1-flash-lite（安定版）へ更新（2026-07-12）。
+const GEMINI_MODEL = "gemini-3.1-flash-lite";
 const GEMINI_URL =
   `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
@@ -343,9 +346,33 @@ export default {
       });
 
       if (!geminiRes.ok) {
-        // 注意: エラー時もリクエスト本文（相談内容）はログに出さない
-        console.error("gemini api error status:", geminiRes.status);
-        return jsonResponse({ error: "upstream error" }, 502, origin);
+        // Gemini のエラー本文から要点（HTTPステータスと error.message）だけを取り出し、
+        // ログとレスポンスに含める（フロント側で原因を特定できるようにするため）。
+        // 注意: APIキー・リクエスト本文（相談内容）はログにもレスポンスにも含めない。
+        let upstreamMessage = "";
+        try {
+          const errBody = await geminiRes.json();
+          const upstreamErr = errBody && errBody.error;
+          upstreamMessage = (upstreamErr && upstreamErr.message) || "";
+          // 429等の場合、どのクォータが・上限いくつで超過したか（QuotaFailure）と
+          // リトライ推奨時間（RetryInfo）も要点として付ける
+          const details = (upstreamErr && upstreamErr.details) || [];
+          const quotaFailure = details.find(d => String(d["@type"] || "").includes("QuotaFailure"));
+          if (quotaFailure && quotaFailure.violations) {
+            upstreamMessage += " | quota: " + JSON.stringify(quotaFailure.violations).slice(0, 400);
+          }
+          const retryInfo = details.find(d => String(d["@type"] || "").includes("RetryInfo"));
+          if (retryInfo && retryInfo.retryDelay) {
+            upstreamMessage += " | retryDelay: " + retryInfo.retryDelay;
+          }
+        } catch (e) { /* 本文がJSONでない場合は要点なしで返す */ }
+        upstreamMessage = String(upstreamMessage).slice(0, 700);
+        console.error("gemini api error:", geminiRes.status, upstreamMessage);
+        return jsonResponse({
+          error: "upstream error",
+          upstream_status: geminiRes.status,
+          detail: upstreamMessage || "(Gemini APIのエラー本文を取得できませんでした)"
+        }, 502, origin);
       }
 
       const data = await geminiRes.json();

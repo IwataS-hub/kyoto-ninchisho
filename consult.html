@@ -759,9 +759,18 @@
     return bubble;
   }
 
-  function appendErrorWithRetry(){
+  function appendErrorWithRetry(detail){
     const bubble = appendBubble("system-error",
       "整理に失敗しました。もう一度お試しください。");
+    if(detail){
+      // 技術的な詳細（Workerが返すGeminiエラーの要点）。原因調査用に小さく表示する。
+      const detailEl = document.createElement("div");
+      detailEl.style.marginTop = "6px";
+      detailEl.style.fontSize = "0.75rem";
+      detailEl.style.color = "#7f1d1d";
+      detailEl.textContent = "詳細: " + detail;
+      bubble.appendChild(detailEl);
+    }
     const btn = document.createElement("button");
     btn.className = "retry-btn";
     btn.textContent = "再試行";
@@ -800,7 +809,19 @@
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: messages, force_done: !!forceDone })
     });
-    if(!res.ok) throw new Error("worker error: " + res.status);
+    if(!res.ok){
+      // Worker はエラー時に { error, upstream_status, detail } を返す（detail は
+      // Gemini APIのエラーメッセージの要点。APIキー等は含まれない）。
+      // 原因調査ができるよう、詳細を Error に載せてコンソールと画面に出す。
+      let detail = "";
+      try{
+        const errBody = await res.json();
+        if(errBody && errBody.upstream_status) detail += ` [upstream ${errBody.upstream_status}]`;
+        if(errBody && errBody.detail) detail += ` ${errBody.detail}`;
+        else if(errBody && errBody.error) detail += ` ${errBody.error}`;
+      }catch(e){ /* 本文がJSONでない場合は詳細なし */ }
+      throw new Error("worker error: " + res.status + detail);
+    }
     return await res.json();
   }
 
@@ -838,7 +859,7 @@
       }
     }catch(err){
       console.error(err);
-      appendErrorWithRetry();
+      appendErrorWithRetry(err && err.message);
     }finally{
       setWaiting(false);
       if(!finished) inputEl.focus();
