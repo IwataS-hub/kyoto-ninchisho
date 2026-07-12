@@ -70,6 +70,10 @@ npx wrangler dev
   - `stage_estimate`: `{ "fast": "3|4|5|6-7|unknown", "confidence": "low|medium|high", "basis": "..." }`
   - `stage_band`: `"early" | "moderate" | "severe" | "unknown"`（fast 3-4=early / 5=moderate / 6-7=severe）
   - `inserted_risk`: `"none" | "delirium" | "bpsd" | "inph"`（差し込み質問で確認したリスク）
+  - `stage_note`: 進行度の目安（FAST・確からしさ・根拠・参考推定の注記）の記載欄。
+    **進行度情報はこのフィールドにのみ入り**、`note_for_doctor` は事実の整理のみ
+    （プロンプトで禁止＋フロント側でも保険の行解析で分離）。フロントは
+    `note_for_doctor` を本体、`stage_note` を折りたたみに描画する
   - これらは**利用者向けUIに描画しない**内部データ（`stage_band` は地図リンクの
     `?stage=` にのみ使用。詳細はリポジトリ直下の README を参照）
 - エラー時: `{"error": "..."}` を 4xx/5xx で返す
