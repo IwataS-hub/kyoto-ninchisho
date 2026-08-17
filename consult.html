@@ -13,8 +13,14 @@
 
   ■ 安全設計
     - このAIは診断を行いません（Worker側システムプロンプトでも禁止）
-    - 赤旗語（意識障害・けいれん等）はフロント側でルールベース判定し、
-      AIの応答とは独立に救急案内バナーを即時表示します
+    - 危険兆候の語彙判定は triage.js（フロント・Worker共通の語彙表）で行い、
+      次の2段階に分けています:
+        緊急語   … それ自体で緊急性が高い表現（意識がない・けいれん等）
+                   → AIの応答とは独立に救急案内バナーを即時表示
+        要確認語 … 緊急かどうかが文脈次第の表現（ふらふら・転ぶ・急に・熱等）
+                   → バナーは出さず、AIに確認質問を促すヒントを送るにとどめる
+      否定（「熱はありません」）・過去（「1年前」）・仮定（「かもしれない」）は
+      発火させません（詳細は triage.js 冒頭のコメント）。
     - 入力内容はどこにも保存されません（Workerもログに本文を残しません）
 
   ■ 進行度評価型問診エンジン（北川設計書に基づく）
@@ -396,6 +402,8 @@
   入力内容は保存されません。医療機関の受診時は必ず事前に電話でご確認ください。
 </footer>
 
+<!-- 危険兆候の語彙判定（Worker と共有する単一の語彙表）。window.KyotoTriage を定義する -->
+<script src="triage.js?v=20260817"></script>
 <script>
 (function(){
   "use strict";
@@ -408,26 +416,39 @@
     MOCK: false
   };
 
+  // ローカル検証用: localhost / 127.0.0.1 に限り ?mock=1 でモック応答に切り替えられる。
+  // 本番（GitHub Pages）では hostname が一致しないため無効。
+  const IS_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  const USE_MOCK = CONFIG.MOCK ||
+    (IS_LOCAL && new URLSearchParams(location.search).get("mock") === "1");
+
   // AIが行う質問の上限（無限問診の防止）。上限到達後は強制的に整理フェーズへ。
   // 進行度評価型問診エンジン（4段階問診＋差し込み質問）に合わせて 8 問（北川設計書 A-3）。
   const MAX_QUESTIONS = 8;
 
-  /* ===== 赤旗ルールベース判定（AIとは独立に動く） ===== */
-  const RED_FLAG_RE = new RegExp([
-    "意識がない", "意識を失", "意識が(遠|もうろう|朦朧)", "もうろう", "朦朧",
-    "けいれん", "痙攣",
-    "倒れ", "転倒",
-    "急に", "急激", "突然",
-    "高熱", "発熱",
-    "頭を(打|ぶつけ)", "頭部打撲",
-    "(手|足|手足|半身|体|からだ)が(動かない|動かせない|しびれ)", "麻痺", "まひ",
-    "ろれつ", "呂律",
-    "息が(苦し|でき)", "呼吸が(苦し|おかし)",
-    "胸が(痛|苦し)"
-  ].join("|"));
+  /* ===== 危険兆候のルールベース判定（AIとは独立に動く） =====
+     語彙表と文脈判定（否定・過去・仮定）は triage.js に集約している。
+     - 緊急語   … 救急バナーを即時表示する
+     - 要確認語 … バナーは出さず、AIに確認質問を促すヒント（triage）として送るだけ。
+                  ここでバナーを出さないことが、過剰に緊急側へ振れる問題への対策。
+     triage.js の読み込みに失敗した場合でも相談自体は継続できるよう、
+     判定なし（＝バナーなし・ヒントなし）にフォールバックする。 */
+  const triage = window.KyotoTriage || null;
+  if(!triage) console.error("triage.js を読み込めませんでした（危険兆候の判定は無効）");
 
-  function checkRedFlags(text){
-    if(RED_FLAG_RE.test(text)){
+  // 会話全体（利用者の発話）に対する判定結果。発言ごとに更新する。
+  let lastTriage = { emergencyTags: [], cautionTags: [], mild: false };
+
+  function classifyConversation(){
+    if(!triage) return { emergency: [], caution: [], emergencyTags: [], cautionTags: [], mild: false };
+    const allUserText = messages.filter(m => m.role === "user").map(m => m.content).join("\n");
+    return triage.classify(allUserText);
+  }
+
+  // 緊急語に該当したときのみ救急バナーを表示する（要確認語では表示しない）
+  function updateRedFlagBanner(){
+    lastTriage = classifyConversation();
+    if(lastTriage.emergency.length > 0){
       document.getElementById("red-flag-banner").classList.add("visible");
       return true;
     }
@@ -473,18 +494,18 @@
     routine: "通常：予約しての受診・相談で大丈夫"
   };
 
-  /* ===== モック応答（CONFIG.MOCK=true のとき使用） =====
+  /* ===== モック応答（USE_MOCK のとき使用） =====
      進行度評価型問診エンジン（北川設計書）の縮小版シナリオ:
        1. 通常（家族経路）: 本人/家族確認 → 4段階を模した3問 → stage_band:"moderate" の結果
-       2. せん妄差し込み  : 「数日前から急に…」→ 確認質問1問 → kyukyu（inserted_risk:"delirium"）
-       3. iNPH差し込み    : 「よく転ぶ」等 → 確認質問1問 → 鑑別推奨（shindan＋stage_band:"early"）
+       2. 緊急語           : 「意識がもうろう」等 → 確認質問なしで即 kyukyu
+       3. 要確認語の差し込み: 「ふらふら」「急に」「頭を打った」等 → 確認質問を1問挟み、
+                              その回答で判断（否定なら緊急にせず基本の流れへ戻る）
      加えて、本人経路（前向き文言）と情報不足フェイルセーフも内蔵する。
-     ※ stage_estimate 等の推定値は、結果パネルでは描画されない（renderResult 参照）。 */
+     ※ stage_estimate 等の推定値は、結果パネルでは描画されない（renderResult 参照）。
 
-  // 差し込み①: 急性発症・せん妄の疑い（日〜週単位の急な変化）
-  const MOCK_DELIRIUM_RE = /(数日|昨日|一昨日|今朝|先週).{0,12}急|急に.{0,10}(ぼんやり|反応|もうろう|眠|様子)/;
-  // 差し込み③: 可逆性の原因（iNPH等）の疑い（歩行の変化）
-  const MOCK_FALL_RE = /転(ぶ|ん|び|倒し)|ふらふら|フラフラ|すり足|小刻み/;
+     語彙判定は triage.js に一本化した（モック独自の正規表現は持たない）。
+     これにより、モックでの挙動確認がそのまま本番の判定ロジックの確認になる。 */
+
   // 回答者の推定（情報の先取り: 最初の発話に続柄が含まれていれば確認質問を省略）
   const MOCK_FAMILY_RE = /母|父|祖母|祖父|妻|夫|義母|義父|おばあ|おじい|家内|主人|家族|本人ではな/;
   const MOCK_SELF_RE = /私自身|自分自身|わたし自身|自分のこと|本人です|私のこと/;
@@ -497,6 +518,21 @@
     "1つ確認させてください。ここ数日での変化とのことですが、意識がぼんやりする・発熱・手足の動かしにくさ・ろれつが回りにくい、といった様子はありますか？";
   const MOCK_Q_INPH =
     "歩き方について1つ確認させてください。すり足や小刻みな歩き方、尿もれ（トイレが間に合わない）などはみられますか？";
+  const MOCK_Q_HEAD =
+    "1つ確認させてください。頭を打ったあと、吐き気や嘔吐、ぼんやりする、呼びかけへの反応が鈍いなどの変化はありましたか？";
+
+  /* 要確認語 → 差し込む確認質問 の対応（上から順に評価する）。
+     設計意図どおり「検知 → 確認質問を1問挟む → その回答で判断」を守るための表。
+     どの要確認語も、確認質問の回答を得るまでは結論（特に emergency）を出さない。 */
+  const MOCK_INSERTS = [
+    // 頭部打撲: 打撲後の変化があれば緊急（変化が無ければ通常の流れへ戻る）
+    { tags: ["head-impact"], question: MOCK_Q_HEAD, risk: "head_injury", onPositive: "kyukyu" },
+    // 急な変化・発熱・普段と違う様子: せん妄等の疑い
+    { tags: ["acute", "fever", "behavior-change", "vomit"], question: MOCK_Q_DELIRIUM,
+      risk: "delirium", onPositive: "kyukyu" },
+    // 歩行の変化: 可逆性の原因の鑑別（緊急ではない）
+    { tags: ["gait", "fall", "numbness"], question: MOCK_Q_INPH, risk: "inph", onPositive: "inph" }
+  ];
 
   // 家族経路: 客観的な出来事を具体的に引き出す（第1〜3段階を模した3問）
   const MOCK_FLOW_FAMILY = [
@@ -524,7 +560,15 @@
     return null; // 未確定（確認質問が必要）
   }
 
+  // 緊急時の結果。inserted_risk ごとにメモの内容だけを差し替える。
+  const MOCK_KYUKYU_NOTES = {
+    none: "・意識の状態や呼びかけへの反応など、緊急性のある訴えあり\n・発症の時刻・経過、内服薬、既往の確認を推奨\n・差し込みで確認したリスク: 緊急語に該当（確認質問は挟まず救急案内）",
+    delirium: "・数日単位の急な変化（ぼんやりする・反応が鈍い等）の訴えあり\n・意識の状態（呼びかけへの反応）・発熱・麻痺・ろれつの確認を推奨\n・差し込みで確認したリスク: 急性発症・せん妄の疑い（確認質問で該当あり）",
+    head_injury: "・転倒による頭部打撲の後、様子の変化（嘔吐・ぼんやり・反応の鈍さ等）の訴えあり\n・受傷時刻、抗血栓薬の内服の有無、意識状態の推移の確認を推奨\n・差し込みで確認したリスク: 頭部打撲後の変化（確認質問で該当あり）"
+  };
+
   function mockKyukyuResult(insertedRisk, respondent){
+    const risk = insertedRisk || "none";
     return {
       phase: "done",
       result: {
@@ -542,8 +586,8 @@
           basis: "急性の変化のため進行度の評価は保留（急性疾患・せん妄等の除外が優先）。"
         },
         stage_band: "unknown",
-        inserted_risk: insertedRisk,
-        note_for_doctor: "・回答者: ご家族等\n・数日単位の急な変化（ぼんやりする・反応が鈍い等）の訴えあり\n・意識の状態（呼びかけへの反応）・発熱・麻痺・ろれつの確認を推奨\n・差し込みで確認したリスク: 急性発症・せん妄の疑い",
+        inserted_risk: risk,
+        note_for_doctor: "・回答者: ご家族等\n" + (MOCK_KYUKYU_NOTES[risk] || MOCK_KYUKYU_NOTES.none),
         stage_note: "・進行度の目安: 判定保留（急性の変化のため）※AIによる参考推定であり診断ではありません",
         advice: "ためらわずに119番へ電話してください。迷う場合は救急安心センター（#7119）に相談できます。"
       }
@@ -681,46 +725,51 @@
     return userMsgs[idx + 1] ? userMsgs[idx + 1].content : "";
   }
 
-  const MOCK_NEGATIVE_RE = /いいえ|ない(です)?|ありません|なし|見られない|みられない/;
+  /* 確認質問への回答が「否定」かどうかの判定。
+     「はい、…トイレが間に合わないこともあります」のように、肯定の回答の中に
+     「〜ない」が含まれることがあるため、先に肯定表現を見てから否定を判定する
+     （単純な「ない」の一致で否定と誤判定しないため）。 */
+  const MOCK_AFFIRMATIVE_RE = /^(はい|ええ|うん|そう)|あります|ありました|みられます|見られます|しています|多いです/;
+  const MOCK_NEGATIVE_RE = /^(いいえ|いえ|ない|なし)|ありません|ございません|(みられ|見られ)ません|特にな(い|し)|まったくない|全くない|していません/;
+  function mockIsNegative(answer){
+    if(MOCK_AFFIRMATIVE_RE.test(answer)) return false;
+    return MOCK_NEGATIVE_RE.test(answer);
+  }
 
   function mockReply(messages, forceDone){
     const userMsgs = messages.filter(m => m.role === "user");
     const assistantMsgs = messages.filter(m => m.role === "assistant");
-    const allText = userMsgs.map(m => m.content).join(" ");
+    const allText = userMsgs.map(m => m.content).join("\n");
     const respondent = mockDetectRespondent(userMsgs, assistantMsgs);
+    const signs = triage
+      ? triage.classify(allText)
+      : { emergency: [], caution: [], emergencyTags: [], cautionTags: [] };
 
     // 検証用: FAST混入（1行メモ）の保険動作テスト
     if(userMsgs[0] && userMsgs[0].content.includes("リークテスト")){
       return MOCK_LEAK_TEST_RESULT;
     }
 
-    // 差し込み①: 急性発症・せん妄の疑い → 確認質問を1問だけ挿入。
-    // 該当（否定でない回答）なら kyukyu で打ち切り、否定なら基本の流れに戻る。
-    if(MOCK_DELIRIUM_RE.test(allText)){
-      const answer = mockInsertAnswer(userMsgs, assistantMsgs, MOCK_Q_DELIRIUM);
-      if(answer === null && !forceDone){
-        return { phase: "asking", next_question: MOCK_Q_DELIRIUM };
-      }
-      if(answer === null || !MOCK_NEGATIVE_RE.test(answer)){
-        return mockKyukyuResult("delirium", respondent);
-      }
-      // 否定 → 通常フローへ復帰
-    }
-    // 明確な赤旗語（意識がない・けいれん等）は差し込みを挟まず即 kyukyu（従来どおり）
-    else if(RED_FLAG_RE.test(allText)){
+    // 緊急語（意識がない・けいれん・呼びかけに応じない等）は確認質問を挟まず即 kyukyu。
+    // 「転んで頭を打ってから様子がおかしい」のような組み合わせもここに含まれる。
+    if(signs.emergency.length > 0){
       return mockKyukyuResult("none", respondent);
     }
 
-    // 差し込み③: 歩行の変化 → 確認質問を1問挿入。該当なら鑑別推奨（shindan＋early）。
-    if(MOCK_FALL_RE.test(allText)){
-      const answer = mockInsertAnswer(userMsgs, assistantMsgs, MOCK_Q_INPH);
-      if(answer === null && !forceDone){
-        return { phase: "asking", next_question: MOCK_Q_INPH };
+    // 要確認語（ふらふら・急に・熱・頭を打った 等）は、必ず確認質問を1問挟んでから判断する。
+    // 回答が否定なら緊急側に倒さず、基本の流れに戻る。
+    for(const rule of MOCK_INSERTS){
+      if(!rule.tags.some(t => signs.cautionTags.includes(t))) continue;
+      const answer = mockInsertAnswer(userMsgs, assistantMsgs, rule.question);
+      if(answer === null){
+        // まだ聞いていない → 確認質問を返す（結論は出さない）
+        if(!forceDone) return { phase: "asking", next_question: rule.question };
+        break; // 質問上限のときは聞けないので基本の流れの結論へ
       }
-      if(answer === null || !MOCK_NEGATIVE_RE.test(answer)){
-        return MOCK_INPH_RESULT;
-      }
-      // 否定 → 通常フローへ復帰
+      if(mockIsNegative(answer)) continue; // 否定 → 次の要確認語 / 基本の流れへ
+      return rule.onPositive === "inph"
+        ? MOCK_INPH_RESULT
+        : mockKyukyuResult(rule.risk, respondent);
     }
 
     // フェイルセーフ: 回答者確認より後の回答が「特にない」等の短文2連続なら、無理に推定しない
@@ -834,14 +883,21 @@
 
   /* ===== AI呼び出し ===== */
   async function callAi(forceDone){
-    if(CONFIG.MOCK){
+    if(USE_MOCK){
       await new Promise(r => setTimeout(r, 400)); // 通信の雰囲気だけ再現
       return mockReply(messages, forceDone);
     }
     const res = await fetch(CONFIG.WORKER_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: messages, force_done: !!forceDone })
+      body: JSON.stringify({
+        messages: messages,
+        force_done: !!forceDone,
+        // 要確認語のヒント（AIに確認質問を促すためのフラグ）。
+        // Worker側でも同じ語彙表で独立に判定しているため、これはあくまで補助。
+        // 既知のタグ名のみを送る（自由文は送らない＝相談本文の重複送信も避ける）。
+        triage: { caution: lastTriage.cautionTags || [], mild: !!lastTriage.mild }
+      })
     });
     if(!res.ok){
       // Worker はエラー時に { error, upstream_status, detail } を返す（detail は
@@ -905,10 +961,11 @@
     const text = inputEl.value.trim();
     if(!text) return;
 
-    // 赤旗判定はAIの応答を待たずに即時実行（独立動作）
-    checkRedFlags(text);
-
     messages.push({ role: "user", content: text });
+    // 危険兆候の判定はAIの応答を待たずに即時実行（独立動作）。
+    // 緊急語に該当したときだけ救急バナーが出る。
+    updateRedFlagBanner();
+
     appendBubble("user", text);
     inputEl.value = "";
     requestAiReply();
