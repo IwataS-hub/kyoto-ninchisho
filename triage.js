@@ -88,6 +88,69 @@
     "たまに", "時々", "ときどき", "まれに", "稀に", "たまーに", "軽い", "軽度"
   ].join("|"));
 
+  /* ===== 活用形の機械展開 =====
+     評価セットで「ろれつが回りません」「手足が動かしにくく」が緊急語として
+     検出されなかった（層1で見落とし2件）。原因は正規表現をプレーン形の否定
+     （〜ない）だけで書いていたこと。個別に列挙すると同じ穴を繰り返すため、
+     動詞の語幹から活用形を機械的に展開する。
+
+     語幹の3系統:
+       mizen  「〜ない」に続く形（未然形）      例: 回ら / 動か / 応じ / し
+       renyou 「〜ません」「〜にくい」に続く形  例: 回り / 動き / 動かし / 応じ / し
+       te     「〜ていません」に続く形（テ形の語幹）例: 回っ / 動い / 応じ / し
+     新しい緊急語を足すときは、リテラルを並べるのではなく VERBS に語幹を足して
+     negated() で展開すること。 */
+  const VERBS = {
+    mawaru:    { mizen: ["回ら", "まわら"], renyou: ["回り", "まわり"], te: ["回っ", "まわっ"] },
+    ugoku:     { mizen: ["動か"], renyou: ["動き"], te: ["動い"] },
+    ugokasu:   { mizen: ["動かさ"], renyou: ["動かし"], te: ["動かし"] },
+    ugokaseru: { mizen: ["動かせ"], renyou: ["動かせ"], te: ["動かせ"] },
+    agaru:     { mizen: ["上がら", "あがら"], renyou: ["上がり", "あがり"], te: ["上がっ", "あがっ"] },
+    hairu:     { mizen: ["入ら"], renyou: ["入り"], te: ["入っ"] },
+    oujiru:    { mizen: ["応じ"], renyou: ["応じ"], te: ["応じ"] },
+    suru:      { mizen: ["し"], renyou: ["し"], te: ["し"] },
+    okiru:     { mizen: ["起き"], renyou: ["起き"], te: ["起き"] },
+    samasu:    { mizen: ["覚まさ", "さまさ"], renyou: ["覚まし", "さまし"], te: ["覚まし", "さまし"] },
+    modoru:    { mizen: ["戻ら"], renyou: ["戻り"], te: ["戻っ"] },
+    deru:      { mizen: ["出"], renyou: ["出"], te: ["出"] },
+    dekiru:    { mizen: ["でき", "出来"], renyou: ["でき", "出来"], te: ["でき", "出来"] },
+    shaberu:   { mizen: ["しゃべれ", "喋れ", "話せ"], renyou: ["しゃべれ", "喋れ", "話せ"], te: ["しゃべれ", "喋れ", "話せ"] }
+  };
+
+  /** 動詞の語幹から「否定・困難」を表す活用形をすべて展開する（正規表現の断片を返す）。 */
+  function negated(stems) {
+    const alts = [];
+    const push = a => { if (alts.indexOf(a) === -1) alts.push(a); };
+    (stems.mizen || []).forEach(function (s) {
+      push(s + "ない");     // 回らない
+      push(s + "なく");     // 回らなくなった
+      push(s + "なかっ");   // 回らなかった
+      push(s + "ず");       // 回らず
+    });
+    (stems.renyou || []).forEach(function (s) {
+      push(s + "ません");   // 回りません
+      push(s + "にく");     // 回りにくい / 動かしにくく
+      push(s + "づら");     // 回りづらい
+      push(s + "ずら");     // 表記ゆれ
+    });
+    (stems.te || []).forEach(function (s) {
+      push(s + "ていません");
+      push(s + "ていない");
+      push(s + "てません");
+      push(s + "てない");
+    });
+    return alts.join("|");
+  }
+
+  /** 正規表現の断片を | でつないで RegExp にする（読みやすさのため） */
+  function alt() {
+    return new RegExp(Array.prototype.slice.call(arguments).join("|"));
+  }
+
+  // 症状の主語に付く助詞。「ろれつも普通です」のような否定の答えで発火しないよう、
+  // 助詞だけを緩くし、述語は必ず否定・困難の活用形を要求する。
+  const P = "(が|は|も)?";
+
   /**
    * 語彙表。
    *   kind      : "emergency"（緊急語） / "caution"（要確認語）
@@ -97,51 +160,83 @@
    */
   const TERMS = [
     // ===== 緊急語（それ自体で緊急性が高い） =====
+    // 述語は negated() で活用形（〜ない / 〜ません / 〜にくい / 〜ていません）を
+    // 機械展開している。いずれも語そのものが否定形で成立するため negatable:false。
     {
       id: "consciousness", kind: "emergency", label: "意識の障害", negatable: false,
-      re: /意識が(ない|ありません|なくな|遠のく|遠くなる|はっきりしない|戻らない)|意識を失|意識不明|意識障害|気を失/
+      re: alt(
+        "意識" + P + "(ない|ありません|なくな|遠のく|遠くなる)",
+        "意識" + P + "(" + negated(VERBS.modoru) + ")",
+        "意識" + P + "はっきり(" + negated(VERBS.suru) + ")",
+        "意識を失", "意識不明", "意識障害", "気を失"
+      )
     },
     {
       id: "drowsy", kind: "emergency", label: "意識がもうろうとしている", negatable: true,
-      re: /もうろう|朦朧|意識が(もうろう|朦朧)|昏睡|うとうとして起きない|眠り込んで起きない/
+      re: alt(
+        "もうろう", "朦朧", "昏睡",
+        "(うとうとして|眠り込んで)(" + negated(VERBS.okiru) + ")"
+      )
     },
     {
       id: "unresponsive", kind: "emergency", label: "呼びかけに反応しない", negatable: false,
-      re: /反応が(ない|ありません|薄い)|反応しない|呼びかけ(に|ても)(応じない|反応しない|返事がない|反応がない)|呼んでも(反応|返事)が(ない|ありません)|揺すっても(起きない|反応がない)|起こしても起きない|目を覚まさない/
+      re: alt(
+        // 「反応が鈍い」は程度の表現なので要確認語（behavior-change）側で扱う。
+        // ここで拾うのは反応の「有無」を示す言い方だけ。
+        "反応" + P + "(ない|ありません|なくな|薄い)",
+        "反応" + P + "(" + negated(VERBS.suru) + ")",
+        "(呼びかけ|呼び掛け)(に|ても|には|をしても)?(" + negated(VERBS.oujiru) + ")",
+        "(呼んで|呼びかけて|声をかけて|大声で呼んで)も(反応|返事)" + P + "(ない|ありません|なくな)",
+        "(揺すって|ゆすって|起こして|叩いて)も(" + negated(VERBS.okiru) + ")",
+        "目を(" + negated(VERBS.samasu) + ")"
+      )
     },
     {
       id: "seizure", kind: "emergency", label: "けいれん", negatable: true,
-      re: /けいれん|痙攣|ひきつけ|白目をむ|泡を吹/
+      re: /けいれん|痙攣|ひきつけ|引きつけ|白目をむ|白目を剥|泡を吹/
     },
     {
       id: "paralysis", kind: "emergency", label: "麻痺", negatable: true,
-      re: /麻痺|まひ|片麻痺/
+      re: /麻痺|まひ|片麻痺|半身不随/
     },
     {
       // 「しびれ」だけは緊急語に入れない（高齢の方には日常的な訴えで、
       // 単独では緊急とは限らないため。要確認語 numbness として扱う）
       id: "limb-weakness", kind: "emergency", label: "手足が動かない", negatable: false,
-      re: /(手|足|手足|半身|片側|右半身|左半身|体|からだ)が(動かな|動かせな|上がらな)|力が入らな|(口|顔)が(ゆがん|歪ん)/
+      re: alt(
+        "(手|足|手足|半身|片側|右半身|左半身|体|からだ|腕|脚|指)" + P +
+          "(" + negated(VERBS.ugoku) + "|" + negated(VERBS.ugokasu) + "|" +
+          negated(VERBS.ugokaseru) + "|" + negated(VERBS.agaru) + ")",
+        "力" + P + "(" + negated(VERBS.hairu) + ")",
+        "(口|顔|表情)" + P + "(ゆがん|歪ん|ゆがみ|歪み)"
+      )
     },
     {
       id: "speech-slurred", kind: "emergency", label: "ろれつが回らない", negatable: false,
-      re: /ろれつが(回らない|まわらない|回りにく|おかしい)|呂律が(回らない|まわらない)|言葉が出(ない|なくな)|しゃべれな|言葉がもつれ/
+      re: alt(
+        "(ろれつ|呂律|舌)" + P + "(" + negated(VERBS.mawaru) + ")",
+        "(ろれつ|呂律)" + P + "(おかしい|変です|変になっ)",
+        "言葉" + P + "(" + negated(VERBS.deru) + ")",
+        "(" + negated(VERBS.shaberu) + ")",
+        "言葉が(もつれ|つっかえ)"
+      )
     },
-    // 「ろれつ」「麻痺」などの語だけを緊急語にはしない。確認質問がこれらの語を含むため、
-    // 利用者が「ろれつも普通です」のように否定の答えで語をなぞることがあり、
-    // 単語一致だと否定の答えで緊急が発火してしまう。緊急とするのは
-    // 「ろれつが回らない」のように症状として述べている形（speech-slurred）に限る。
     {
       id: "breathing-stopped", kind: "emergency", label: "呼吸の異常", negatable: false,
-      re: /(息|呼吸)をして(い)?(ない|ません)|息が(止ま|できな|できません)|呼吸が(止ま|ない|ありません)/
+      re: alt(
+        "(息|呼吸)(を|が)?して(い)?(ない|ません)",
+        "息" + P + "(" + negated(VERBS.dekiru) + ")",
+        "(息|呼吸)" + P + "(止ま|とま)",
+        "呼吸" + P + "(ない|ありません)"
+      )
     },
     {
       id: "breathing", kind: "emergency", label: "息苦しさ", negatable: true,
-      re: /息が(苦し|荒い)|呼吸が(苦し|おかし|浅い)/
+      re: /息が(苦し|荒い)|呼吸が(苦し|おかし|浅い)|息切れがひど/
     },
     {
       id: "chest-pain", kind: "emergency", label: "胸の痛み", negatable: true,
-      re: /胸が(痛|苦し)|胸の(痛み|圧迫)/
+      re: /胸が(痛|苦し)|胸の(痛み|圧迫)|胸を押さえ/
     },
 
     // ===== 要確認語（緊急かどうかは文脈次第） =====
@@ -173,7 +268,8 @@
     },
     {
       id: "behavior-change", kind: "caution", label: "普段と違う様子", negatable: true,
-      re: /様子がおかしい|様子が(変|違)|いつもと(違|様子が違)|ぐったり|反応が(鈍|にぶ)い|ぼんやり|ぼーっと|ボーッと|ボーっと/
+      // 形容詞は語幹で拾う（「鈍い」だけでなく「鈍くなった」「鈍かった」も含めるため）
+      re: /様子がおかしい|様子が(変|違)|いつもと(違|様子が違)|ぐったり|反応が(鈍|にぶ)|ぼんやり|ぼーっと|ボーッと|ボーっと|元気が(ない|なくな|ありません)/
     },
     {
       id: "vomit", kind: "caution", label: "嘔吐", negatable: true,
@@ -190,6 +286,14 @@
     {
       id: "head-impact-change", label: "頭部打撲後の変化",
       all: ["head-impact", "behavior-change"]
+    },
+    {
+      // 「急に反応が鈍くなった」「数日前から急にぼんやり」＝ 急性の意識変化（せん妄等）で緊急。
+      // 「反応が鈍い」「ぼんやり」を単独で緊急語にすると、認知症の進行に伴う
+      // ゆるやかな変化（「だんだん反応が鈍くなった」）まで緊急に振れてしまうため、
+      // 急性発症を示す語との組み合わせのときだけ緊急に格上げする。
+      id: "acute-behavior-change", label: "急な発症＋普段と違う様子",
+      all: ["acute", "behavior-change"]
     },
     {
       id: "head-impact-vomit", label: "頭部打撲後の嘔吐",
