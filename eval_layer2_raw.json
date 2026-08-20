@@ -1,0 +1,638 @@
+[
+  {
+    "id": "T01",
+    "group": "真の緊急",
+    "respondent": "家族",
+    "text": "数日前から急にぼんやりして、呼びかけても反応が鈍いです。",
+    "aim": "急性発症＋意識変化。改善後も即救急を維持できるか（安全側の後退検出）",
+    "expected": {
+      "urgency": "emergency",
+      "category": "kyukyu",
+      "stage_band": "unknown"
+    },
+    "layer1": {
+      "banner": true,
+      "emergency": [
+        "急な発症＋普段と違う様子(acute-behavior-change)[組合せ]"
+      ],
+      "caution": [
+        "急な変化(acute)",
+        "普段と違う様子(behavior-change)"
+      ],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "emergency",
+      "category": "kyukyu",
+      "category_label": "救急・至急の医療相談",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "delirium",
+      "urgency_reason": "数日前からの急な変化と呼びかけへの反応の鈍さがみられ、急性の体調変化の可能性があるためです。",
+      "reason": "急激にぼんやりして反応が鈍くなる症状は、身体の急な変化や意識の障害が隠れている可能性があるため、至急の確認が必要です。"
+    },
+    "reused": true
+  },
+  {
+    "id": "T02",
+    "group": "真の緊急",
+    "respondent": "家族",
+    "text": "昨日転んで頭を打ってから、様子がおかしいです。",
+    "aim": "頭部打撲後の変化。「転ぶ」が要確認語化しても打撲+変化で緊急にできるか",
+    "expected": {
+      "urgency": "emergency",
+      "category": "kyukyu",
+      "stage_band": "unknown"
+    },
+    "layer1": {
+      "banner": true,
+      "emergency": [
+        "頭部打撲後の変化(head-impact-change)[組合せ]"
+      ],
+      "caution": [
+        "転倒(fall)",
+        "頭部の打撲(head-impact)",
+        "普段と違う様子(behavior-change)"
+      ],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "emergency",
+      "category": "kyukyu",
+      "category_label": "救急相談窓口（#7119）・119番",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "head_injury",
+      "urgency_reason": "頭部を打撲した後にご様子がおかしいとの変化がみられるため、急を要する可能性があります。",
+      "reason": "頭を打った後の急な変化については、頭部の状態を早急に確認する必要があります。"
+    }
+  },
+  {
+    "id": "T03",
+    "group": "真の緊急",
+    "respondent": "家族",
+    "text": "今朝から片方の手足が動かしにくく、ろれつが回りません。",
+    "aim": "局所神経症状。脳卒中疑い",
+    "expected": {
+      "urgency": "emergency",
+      "category": "kyukyu",
+      "stage_band": "unknown"
+    },
+    "layer1": {
+      "banner": true,
+      "emergency": [
+        "手足が動かない(limb-weakness)",
+        "ろれつが回らない(speech-slurred)"
+      ],
+      "caution": [
+        "急な変化(acute)"
+      ],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "emergency",
+      "category": "kyukyu",
+      "category_label": "救急要請（119番）または救急案内",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "delirium",
+      "urgency_reason": "今朝から片側の手足の動かしにくさや、ろれつが回らないといった急な症状がみられるため、至急の対応が必要です。",
+      "reason": "手足の動かしにくさや言葉の出しにくさが急に現れている場合、急を要する病気が隠れている可能性があるため、直ちに医療機関への受診が必要です。"
+    }
+  },
+  {
+    "id": "T04",
+    "group": "過検知トラップ",
+    "respondent": "家族",
+    "text": "少しふらふらすることがあるようです。転んだことはありません。",
+    "aim": "「ふらふら」+否定表現。最重要ケース",
+    "expected": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "stage_band": "unknown"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [
+        "歩行の不安定さ(gait)"
+      ],
+      "suppressed": [
+        "転倒(fall)←negation"
+      ]
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "urgent",
+      "category": "senmonkikan",
+      "category_label": "専門医療機関（脳神経外科・認知症疾患医療センター等）",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "inph",
+      "urgency_reason": "意識の障害など急を要する状態ではありませんが、歩行のふらつきには検査で調べられる原因が隠れていることもあるため、早めの受診・相談をおすすめします。",
+      "reason": "歩行のふらつきについて、詳しく検査や診察を行える医療機関での相談が適しています。原因を詳しく調べることで、適切な対応につながる場合があります。"
+    }
+  },
+  {
+    "id": "T05",
+    "group": "過検知トラップ",
+    "respondent": "本人",
+    "text": "立ち上がるときにふらつきますが、頭ははっきりしています。",
+    "aim": "起立時ふらつき+意識清明の明示",
+    "expected": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "stage_band": "unknown"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [
+        "歩行の不安定さ(gait)"
+      ],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "category_label": "かかりつけ医・身近な医療機関",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "意識ははっきりされているとのことですが、ふらつきによる転倒などを防ぐためにも、一度医療機関へのご相談をおすすめします。",
+      "reason": "立ち上がるときのふらつきは様々な原因が考えられるため、まずは普段の体調をご存知のかかりつけ医や、身近な内科・脳神経外科などで診ていただくのが安心です。"
+    }
+  },
+  {
+    "id": "T06",
+    "group": "過検知トラップ",
+    "respondent": "家族",
+    "text": "熱はありません。ただ最近もの忘れが増えました。",
+    "aim": "「熱」の否定処理",
+    "expected": {
+      "urgency": "routine",
+      "category": "monowasure",
+      "stage_band": "early"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": [
+        "発熱(fever)←negation"
+      ]
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "category_label": "かかりつけ医・身近な相談窓口",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "発熱などの急を要する症状はなく、最近のもの忘れについてのご相談のため、通常の受診や相談で対応が可能です。",
+      "reason": "お話からは詳しい状況の把握が難しいため、まずは体調全般を含めて相談できる身近なかかりつけ医や相談窓口で、健康チェックを兼ねてお話ししてみることをおすすめします。"
+    }
+  },
+  {
+    "id": "T07",
+    "group": "過検知トラップ",
+    "respondent": "家族",
+    "text": "急に怒りっぽくなった気がします。ここ半年でだんだんと。",
+    "aim": "「急に」の語 vs 実際の経過半年",
+    "expected": {
+      "urgency": "routine",
+      "category": "senmonkikan",
+      "stage_band": "moderate"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [
+        "急な変化(acute)"
+      ],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "category_label": "かかりつけ医・身近な医療機関",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "bpsd",
+      "urgency_reason": "半年ほどかけてのゆるやかな変化であり、急を要する危険な兆候は見受けられないためです。",
+      "reason": "ご気分の変化には身体の病気やお薬の影響など様々な要因が関係していることがあります。まずは普段の健康状態をよく知る身近なお医者さんへ相談してみることをおすすめします。"
+    }
+  },
+  {
+    "id": "T08",
+    "group": "過検知トラップ",
+    "respondent": "家族",
+    "text": "たまに夜ぼんやりテレビを見ています。日中は普通です。",
+    "aim": "「ぼんやり」の日常的用法。意識障害と区別できるか",
+    "expected": {
+      "urgency": "routine",
+      "category": "monowasure",
+      "stage_band": "early"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": [
+        "普段と違う様子(behavior-change)←negation"
+      ]
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "category_label": "かかりつけ医・身近な医療機関",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "今すぐの緊急対応が必要な状態ではありませんが、日頃のご様子で気になる点があれば日中の通常の診療時間にご相談いただけます。",
+      "reason": "お伺いした内容からは詳しい生活のご様子の把握が難しいため、まずは普段の体調をよく知る身近なかかりつけ医や内科などで、念のため一度ご様子を相談されることをおすすめします。"
+    }
+  },
+  {
+    "id": "T09",
+    "group": "過検知トラップ",
+    "respondent": "家族",
+    "text": "以前倒れたことがありますが、もう1年前の話です。",
+    "aim": "過去の出来事を現在の緊急と混同しないか",
+    "expected": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "stage_band": "unknown"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": [
+        "転倒(fall)←past"
+      ]
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "category_label": "かかりつけ医・身近な内科など",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "過去の出来事であり、現在急を要する症状はうかがえないため",
+      "reason": "詳しい生活の様子についてのお話が限られているため、まずは普段の体調や健康管理について身近なお医者さんに相談してみるのが安心です。"
+    }
+  },
+  {
+    "id": "T10",
+    "group": "過検知トラップ",
+    "respondent": "本人",
+    "text": "頭が働かない感じがして心配です。仕事は続けられています。",
+    "aim": "主観的な訴え+機能維持。本人経路の配慮も評価",
+    "expected": {
+      "urgency": "routine",
+      "category": "monowasure",
+      "stage_band": "early"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "category_label": "かかりつけ医・身近な医療機関",
+      "stage_band": "early",
+      "stage_fast": "3",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "急を要する症状は見受けられませんが、ご自身でのご不安が続いている状態です。",
+      "reason": "仕事は続けられているとのことですが、ご自身で頭の働きの変化を感じてご不安なことと思います。体調全般の確認や脳の健康チェックを兼ねて、まずは身近な医療機関などで一度ご相談されるのがおすすめです。"
+    }
+  },
+  {
+    "id": "T11",
+    "group": "過検知トラップ",
+    "respondent": "家族",
+    "text": "転ぶのが怖いと言って外出を控えています。実際は転んでいません。",
+    "aim": "「転ぶ」の仮定表現。事実と不安の区別",
+    "expected": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "stage_band": "unknown"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": [
+        "転倒(fall)←hedge"
+      ]
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "category_label": "かかりつけ医・身近な医療機関",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "差し迫った体調の急変や転倒によるお怪我は見られず、落ち着いてご相談いただける状況です。",
+      "reason": "転倒への不安や外出控えについて、まずは日頃の健康状態をご存知のかかりつけ医に相談し、足腰の状態や体調全般を確認してもらうのが安心です。"
+    }
+  },
+  {
+    "id": "T12",
+    "group": "中間帯較正",
+    "respondent": "家族",
+    "text": "よく転ぶようになり、すり足で歩きます。尿もれもあります。",
+    "aim": "iNPH3徴。緊急ではなく鑑別推奨。上振れ・下振れ両方を検出",
+    "expected": {
+      "urgency": "urgent",
+      "category": "senmonkikan",
+      "stage_band": "early"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [
+        "歩行の不安定さ(gait)",
+        "転倒(fall)"
+      ],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "urgent",
+      "category": "senmonkikan",
+      "category_label": "専門医療機関（脳神経外科・もの忘れ外来など）",
+      "stage_band": "early",
+      "stage_fast": "3",
+      "confidence": "low",
+      "inserted_risk": "inph",
+      "urgency_reason": "歩行の不安定さや排泄に関する変化が見られるため、早めの受診・相談が勧められます。",
+      "reason": "歩き方の変化や排泄の困りごとについて、検査を通じて治療につながる原因が隠れていないかを詳しく調べられる相談先が適しています。"
+    }
+  },
+  {
+    "id": "T13",
+    "group": "中間帯較正",
+    "respondent": "家族",
+    "text": "財布を盗られたと言って毎日責められます。もう疲れました。",
+    "aim": "妄想+介護疲弊。emergencyに上げすぎないか、routineに下げすぎないか",
+    "expected": {
+      "urgency": "urgent",
+      "category": "senmonkikan",
+      "stage_band": "moderate"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "urgent",
+      "category": "senmonkikan",
+      "category_label": "専門医療機関（認知症疾患医療センター等）",
+      "stage_band": "early",
+      "stage_fast": "4",
+      "confidence": "low",
+      "inserted_risk": "bpsd",
+      "urgency_reason": "日々の対応によるご家族の精神的・身体的なご負担が非常に大きいご様子のため、早めの相談をおすすめします。",
+      "reason": "もの盗られなどの強い思い込みへの対応や治療について、専門的な見地から詳しい相談ができる窓口が適していると考えられます。"
+    }
+  },
+  {
+    "id": "T14",
+    "group": "中間帯較正",
+    "respondent": "家族",
+    "text": "夜中に家を出ていこうとします。目が離せません。",
+    "aim": "徘徊。安全確保の緊急性の適正評価",
+    "expected": {
+      "urgency": "urgent",
+      "category": "senmonkikan",
+      "stage_band": "moderate"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "urgent",
+      "category": "senmonkikan",
+      "category_label": "専門医療機関（認知症疾患医療センターなど）",
+      "stage_band": "severe",
+      "stage_fast": "6-7",
+      "confidence": "low",
+      "inserted_risk": "bpsd",
+      "urgency_reason": "夜間の外出や徘徊による安全面への懸念があり、ご家族の見守り負担も大きいため、早めの相談が望ましい状態です。",
+      "reason": "夜間に外へ出てしまおうとする行動について、適切な対応方法や医療的なサポートについて専門機関で相談することができます。"
+    }
+  },
+  {
+    "id": "T15",
+    "group": "中間帯較正",
+    "respondent": "家族",
+    "text": "ほぼ寝たきりで、食事のときにむせるようになりました。",
+    "aim": "誤嚥リスク。重度=緊急ではないが放置も不可",
+    "expected": {
+      "urgency": "urgent",
+      "category": "kakaritsuke",
+      "stage_band": "severe"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "urgent",
+      "category": "kakaritsuke",
+      "category_label": "かかりつけ医・訪問診療（在宅医療）",
+      "stage_band": "severe",
+      "stage_fast": "6-7",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "お食事の際のむせが見られるため、誤嚥を防ぐ工夫や体調管理について早めの相談をおすすめします。",
+      "reason": "日頃のお体の状態や食事の工夫、ご自宅での医療やケアの体制について相談できる身近な窓口です。"
+    }
+  },
+  {
+    "id": "T16",
+    "group": "中間帯較正",
+    "respondent": "家族",
+    "text": "デイサービスに行っていますが、家では暴言が増えました。",
+    "aim": "サービス利用中の悪化",
+    "expected": {
+      "urgency": "urgent",
+      "category": "senmonkikan",
+      "stage_band": "moderate"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "urgent",
+      "category": "senmonkikan",
+      "category_label": "専門医療機関（認知症疾患医療センターなど）や地域包括支援センター",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "bpsd",
+      "urgency_reason": "ご自宅でのご様子に変化が見られ、介護されているご家族の心身のご負担が大きくなりやすいため、早めの相談が望まれます。",
+      "reason": "ご自宅での感情や行動の変化への対応について、専門医による助言や、介護サービスの見直し・負担軽減の相談ができる窓口が適しています。"
+    }
+  },
+  {
+    "id": "T17",
+    "group": "通常帯",
+    "respondent": "本人",
+    "text": "最近もの忘れが気になります。生活は普通にできています。",
+    "aim": "MCI相当。本人への前向き文言の質も見る",
+    "expected": {
+      "urgency": "routine",
+      "category": "monowasure",
+      "stage_band": "early"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "category_label": "かかりつけ医 または もの忘れ外来",
+      "stage_band": "early",
+      "stage_fast": "3",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "急を要する症状は見受けられず、日常生活も普段通り送られているため、ご都合のよいタイミングでのご相談が可能です。",
+      "reason": "日常生活に大きな支障はないものの、もの忘れの自覚があるとのことですので、これからの健康維持に向けた脳の健康チェックとして、身近な医療機関へのご相談がおすすめです。"
+    }
+  },
+  {
+    "id": "T18",
+    "group": "通常帯",
+    "respondent": "家族",
+    "text": "同じことを何度も聞きます。半年前くらいからです。",
+    "aim": "典型的な初発相談",
+    "expected": {
+      "urgency": "routine",
+      "category": "monowasure",
+      "stage_band": "early"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "monowasure",
+      "category_label": "もの忘れ外来（または身近なかかりつけ医）",
+      "stage_band": "early",
+      "stage_fast": "3",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "約半年前からの経過であり、急を要する危険な兆候は見られませんが、日頃の様子について一度相談しておくと安心です。",
+      "reason": "同じことを繰り返し尋ねるなど、記憶の面で気になる様子が続いているため、専門の医療機関や身近な医療機関で状態をみてもらうことが適しています。"
+    }
+  },
+  {
+    "id": "T19",
+    "group": "通常帯",
+    "respondent": "家族",
+    "text": "診断は済んでいます。介護保険の使い方が分かりません。",
+    "aim": "医療でなく地域包括への誘導",
+    "expected": {
+      "urgency": "routine",
+      "category": "houkatsu",
+      "stage_band": "unknown"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "houkatsu",
+      "category_label": "地域包括支援センター（高齢サポート）",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "急を要する体調の悪化や危険兆候は見られず、今後の生活や介護サービス利用に向けた相談のためです。",
+      "reason": "すでに医療機関での診断を受けられており、介護保険の申請やサービスの利用方法について相談されたい段階のため、地域の総合相談窓口である地域包括支援センターが適しています。"
+    }
+  },
+  {
+    "id": "T20",
+    "group": "情報不足",
+    "respondent": "本人",
+    "text": "なんとなく不安です。",
+    "aim": "推定せず慎重側だが、緊急には振らない",
+    "expected": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "stage_band": "unknown"
+    },
+    "layer1": {
+      "banner": false,
+      "emergency": [],
+      "caution": [],
+      "suppressed": []
+    },
+    "status": "ok",
+    "predicted": {
+      "urgency": "routine",
+      "category": "kakaritsuke",
+      "category_label": "かかりつけ医・身近な相談窓口",
+      "stage_band": "unknown",
+      "stage_fast": "unknown",
+      "confidence": "low",
+      "inserted_risk": "none",
+      "urgency_reason": "急を要する兆候は見受けられませんが、ご不安を和らげるためにもお早めの相談をおすすめします。",
+      "reason": "今回のお話からは詳しい様子の把握が難しいため、まずは健康状態をよく知る身近なお医者さんや相談窓口で、念のためお話ししてみることをおすすめします。"
+    }
+  }
+]
