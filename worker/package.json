@@ -1,0 +1,5 @@
+{
+  "name": "kyoto-ninchisho-consult-worker",
+  "private": true,
+  "type": "module"
+}
