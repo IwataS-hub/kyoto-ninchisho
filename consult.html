@@ -277,6 +277,17 @@
     line-height: 1.8;
   }
   .emergency-box a{ color: var(--red); font-weight: bold; }
+  /* 身体的な暴力があるとき（inserted_risk:"violence"）の安全のための固定案内 */
+  .safety-box{
+    background: #fff7ed;
+    border: 2px solid var(--orange);
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 14px;
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+  .safety-box a{ color: var(--orange); font-weight: bold; }
   .note-box{
     background: #fafbfc;
     border: 1px dashed #9ca3af;
@@ -671,6 +682,28 @@
     }
   };
 
+  // 身体的な暴力（藤田先生の意見: 暴力は緊急に含めてよい → 早め＋身の危険時は110/119）
+  const MOCK_VIOLENCE_RE = /手が出|叩|たたく|殴|蹴|暴力|突き飛ば|物を投げ|刃物/;
+  const MOCK_VIOLENCE_RESULT = {
+    phase: "done",
+    result: {
+      urgency: "urgent",
+      urgency_reason: "手が出るなどの行動がみられるとのことで、ご本人と周りの方の安全のため、早めの相談をおすすめします。",
+      category: "senmonkikan",
+      category_label: "認知症の専門医療機関",
+      reason: "行動の変化には、医療で和らげられることもあります。専門の医療機関で、ご様子を詳しく相談できます。",
+      map_filters: ["shindan"],
+      prefer_senmon: true,
+      respondent: "family",
+      stage_estimate: { fast: "unknown", confidence: "low", basis: "行動の変化の訴えが中心で、生活機能の情報が少ないため。" },
+      stage_band: "unknown",
+      inserted_risk: "violence",
+      note_for_doctor: "・回答者: ご家族\n・行動の変化: 手が出ることがある（身体的な暴力の訴え）\n・差し込みで確認したリスク: 身体的な暴力",
+      stage_note: "・進行度の目安: 推定困難（確からしさ: 低）※AIによる参考推定であり診断ではありません\n・推定根拠: 生活機能の情報が少ないため",
+      advice: "まずはご本人と周りの方の安全を最優先にしてください。ご家族だけで抱え込まず、早めに専門の医療機関や地域包括支援センターに相談しましょう。身の危険が迫っているときは、ためらわず110番か119番へ。"
+    }
+  };
+
   const MOCK_INPH_RESULT = {
     phase: "done",
     result: {
@@ -749,7 +782,8 @@
   function mockWithWish(doneResult, userMsgs, assistantMsgs){
     const lines = [];
     const behavior = mockInsertAnswer(userMsgs, assistantMsgs, MOCK_Q_BEHAVIOR);
-    if(behavior && behavior.trim() && !mockIsNegative(behavior.trim())){
+    if(behavior && behavior.trim() && !mockIsNegative(behavior.trim()) &&
+       !doneResult.result.note_for_doctor.includes("・行動の変化")){
       lines.push("・行動の変化: " + behavior.trim().slice(0, 80));
     }
     const wishQ = assistantMsgs.find(m => m.content === MOCK_Q_WISH_FAMILY || m.content === MOCK_Q_WISH_SELF);
@@ -813,6 +847,15 @@
       return rule.onPositive === "inph"
         ? MOCK_INPH_RESULT
         : mockKyukyuResult(rule.risk, respondent);
+    }
+
+    // 身体的な暴力の訴え（否定文を除く）→ 早め＋安全のための案内
+    const violenceMsg = userMsgs.find(m => {
+      const t = m.content.trim();
+      return MOCK_VIOLENCE_RE.test(t) && !mockIsNegative(t) && !/ません|ない(です)?。?$/.test(t);
+    });
+    if(violenceMsg){
+      return mockWithWish(MOCK_VIOLENCE_RESULT, userMsgs, assistantMsgs);
     }
 
     // フェイルセーフ: 回答者確認より後の回答が「特にない」等の短文2連続なら、無理に推定しない
@@ -1036,7 +1079,9 @@
      メモ欄のFAST表示: 実装済み（チームへは事後共有）。FAST推定の行（進行度の目安・
      確からしさ・推定根拠）は「医療機関の方向けの詳細情報（タップで表示）」の
      折りたたみに分離し、デフォルトは閉じた状態。コピーは折りたたみ内も含めた全文
-     （画面で見られる内容とコピー内容を一致させるため）。 */
+     （画面で見られる内容とコピー内容を一致させるため）。
+     例外: inserted_risk が "violence"（身体的な暴力）のときだけ、値そのものは出さずに、
+     安全のための固定の案内（110番・119番）を表示する（藤田先生の意見を受けた変更）。 */
 
   // 進行度情報の分離は「構造」で行う: AI（Worker）は FAST 推定を result.stage_note に
   // のみ入れて返し、note_for_doctor には事実の整理のみを入れる（JSONスキーマで強制）。
@@ -1075,6 +1120,15 @@
         <div class="emergency-box">
           <strong>すぐに <a href="tel:119">119番（救急車）</a> へ電話してください。</strong><br>
           救急車を呼ぶか迷うときは <a href="tel:%237119">救急安心センター #7119</a> に相談できます（24時間対応）。
+        </div>
+      `;
+    }
+
+    if(result.inserted_risk === "violence" && !showEmergency){
+      html += `
+        <div class="safety-box">
+          <strong>身の危険を感じるときは、ためらわずに <a href="tel:110">110番（警察）</a> または <a href="tel:119">119番（救急）</a> へ電話してください。</strong><br>
+          ご家族だけで抱え込まず、早めに専門の医療機関や地域包括支援センターに相談してください。
         </div>
       `;
     }
