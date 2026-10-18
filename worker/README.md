@@ -151,3 +151,32 @@ APIキーもネットワークアクセスも不要です。`worker/package.json
 ```sh
 npx wrangler deploy --dry-run --outdir=/tmp/worker-dryrun
 ```
+
+## 検証用Worker（staging）
+
+問診の修正などを本番に出す前に確かめるための、本番とは別のWorkerです
+（`wrangler.toml` の `[env.staging]`。名前は `kyoto-ninchisho-consult-staging`）。
+本番Worker・GitHub Pages（main）には影響しません。
+
+```sh
+cd worker
+npx wrangler secret put GEMINI_API_KEY --env staging   # 初回のみ
+npx wrangler deploy --env staging
+```
+
+フロントは、リポジトリ直下でローカルサーバーを立てて `?api=staging` を付けて開きます
+（`?api=staging` は localhost / 127.0.0.1 のときだけ有効。CORSは localhost を許可済み）。
+
+```sh
+python3 -m http.server 8000
+# → http://localhost:8000/consult.html?api=staging
+```
+
+評価（層2）を検証用Workerに対して回す場合は、結果ファイルを分けて保存します。
+
+```sh
+EVAL_WORKER_URL=https://kyoto-ninchisho-consult-staging.iwatas.workers.dev EVAL_TAG=fujita node eval_triage_layer2.js
+# → eval_layer2_result_fujita.md / eval_layer2_raw_fujita.json（本番の結果は上書きしない）
+```
+
+使い終わったら（不採用の場合など）`npx wrangler delete --env staging` で削除できます。

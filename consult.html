@@ -413,6 +413,8 @@
      MOCK: false … WORKER_URL の Cloudflare Worker 経由で Gemini を呼ぶ */
   const CONFIG = {
     WORKER_URL: "https://kyoto-ninchisho-consult.iwatas.workers.dev",
+    // 検証用Worker（wrangler.toml の [env.staging]）。localhost で ?api=staging を付けたときだけ使う
+    STAGING_WORKER_URL: "https://kyoto-ninchisho-consult-staging.iwatas.workers.dev",
     MOCK: false
   };
 
@@ -421,6 +423,12 @@
   const IS_LOCAL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   const USE_MOCK = CONFIG.MOCK ||
     (IS_LOCAL && new URLSearchParams(location.search).get("mock") === "1");
+  // ローカル検証用: localhost / 127.0.0.1 に限り ?api=staging で検証用Workerに切り替えられる。
+  // 本番（GitHub Pages）では常に本番Workerを使う（マージしても本番の向き先は変わらない）。
+  const WORKER_URL =
+    (IS_LOCAL && new URLSearchParams(location.search).get("api") === "staging")
+      ? CONFIG.STAGING_WORKER_URL
+      : CONFIG.WORKER_URL;
 
   // AIが行う質問の上限（無限問診の防止）。上限到達後は強制的に整理フェーズへ。
   // 進行度評価型問診エンジン（4段階問診＋差し込み質問）に合わせて 8 問（北川設計書 A-3）。
@@ -892,7 +900,7 @@
       await new Promise(r => setTimeout(r, 400)); // 通信の雰囲気だけ再現
       return mockReply(messages, forceDone);
     }
-    const res = await fetch(CONFIG.WORKER_URL, {
+    const res = await fetch(WORKER_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -4,3 +4,11 @@ compatibility_date = "2026-07-01"
 
 # APIキーは wrangler secret で設定する（このファイルやコードには絶対に書かない）:
 #   npx wrangler secret put GEMINI_API_KEY
+
+# 検証用Worker（本番とは別のWorker）。藤田先生の意見を受けた修正（feature/fujita-feedback）の
+# 確認に使い、採用が決まるまで本番Worker（kyoto-ninchisho-consult）には deploy しない:
+#   npx wrangler secret put GEMINI_API_KEY --env staging
+#   npx wrangler deploy --env staging
+# 不採用になった場合の削除: npx wrangler delete --env staging
+[env.staging]
+name = "kyoto-ninchisho-consult-staging"

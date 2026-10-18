@@ -27,10 +27,17 @@ const fs = require("node:fs");
 const path = require("node:path");
 const triage = require("./triage.js");
 
-const WORKER_URL = "https://kyoto-ninchisho-consult.iwatas.workers.dev";
+// 評価先の切り替え（既定は本番Worker）。検証用Workerを評価するときは、結果ファイルが
+// 本番の結果を上書きしないよう EVAL_TAG も付ける:
+//   EVAL_WORKER_URL=https://kyoto-ninchisho-consult-staging.iwatas.workers.dev EVAL_TAG=fujita node eval_triage_layer2.js
+//   → eval_layer2_result_fujita.md / eval_layer2_raw_fujita.json
+const PROD_WORKER_URL = "https://kyoto-ninchisho-consult.iwatas.workers.dev";
+const WORKER_URL = process.env.EVAL_WORKER_URL || PROD_WORKER_URL;
+const IS_PROD = WORKER_URL === PROD_WORKER_URL;
+const TAG = process.env.EVAL_TAG ? "_" + process.env.EVAL_TAG.replace(/[^\w-]/g, "") : "";
 const CSV_PATH = path.join(__dirname, "トリアージ評価セット_v2_20件.csv");
-const OUT_PATH = path.join(__dirname, "eval_layer2_result.md");
-const RAW_PATH = path.join(__dirname, "eval_layer2_raw.json");
+const OUT_PATH = path.join(__dirname, `eval_layer2_result${TAG}.md`);
+const RAW_PATH = path.join(__dirname, `eval_layer2_raw${TAG}.json`);
 
 const SLEEP_MS = 3000;        // 無料枠のレート制限に配慮した待機
 const RETRY_WAIT_MS = 30000;  // 429（レート制限）のときの待機
@@ -305,7 +312,7 @@ function writeReport(results) {
   const L = [];
   L.push("# トリアージ評価【層2】結果 — Worker経由のAI判定");
   L.push("");
-  L.push(`- 評価対象: 本番Worker \`${WORKER_URL}\`（モデル: gemini-3.7-flash）`);
+  L.push(`- 評価対象: ${IS_PROD ? "本番Worker" : "検証用Worker"} \`${WORKER_URL}\`（モデル: gemini-3.7-flash）`);
   L.push(`- 評価セット: \`トリアージ評価セット_v2_20件.csv\`（${results.length}件）`);
   L.push(`- 実行日時: ${new Date().toISOString().slice(0, 16).replace("T", " ")} (UTC)`);
   L.push(`- 測定できたケース: ${measured.length} / ${results.length}` +
