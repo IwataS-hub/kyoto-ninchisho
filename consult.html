@@ -504,7 +504,7 @@
 
   /* ===== モック応答（USE_MOCK のとき使用） =====
      進行度評価型問診エンジン（北川設計書）の縮小版シナリオ:
-       1. 通常（家族経路）: 本人/家族確認 → 段階問診（基本情報・記憶・作業）を模した4問 → stage_band:"early" の結果
+       1. 通常（家族経路）: 本人/家族確認 → 段階問診（基本情報・記憶・作業）＋行動の変化＋希望 → stage_band:"early" の結果
        2. 緊急語           : 「意識がもうろう」等 → 確認質問なしで即 kyukyu
        3. 要確認語の差し込み: 「ふらふら」「急に」「頭を打った」等 → 確認質問を1問挟み、
                               その回答で判断（否定なら緊急にせず基本の流れへ戻る）
@@ -552,11 +552,16 @@
   const MOCK_Q_WISH_SELF =
     "いまのご自身の状況について、どのようにしたいとお考えですか？（例：念のため調べておきたい／まず話を聞いてほしい／今はまだ様子を見たい）";
 
+  // 行動の変化の確認（家族経路のみ。暴力などは利用者が自分から書かないと拾えないため）
+  const MOCK_Q_BEHAVIOR =
+    "最近、ご様子の変化で困っていることはありますか？（例：大きな声を出す、手が出る、一人で外に出て行ってしまう など）";
+
   const MOCK_FLOW_FAMILY = [
     "ありがとうございます。まず、いつ頃から気になり始められましたか？",
     "差し支えなければ、その方のおよそのご年齢を教えていただけますか？",
     "もの忘れについて教えてください。最近、同じことを何度も聞いたり、鍵や財布をよく探したりすることはありますか？",
     "毎日の家事や手続きについてはいかがでしょう。料理の品数や手順に変化はありますか？（例：レパートリーが減った、銀行からの書類を開けずに置いている など）",
+    MOCK_Q_BEHAVIOR,
     MOCK_Q_WISH_FAMILY
   ];
   // 本人経路: 自尊心の保護を最優先した間接的な聞き方（4問。1ターン1質問）
@@ -740,14 +745,19 @@
   };
 
   // 差し込み質問（insertQuestion）への回答を返す。未質問なら null。
-  // 受け止め方・希望の質問に回答があれば、その言葉を医療機関へのメモに1行加える
+  // 行動の変化・受け止め方と希望の質問に回答があれば、その言葉を医療機関へのメモに1行ずつ加える
   function mockWithWish(doneResult, userMsgs, assistantMsgs){
+    const lines = [];
+    const behavior = mockInsertAnswer(userMsgs, assistantMsgs, MOCK_Q_BEHAVIOR);
+    if(behavior && behavior.trim() && !mockIsNegative(behavior.trim())){
+      lines.push("・行動の変化: " + behavior.trim().slice(0, 80));
+    }
     const wishQ = assistantMsgs.find(m => m.content === MOCK_Q_WISH_FAMILY || m.content === MOCK_Q_WISH_SELF);
-    if(!wishQ) return doneResult;
-    const answer = mockInsertAnswer(userMsgs, assistantMsgs, wishQ.content);
-    if(!answer || !answer.trim()) return doneResult;
+    const wish = wishQ ? mockInsertAnswer(userMsgs, assistantMsgs, wishQ.content) : null;
+    if(wish && wish.trim()) lines.push("・受け止め方・希望: " + wish.trim().slice(0, 80));
+    if(lines.length === 0) return doneResult;
     const copy = JSON.parse(JSON.stringify(doneResult));
-    copy.result.note_for_doctor += "\n・受け止め方・希望: " + answer.trim().slice(0, 80);
+    copy.result.note_for_doctor += "\n" + lines.join("\n");
     return copy;
   }
 
