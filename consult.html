@@ -546,18 +546,26 @@
      【1ターン1質問】1つのメッセージで複数の事柄を尋ねないこと。
      以前は第1段階を「ご年齢と、同居されているか、いつごろからか」の1メッセージに
      まとめていたが、これは設計（システムプロンプトのルール6）違反だったため分割した。 */
+  // 受け止め方・希望の確認（藤田先生の意見: 支援の必要性と利用したい気持ちは別）
+  const MOCK_Q_WISH_FAMILY =
+    "いま、どのような手助けがあるとよいと思われますか？（例：まず話を聞いてほしい／病院で詳しく調べたい／介護のことを知りたい／今はまだ様子を見たい）";
+  const MOCK_Q_WISH_SELF =
+    "いまのご自身の状況について、どのようにしたいとお考えですか？（例：念のため調べておきたい／まず話を聞いてほしい／今はまだ様子を見たい）";
+
   const MOCK_FLOW_FAMILY = [
     "ありがとうございます。まず、いつ頃から気になり始められましたか？",
     "差し支えなければ、その方のおよそのご年齢を教えていただけますか？",
     "もの忘れについて教えてください。最近、同じことを何度も聞いたり、鍵や財布をよく探したりすることはありますか？",
-    "毎日の家事や手続きについてはいかがでしょう。料理の品数や手順に変化はありますか？（例：レパートリーが減った、銀行からの書類を開けずに置いている など）"
+    "毎日の家事や手続きについてはいかがでしょう。料理の品数や手順に変化はありますか？（例：レパートリーが減った、銀行からの書類を開けずに置いている など）",
+    MOCK_Q_WISH_FAMILY
   ];
   // 本人経路: 自尊心の保護を最優先した間接的な聞き方（4問。1ターン1質問）
   const MOCK_FLOW_SELF = [
     "ありがとうございます。まず、いつ頃から気になり始められましたか？",
     "差し支えなければ、およそのご年齢を教えていただけますか？",
     "最近、人の名前や予定を思い出しにくいと感じることはありますか？",
-    "最近、お金の手続きや買い物などをお一人でなさるとき、「少しややこしいな」「戸惑うな」と感じる瞬間はありますか？"
+    "最近、お金の手続きや買い物などをお一人でなさるとき、「少しややこしいな」「戸惑うな」と感じる瞬間はありますか？",
+    MOCK_Q_WISH_SELF
   ];
 
   function mockDetectRespondent(userMsgs, assistantMsgs){
@@ -732,6 +740,17 @@
   };
 
   // 差し込み質問（insertQuestion）への回答を返す。未質問なら null。
+  // 受け止め方・希望の質問に回答があれば、その言葉を医療機関へのメモに1行加える
+  function mockWithWish(doneResult, userMsgs, assistantMsgs){
+    const wishQ = assistantMsgs.find(m => m.content === MOCK_Q_WISH_FAMILY || m.content === MOCK_Q_WISH_SELF);
+    if(!wishQ) return doneResult;
+    const answer = mockInsertAnswer(userMsgs, assistantMsgs, wishQ.content);
+    if(!answer || !answer.trim()) return doneResult;
+    const copy = JSON.parse(JSON.stringify(doneResult));
+    copy.result.note_for_doctor += "\n・受け止め方・希望: " + answer.trim().slice(0, 80);
+    return copy;
+  }
+
   function mockInsertAnswer(userMsgs, assistantMsgs, insertQuestion){
     const idx = assistantMsgs.findIndex(m => m.content === insertQuestion);
     if(idx === -1) return null;
@@ -806,7 +825,7 @@
     // 差し込み質問を挟んだ場合も、既に聞いた位置の続きから再開する。
     const flow = respondent === "self" ? MOCK_FLOW_SELF : MOCK_FLOW_FAMILY;
     const doneResult = respondent === "self" ? MOCK_EARLY_SELF_RESULT : MOCK_FAMILY_RESULT;
-    if(forceDone) return doneResult;
+    if(forceDone) return mockWithWish(doneResult, userMsgs, assistantMsgs);
     let lastFlowIdx = -1;
     assistantMsgs.forEach(m => {
       const i = flow.indexOf(m.content);
@@ -816,7 +835,7 @@
     if(nextQuestion){
       return { phase: "asking", next_question: nextQuestion };
     }
-    return doneResult;
+    return mockWithWish(doneResult, userMsgs, assistantMsgs);
   }
 
   /* ===== 状態 ===== */
