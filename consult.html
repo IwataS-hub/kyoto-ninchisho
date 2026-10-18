@@ -288,6 +288,18 @@
     line-height: 1.8;
   }
   .safety-box a{ color: var(--orange); font-weight: bold; }
+  /* 人と話せる窓口（アンケートの「AIだけでなく人にも相談したい」を受けた常設の案内） */
+  .talk-box{
+    background: #f0f7f2;
+    border: 1px solid #b7d7c1;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+  .talk-box p{ margin: 0 0 6px; }
+  .talk-box a{ font-weight: bold; }
+  .talk-note{ font-size: 0.78rem; color: #4b5563; }
   .note-box{
     background: #fafbfc;
     border: 1px dashed #9ca3af;
@@ -1177,6 +1189,26 @@
         <h3>次の一歩</h3>
         <p>${escapeHtml(result.advice)}</p>
       </div>
+    `;
+
+    // 人と話せる窓口（救急案内のときは119番を優先するため表示しない）。
+    // 掲載内容は京都府「京都府認知症コールセンター」のページ（pref.kyoto.jp/kaigo/13800009.html）で確認。
+    // 番号・受付時間が変わった場合はここを更新する。
+    if(!showEmergency){
+      html += `
+        <div class="result-section">
+          <h3>人と話して相談したいときは</h3>
+          <div class="talk-box">
+            <p><strong>京都府認知症コールセンター</strong>　<a href="tel:0120294677">0120-294-677</a>（通話無料）<br>
+            平日10時〜15時（祝日・お盆・年末年始を除く）。認知症の介護を経験した方が相談に応じます。</p>
+            <p><strong>地域包括支援センター</strong>　介護や生活、ご家族の負担のことを、お住まいの地域の窓口で相談できます。</p>
+            <p class="talk-note">受付時間などは変わることがあります。最新の情報は各窓口でご確認ください。</p>
+          </div>
+        </div>
+      `;
+    }
+
+    html += `
       <button class="reset-btn" id="reset-btn">最初から相談し直す</button>
     `;
 
