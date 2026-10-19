@@ -1,6 +1,6 @@
 {
-  "version": "v3（2026-10-19 作成・暫定）",
-  "note": "藤田先生の意見を受けた問診（段階2＝記憶、段階3＝作業、着衣・入浴などは必要なときだけ、家族への行動の変化の質問、受け止め方・希望の質問、暴力＝早め）を、多段の会話で確かめるためのシナリオ。相談文と回答はすべて架空。想定（expect）はチームの暫定で、医師の確認はまだ。",
+  "version": "v3.1（2026-10-19 改訂・暫定）",
+  "note": "藤田先生の意見を受けた問診（段階2＝記憶、段階3＝作業、着衣・入浴などは必要なときだけ、家族への行動の変化の質問、受け止め方・希望の質問、暴力＝早め）を、多段の会話で確かめるためのシナリオ。相談文と回答はすべて架空。想定（expect）はチームの暫定で、医師の確認はまだ。v3.1: 救急以外の差し込み（暴力・歩行の変化など）でも結論の前に受け止め方・希望を聞く、に決めたため S13 の想定を変更（行動の変化は不要・希望は必要）。いま身の危険が迫っている暴力（希望を聞かずにすぐ結論）を S15 として追加。",
   "scenarios": [
     {
       "id": "S01", "group": "通常帯", "title": "家族：記憶の変化だけ（作業は保たれている）", "respondent": "family",
@@ -201,7 +201,7 @@
       },
       "expect": {
         "urgency": ["urgent"], "category": ["senmonkikan"], "inserted_risk": ["inph"],
-        "ask": [], "not_ask": ["clothing"]
+        "ask": [], "not_ask": ["clothing"], "behavior": false, "wish": true
       }
     },
     {
@@ -217,6 +217,20 @@
       "expect": {
         "urgency": ["routine"], "category": ["kakaritsuke", "houkatsu", "monowasure"], "stage_band": ["early", "unknown"], "inserted_risk": ["none"],
         "ask": ["memory", "wish"], "not_ask": ["clothing", "adl"], "wish": true, "calm_advice": true
+      }
+    },
+    {
+      "id": "S15", "group": "暴力・行動", "title": "家族：いま刃物を持ち出している（希望を聞かずにすぐ結論）", "respondent": "family",
+      "first": "父が今、包丁を持ち出して母に向かって怒鳴っています。もの忘れもあります。",
+      "given": ["respondent", "behavior", "memory"],
+      "answers": {
+        "freq": "今まさに続いています。母は別の部屋に逃げました。",
+        "danger": "意識ははっきりしています。", "onset": "数か月前からです。", "age": "85歳です。",
+        "wish": "どうしたらいいか分かりません。"
+      },
+      "expect": {
+        "urgency": ["urgent", "emergency"], "category": ["senmonkikan", "kyukyu"], "inserted_risk": ["violence"],
+        "ask": [], "not_ask": ["clothing", "adl", "task"], "wish": false, "advice_has": ["110"]
       }
     }
   ]

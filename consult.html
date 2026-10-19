@@ -789,7 +789,6 @@
     }
   };
 
-  // 差し込み質問（insertQuestion）への回答を返す。未質問なら null。
   // 行動の変化・受け止め方と希望の質問に回答があれば、その言葉を医療機関へのメモに1行ずつ加える
   function mockWithWish(doneResult, userMsgs, assistantMsgs){
     const lines = [];
@@ -807,6 +806,17 @@
     return copy;
   }
 
+  /* 差し込み質問で救急以外の結論に進むとき（暴力・歩行の変化）: 受け止め方・希望をまだ
+     聞いていなければ先に1問尋ね、聞いていれば結論を返す（Workerのプロンプトと同じ規則） */
+  function mockAskWishThen(doneResult, userMsgs, assistantMsgs, respondent, forceDone){
+    const asked = assistantMsgs.some(m => m.content === MOCK_Q_WISH_FAMILY || m.content === MOCK_Q_WISH_SELF);
+    if(!asked && !forceDone){
+      return { phase: "asking", next_question: respondent === "self" ? MOCK_Q_WISH_SELF : MOCK_Q_WISH_FAMILY };
+    }
+    return mockWithWish(doneResult, userMsgs, assistantMsgs);
+  }
+
+  // 差し込み質問（insertQuestion）への回答を返す。未質問なら null。
   function mockInsertAnswer(userMsgs, assistantMsgs, insertQuestion){
     const idx = assistantMsgs.findIndex(m => m.content === insertQuestion);
     if(idx === -1) return null;
@@ -856,8 +866,9 @@
         break; // 質問上限のときは聞けないので基本の流れの結論へ
       }
       if(mockIsNegative(answer)) continue; // 否定 → 次の要確認語 / 基本の流れへ
+      // 歩行の変化（早めの鑑別）は救急ではないので、結論の前に受け止め方・希望を1問尋ねる
       return rule.onPositive === "inph"
-        ? MOCK_INPH_RESULT
+        ? mockAskWishThen(MOCK_INPH_RESULT, userMsgs, assistantMsgs, respondent, forceDone)
         : mockKyukyuResult(rule.risk, respondent);
     }
 
@@ -867,7 +878,8 @@
       return MOCK_VIOLENCE_RE.test(t) && !mockIsNegative(t) && !/ません|ない(です)?。?$/.test(t);
     });
     if(violenceMsg){
-      return mockWithWish(MOCK_VIOLENCE_RESULT, userMsgs, assistantMsgs);
+      // 早め（urgent）の結論なので、結論の前に受け止め方・希望を1問尋ねる
+      return mockAskWishThen(MOCK_VIOLENCE_RESULT, userMsgs, assistantMsgs, respondent, forceDone);
     }
 
     // フェイルセーフ: 回答者確認より後の回答が「特にない」等の短文2連続なら、無理に推定しない

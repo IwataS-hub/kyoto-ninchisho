@@ -106,7 +106,7 @@ test("シナリオの形式（必須項目とID重複）", () => {
     assert.ok(s.id && s.first && s.respondent && s.expect, s.id);
     assert.ok(!ids.has(s.id), "重複: " + s.id); ids.add(s.id);
   }
-  assert.strictEqual(scenarios.length, 14);
+  assert.strictEqual(scenarios.length, 15);
 });
 
 test("評価セットv3は、v2から T07/T13/T14/T16 の進行度の想定だけを変えている", () => {
@@ -164,4 +164,28 @@ test("AIが結論を出せなかった回は、測定できた回として不合
   const run = await lib.runScenario(sc, async () => ({ ok: true, json: { phase: "???" } }));
   assert.ok(!run.unmeasured);
   assert.ok(fails(lib.evaluateRun(sc, run)).includes("completed"));
+});
+
+test("救急以外の差し込みで結論するとき（S13 歩行の変化）は、行動の変化は不要・希望は必要", async () => {
+  const sc = S("S13");
+  const r = Object.assign({}, goodResult, { urgency: "urgent", category: "senmonkikan", inserted_risk: "inph" });
+  // 確認1問 → 希望1問 → 結論（行動の変化は聞かない）
+  const qs = ["すり足や尿もれはありますか？", QUESTIONS.wish];
+  let i = 0;
+  const send = async (messages, forceDone) => (forceDone || i >= qs.length)
+    ? { ok: true, json: { phase: "done", result: r } }
+    : { ok: true, json: { phase: "asking", next_question: qs[i++] } };
+  const run = await lib.runScenario(sc, send);
+  assert.deepStrictEqual(run.turns.map(t => t.topic), ["danger", "wish"]);
+  assert.deepStrictEqual(fails(lib.evaluateRun(sc, run)), []);
+  // 希望を聞かずに結論したら不合格
+  const run2 = await lib.runScenario(sc, fakeAi([], r));
+  assert.ok(fails(lib.evaluateRun(sc, run2)).includes("wish_asked"));
+});
+
+test("いま身の危険が迫っている暴力（S15）は、希望を聞かずに結論する", async () => {
+  const sc = S("S15");
+  const r = Object.assign({}, goodResult, { urgency: "urgent", category: "senmonkikan", inserted_risk: "violence", advice: "身の危険が迫っているときは、ためらわず110番へ。", note_for_doctor: "・回答者: ご家族" });
+  assert.deepStrictEqual(fails(lib.evaluateRun(sc, await lib.runScenario(sc, fakeAi([], r)))), []);
+  assert.ok(fails(lib.evaluateRun(sc, await lib.runScenario(sc, fakeAi(["wish"], r)))).includes("wish_skip"));
 });

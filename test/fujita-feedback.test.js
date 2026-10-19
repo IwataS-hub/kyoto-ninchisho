@@ -78,3 +78,13 @@ test("暴力: urgent・violence とし、救急にはしない。110・119を案
   const risk = body.generationConfig.responseSchema.properties.result.properties.inserted_risk;
   assert.ok(risk.enum.includes("violence"), "responseSchema に violence がある");
 });
+
+test("救急以外の差し込み（暴力・歩行の変化など）でも、結論の前に受け止め方・希望を尋ねる", async () => {
+  const p = await systemPrompt();
+  assert.match(p, /救急案内（emergency）にしない結論（②行動・心理症状、③歩行の変化、⑤身体的な暴力 など）に進むときは/);
+  assert.match(p, /差し込み質問（危険兆候の常時監視）で救急案内以外の結論に進む場合も/);
+  // いま身の危険が迫っている暴力では、希望を尋ねずにすぐ結論する
+  assert.match(p, /いま身の危険が迫っている/);
+  // 以前の「確認せずに結論を出してよい」（希望の質問を飛ばす根拠になっていた）は残っていない
+  assert.doesNotMatch(p, /既に十分な情報がある場合は確認せずに結論を出してよい/);
+});

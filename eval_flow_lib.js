@@ -174,7 +174,7 @@ function evaluateRun(sc, run) {
     add("wish_asked", "受け止め方・希望を聞いた", asked.has("wish"));
     add("wish_note", "メモに「受け止め方・希望」の行", r ? /受け止め方・希望/.test(r.note_for_doctor || "") : false);
   } else if (ex.wish === false) {
-    add("wish_skip", "緊急時は希望を聞かずに結論", !asked.has("wish"));
+    add("wish_skip", "希望を聞かずに結論（救急・身の危険）", !asked.has("wish"));
   }
 
   // --- 結果 ---
