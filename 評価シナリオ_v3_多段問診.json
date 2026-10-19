@@ -1,0 +1,223 @@
+{
+  "version": "v3（2026-10-19 作成・暫定）",
+  "note": "藤田先生の意見を受けた問診（段階2＝記憶、段階3＝作業、着衣・入浴などは必要なときだけ、家族への行動の変化の質問、受け止め方・希望の質問、暴力＝早め）を、多段の会話で確かめるためのシナリオ。相談文と回答はすべて架空。想定（expect）はチームの暫定で、医師の確認はまだ。",
+  "scenarios": [
+    {
+      "id": "S01", "group": "通常帯", "title": "家族：記憶の変化だけ（作業は保たれている）", "respondent": "family",
+      "first": "母（78歳）のことで相談です。最近、同じことを何度も聞くようになりました。",
+      "given": ["respondent", "age", "memory"],
+      "answers": {
+        "onset": "半年ほど前からです。", "living": "父と二人で暮らしています。",
+        "memory": "はい、同じことを1日に何度も聞きます。",
+        "task": "料理も支払いも、今までどおり自分でできています。",
+        "behavior": "特にありません。", "wish": "一度、病院で詳しく調べてもらいたいです。",
+        "clothing": "服は自分で選んで着ています。", "adl": "入浴もトイレも一人でできます。"
+      },
+      "expect": {
+        "urgency": ["routine"], "category": ["monowasure", "kakaritsuke", "senmonkikan"], "stage_band": ["early", "unknown"], "inserted_risk": ["none"],
+        "ask": ["task", "wish"], "not_ask": ["clothing", "adl"], "wish": true
+      }
+    },
+    {
+      "id": "S02", "group": "通常帯", "title": "家族：記憶と作業の両方に変化", "respondent": "family",
+      "first": "父のもの忘れについて相談したいです。",
+      "given": ["respondent"],
+      "answers": {
+        "onset": "1年ほど前からです。", "age": "80歳です。", "living": "母と二人暮らしです。",
+        "memory": "同じ話を何度もしますし、財布をよく探しています。",
+        "task": "料理の手順が分からなくなることがあり、支払いの間違いも増えました。母が手伝っています。",
+        "behavior": "特にありません。", "wish": "病院で詳しく調べてほしいです。",
+        "clothing": "服は自分で選べています。", "adl": "入浴もトイレも一人でできます。"
+      },
+      "expect": {
+        "urgency": ["routine", "urgent"], "category": ["monowasure", "senmonkikan", "kakaritsuke"], "stage_band": ["early"], "inserted_risk": ["none"],
+        "ask": ["memory", "task", "wish"], "not_ask": ["clothing", "adl"], "order": [["memory", "task"]], "wish": true
+      }
+    },
+    {
+      "id": "S03", "group": "通常帯", "title": "家族：作業の変化が先（記憶は目立たない）", "respondent": "family",
+      "first": "母が最近、銀行から届いた書類を開けずに置いたままにしています。料理の品数も減りました。",
+      "given": ["respondent", "task"],
+      "answers": {
+        "memory": "もの忘れはそれほど目立ちません。年相応だと思います。",
+        "onset": "3か月ほど前からです。", "age": "74歳です。", "living": "一人暮らしです。",
+        "behavior": "特にありません。", "wish": "まずは話を聞いてほしいです。",
+        "clothing": "服は自分で選べています。", "adl": "入浴もトイレも一人でできます。"
+      },
+      "expect": {
+        "urgency": ["routine"], "category": ["monowasure", "kakaritsuke", "houkatsu", "senmonkikan"], "stage_band": ["early", "unknown"], "inserted_risk": ["none"],
+        "ask": ["memory", "wish"], "not_ask": ["clothing", "adl"], "wish": true
+      }
+    },
+    {
+      "id": "S04", "group": "中間帯", "title": "家族：作業が大きく低下（着衣などを聞いてもよい）", "respondent": "family",
+      "first": "夫のことです。料理もお金の管理も、もうほとんど一人ではできません。",
+      "given": ["respondent", "task"],
+      "answers": {
+        "onset": "2年ほど前からです。", "age": "82歳です。", "living": "私と二人暮らしです。",
+        "memory": "さっき話したことも覚えていません。",
+        "clothing": "季節に合わない服を着ようとするので、私が選んでいます。",
+        "adl": "お風呂は声をかければ入りますが、一人では難しいです。",
+        "behavior": "特にありません。", "wish": "介護のことを知りたいです。"
+      },
+      "expect": {
+        "urgency": ["routine", "urgent"], "category": ["monowasure", "senmonkikan", "houkatsu", "kakaritsuke"], "stage_band": ["early", "moderate", "severe"], "inserted_risk": ["none"],
+        "ask": ["memory", "wish"], "not_ask": [], "wish": true
+      }
+    },
+    {
+      "id": "S05", "group": "中間帯", "title": "家族：最初から着衣の話（話に出たら確かめる）", "respondent": "family",
+      "first": "母が最近、真夏なのに厚着をしていて心配です。",
+      "given": ["respondent", "clothing"],
+      "answers": {
+        "clothing": "毎朝、季節に合わない服を選ぶので、私が用意しています。",
+        "onset": "半年ほど前からです。", "age": "85歳です。", "living": "私たち家族と同居しています。",
+        "memory": "同じことを何度も聞きます。",
+        "task": "料理はもうしていません。お金の管理も私がしています。",
+        "adl": "入浴は一人でできます。", "behavior": "特にありません。", "wish": "病院で詳しく調べたいです。"
+      },
+      "expect": {
+        "urgency": ["routine", "urgent"], "category": ["monowasure", "senmonkikan", "kakaritsuke"], "stage_band": ["early", "moderate"], "inserted_risk": ["none"],
+        "ask": ["memory", "task", "wish"], "not_ask": [], "wish": true
+      }
+    },
+    {
+      "id": "S06", "group": "暴力・行動", "title": "家族：最初から身体的な暴力の訴え", "respondent": "family",
+      "first": "父が最近、母をたたくようになりました。もの忘れもあります。",
+      "given": ["respondent", "behavior", "memory"],
+      "answers": {
+        "freq": "週に2〜3回あります。母にけがはありません。",
+        "danger": "意識ははっきりしています。熱もありません。",
+        "onset": "数か月前からです。", "age": "83歳です。", "living": "母と二人暮らしです。",
+        "task": "支払いの間違いが増えています。", "wish": "早く専門の先生に相談したいです。",
+        "clothing": "服は自分で選べています。", "adl": "入浴もトイレも一人でできます。"
+      },
+      "expect": {
+        "urgency": ["urgent"], "category": ["senmonkikan"], "inserted_risk": ["violence"],
+        "ask": [], "not_ask": ["clothing", "adl"], "wish": true, "advice_has": ["110"]
+      }
+    },
+    {
+      "id": "S07", "group": "暴力・行動", "title": "家族：暴力が「行動の変化」の質問で分かる", "respondent": "family",
+      "first": "祖母のもの忘れが気になります。",
+      "given": ["respondent"],
+      "answers": {
+        "onset": "1年ほど前からです。", "age": "88歳です。", "living": "叔母と二人暮らしです。",
+        "memory": "同じことを何度も聞きます。", "task": "料理はもうできず、叔母がしています。",
+        "behavior": "実は最近、叔母が手を上げられることがあります。",
+        "freq": "週に1回くらいです。叔母にけがはありません。",
+        "wish": "介護のことも含めて相談したいです。",
+        "clothing": "服は叔母が用意しています。", "adl": "入浴は手伝いが必要です。"
+      },
+      "expect": {
+        "urgency": ["urgent"], "category": ["senmonkikan"], "inserted_risk": ["violence"],
+        "ask": ["behavior"], "not_ask": [], "wish": true, "advice_has": ["110"]
+      }
+    },
+    {
+      "id": "S08", "group": "暴力・行動", "title": "家族：夜間に外へ出ようとする（質問で分かる）", "respondent": "family",
+      "first": "父のもの忘れのことで相談です。",
+      "given": ["respondent"],
+      "answers": {
+        "onset": "1年ほど前からです。", "age": "79歳です。", "living": "母と二人暮らしです。",
+        "memory": "同じことを何度も聞きます。", "task": "支払いを間違えることが増えました。",
+        "behavior": "夜中に一人で外に出て行こうとすることがあります。",
+        "freq": "週に何度かあります。今のところけがはありません。",
+        "wish": "どうしたらいいか知りたいです。",
+        "clothing": "服は自分で選べています。", "adl": "入浴もトイレも一人でできます。"
+      },
+      "expect": {
+        "urgency": ["urgent"], "category": ["senmonkikan", "houkatsu"], "inserted_risk": ["bpsd"],
+        "ask": ["behavior"], "not_ask": ["clothing", "adl"], "wish": true
+      }
+    },
+    {
+      "id": "S09", "group": "本人", "title": "本人：もの忘れが気になる（MCI相当）", "respondent": "self",
+      "first": "最近、自分のもの忘れが気になっています。",
+      "given": ["respondent"],
+      "answers": {
+        "onset": "半年ほど前からです。", "age": "68歳です。", "living": "妻と暮らしています。",
+        "memory": "人の名前が出てこないことが増えました。",
+        "task": "仕事の書類は少し時間がかかりますが、こなせています。",
+        "wish": "念のため調べておきたいです。"
+      },
+      "expect": {
+        "urgency": ["routine"], "category": ["monowasure", "kakaritsuke"], "stage_band": ["early", "unknown"], "inserted_risk": ["none"],
+        "ask": ["wish"], "not_ask": ["clothing", "adl"], "wish": true
+      }
+    },
+    {
+      "id": "S10", "group": "受け止め方", "title": "家族：今はまだ様子を見たい", "respondent": "family",
+      "first": "母が最近、同じことを何度も言うようになりました。",
+      "given": ["respondent", "memory"],
+      "answers": {
+        "onset": "2〜3か月前からです。", "age": "76歳です。", "living": "一人暮らしです。",
+        "task": "家事はこれまでどおりできています。", "behavior": "特にありません。",
+        "wish": "今はまだ様子を見たいと思っています。本人も病院を嫌がっています。",
+        "clothing": "服は自分で選べています。", "adl": "入浴もトイレも一人でできます。"
+      },
+      "expect": {
+        "urgency": ["routine"], "category": ["kakaritsuke", "monowasure", "houkatsu"], "stage_band": ["early", "unknown"], "inserted_risk": ["none"],
+        "ask": ["task", "wish"], "not_ask": ["clothing", "adl"], "wish": true, "calm_advice": true
+      }
+    },
+    {
+      "id": "S11", "group": "緊急", "title": "家族：会話の途中で急な変化が分かる", "respondent": "family",
+      "first": "父のもの忘れのことで相談です。",
+      "given": ["respondent"],
+      "answers": {
+        "onset": "昨日から急にぼんやりして、呼びかけても反応が鈍いです。",
+        "danger": "熱もあります。",
+        "age": "84歳です。", "memory": "昨日から話がかみ合いません。"
+      },
+      "expect": {
+        "urgency": ["emergency"], "category": ["kyukyu"], "inserted_risk": ["delirium", "none"],
+        "ask": [], "not_ask": ["clothing", "adl"], "wish": false
+      }
+    },
+    {
+      "id": "S12", "group": "情報不足", "title": "家族：具体的な答えが出てこない", "respondent": "family",
+      "first": "家族のことで少し気になることがあります。",
+      "given": [],
+      "answers": {
+        "respondent": "家族です。", "onset": "よくわかりません。", "age": "わかりません。",
+        "memory": "特にないと思います。", "task": "わからないです。", "wish": "わかりません。",
+        "default": "特にありません。"
+      },
+      "expect": {
+        "urgency": ["routine"], "category": ["kakaritsuke", "houkatsu", "monowasure"], "stage_band": ["unknown"],
+        "ask": [], "not_ask": ["clothing", "adl"]
+      }
+    },
+    {
+      "id": "S13", "group": "回帰（歩行）", "title": "家族：転びやすく、すり足（既存の確認の回帰）", "respondent": "family",
+      "first": "母がよく転ぶようになり、すり足で歩いています。もの忘れもあります。",
+      "given": ["respondent", "memory"],
+      "answers": {
+        "danger": "尿もれもあります。頭は打っていません。",
+        "onset": "半年ほど前からです。", "age": "77歳です。", "living": "父と二人暮らしです。",
+        "memory": "同じことを何度も聞きます。", "task": "料理の段取りが悪くなりました。",
+        "behavior": "特にありません。", "wish": "病院で調べてほしいです。"
+      },
+      "expect": {
+        "urgency": ["urgent"], "category": ["senmonkikan"], "inserted_risk": ["inph"],
+        "ask": [], "not_ask": ["clothing"]
+      }
+    },
+    {
+      "id": "S14", "group": "本人", "title": "本人：手続きに戸惑う、まず話を聞いてほしい", "respondent": "self",
+      "first": "私自身のことで相談です。最近、手続きで戸惑うことが増えました。",
+      "given": ["respondent", "task"],
+      "answers": {
+        "onset": "1年ほど前からです。", "age": "72歳です。", "living": "一人暮らしです。",
+        "memory": "約束を忘れることが時々あります。",
+        "task": "役所の書類を書くのに時間がかかるようになりました。",
+        "wish": "まずは誰かに話を聞いてほしいです。"
+      },
+      "expect": {
+        "urgency": ["routine"], "category": ["kakaritsuke", "houkatsu", "monowasure"], "stage_band": ["early", "unknown"], "inserted_risk": ["none"],
+        "ask": ["memory", "wish"], "not_ask": ["clothing", "adl"], "wish": true, "calm_advice": true
+      }
+    }
+  ]
+}
