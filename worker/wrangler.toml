@@ -12,3 +12,8 @@ compatibility_date = "2026-07-01"
 # 不採用になった場合の削除: npx wrangler delete --env staging
 [env.staging]
 name = "kyoto-ninchisho-consult-staging"
+
+# 検証用Workerだけ、評価スクリプト（層2・層3）を回せるようにレート上限を上げる。
+# 本番には vars を設定しないので、本番の上限は worker.js の既定値（1日50）のまま。
+[env.staging.vars]
+RATE_LIMIT_PER_DAY = "300"

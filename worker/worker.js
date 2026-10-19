@@ -557,7 +557,7 @@ function jsonResponse(obj, status, origin) {
   });
 }
 
-function checkRateLimit(ip) {
+function checkRateLimit(ip, limit = RATE_LIMIT_PER_DAY) {
   const today = new Date().toISOString().slice(0, 10);
   const entry = rateMap.get(ip);
   if (!entry || entry.day !== today) {
@@ -570,7 +570,7 @@ function checkRateLimit(ip) {
     }
     return true;
   }
-  if (entry.count >= RATE_LIMIT_PER_DAY) return false;
+  if (entry.count >= limit) return false;
   entry.count += 1;
   return true;
 }
@@ -605,7 +605,11 @@ export default {
     }
 
     const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-    if (!checkRateLimit(ip)) {
+    // 検証用Worker（wrangler.toml の [env.staging.vars]）では、評価スクリプトを回せるよう
+    // 環境変数 RATE_LIMIT_PER_DAY で上限を変えられる。本番は未設定なので既定の50のまま。
+    const envLimit = Number(env && env.RATE_LIMIT_PER_DAY);
+    const limit = envLimit > 0 ? envLimit : RATE_LIMIT_PER_DAY;
+    if (!checkRateLimit(ip, limit)) {
       return jsonResponse(
         { error: "rate limit exceeded", detail: "本日の利用上限に達しました。明日以降にお試しください。" },
         429, origin
