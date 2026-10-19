@@ -19,28 +19,59 @@
 
 const MAX_QUESTIONS = 8; // consult.html と同じ上限
 
-// 話題の分類（上から順に評価する）
+// 回答者の規則（話題の分類）を変えたら上げる。保存済みの会話は、規則が同じときだけ再利用する
+// （回答者の答えが変わると会話そのものが変わるため）。
+const HARNESS_VERSION = 2;
+
+// 話題の分類（上から順に評価する）。
+// 「いつ頃から」は、質問文に記憶や作業の言葉が混ざっていても時期を尋ねる質問として扱う
+// （例:「同じことを何度も聞かれるようになったのは、いつ頃からですか？」→ いつから）。
 const TOPICS = [
   ["respondent", /お答えいただいているのは|ご本人様でしょうか|ご本人でしょうか|どなたについての|どなたのことで/],
   ["danger", /意識|発熱|熱は|熱が|麻痺|ろれつ|手足|すり足|小刻み|尿もれ|頭を打|吐き気|嘔吐|呼びかけ/],
   ["freq", /頻度|回数|何回|(?<!助)けが|怪我/],  // 「手助けが」を拾わないよう除外
-  ["behavior", /大きな声|大声|手が出|手を上げ|外に出て|一人で出て|暴力|暴言|徘徊|様子の変化で困って/],
+  ["behavior", /大きな声|大声|手が出|手を上げ|外に出て|一人で出て|暴力|暴言|徘徊|様子の変化で困って|困っていること|困っておられること|困っていらっしゃること/],
+  ["onset", /いつ頃|いつごろ|いつから|時期|どのくらい前|何か月前|何年前/],
   ["wish", /手助け|どのようにしたい|どうしたい|ご希望|望んで|どうお考え|どのようにお考え/],
   ["clothing", /服|着替|着衣|着る/],
   ["adl", /入浴|お風呂|風呂|排泄|トイレ|自発|発語|口数|話す量|意欲/],
   ["task", /料理|品数|献立|手順|段取り|お金|支払|金銭|書類|手続き|銀行|買い物|家事|家電|仕事/],
   ["memory", /同じこと|同じ話|忘れ|もの忘れ|物忘れ|探して|探す|思い出|約束|予定|記憶|覚え/],
-  ["onset", /いつ頃|いつごろ|いつから|時期|どのくらい前|何か月前|何年前/],
   ["age", /年齢|おいくつ|何歳/],
   ["living", /同居|一緒に住|一緒に暮|一人暮らし|お住まい|暮らして/],
   ["detail", /例えば|具体的/],
 ];
 
-function classifyQuestion(q) {
-  const text = String(q || "");
+/**
+ * 質問の本体（最後の「？」を含む文）を取り出す。AIは前置きで直前の回答を繰り返すことが多く
+ * （例:「お料理やお支払いは問題なく続けられているのですね。続いて…」）、前置きの言葉で
+ * 分類を誤らないようにするため。括弧内の例示も除く。
+ */
+function coreQuestion(q) {
+  const text = String(q || "").replace(/（[^）]*）/g, "").replace(/\([^)]*\)/g, "");
+  const parts = text.split(/(?<=[。！!？?])/).map(x => x.trim()).filter(Boolean);
+  const withQ = parts.filter(x => /[？?]/.test(x));
+  return (withQ.length ? withQ[withQ.length - 1] : parts[parts.length - 1] || "").trim();
+}
+
+function matchTopic(text) {
   for (const [topic, re] of TOPICS) if (re.test(text)) return topic;
   return "unknown";
 }
+
+/** 質問の本体で分類し、分からなければ全文（括弧内の例示を含む）で分類する */
+function classifyQuestion(q) {
+  const core = matchTopic(coreQuestion(q));
+  return core !== "unknown" ? core : matchTopic(String(q || ""));
+}
+
+/**
+ * 続けても意味がないエラー（月の支出上限・1日の上限・APIキーの問題）か。
+ * 一時的な混雑（503）や1分あたりの上限とは違い、待っても回復しないので、
+ * 評価を中断して、上限を見直してから続きを回す。
+ */
+const FATAL_RE = /spending cap|spend cap|API key not valid|API_KEY_INVALID|PERMISSION_DENIED|PerDay|本日の利用上限/i;
+function isFatalError(detail) { return FATAL_RE.test(String(detail || "")); }
 
 function answerFor(sc, topic, turns) {
   const a = sc.answers || {};
@@ -54,22 +85,23 @@ function answerFor(sc, topic, turns) {
   return a.default || "特にありません。";
 }
 
-/** 1シナリオを最後まで進める。send(messages, forceDone) は {ok, json, error} を返す */
+/** 1シナリオを最後まで進める。send(messages, forceDone) は {ok, json, error, fatal} を返す */
 async function runScenario(sc, send, opts = {}) {
   const maxQ = opts.maxQuestions || MAX_QUESTIONS;
   const messages = [{ role: "user", content: sc.first }];
   const turns = [];
-  let result = null, error = null, calls = 0, forcedEnd = false;
+  // unmeasured: 通信・APIのエラーで会話が途切れた（AIの誤りではないので採点しない）
+  let result = null, error = null, calls = 0, forcedEnd = false, unmeasured = false, fatal = false;
   for (let guard = 0; guard < maxQ + 3; guard++) {
     const qCount = messages.filter(m => m.role === "assistant").length;
     let r = await send(messages, qCount >= maxQ); calls++;
-    if (!r.ok) { error = r.error; break; }
+    if (!r.ok) { error = r.error; unmeasured = true; fatal = !!r.fatal; break; }
     let reply = r.json;
     // consult.html と同じ：上限到達後にまだ質問しようとしたら、1回だけ強制整理を要求する
     if (reply && reply.phase === "asking" && qCount >= maxQ) {
       forcedEnd = true;
       r = await send(messages, true); calls++;
-      if (!r.ok) { error = r.error; break; }
+      if (!r.ok) { error = r.error; unmeasured = true; fatal = !!r.fatal; break; }
       reply = r.json;
     }
     if (reply && reply.phase === "done" && reply.result) { result = reply.result; break; }
@@ -85,7 +117,7 @@ async function runScenario(sc, send, opts = {}) {
     break;
   }
   if (!result && !error) error = "結論に到達しませんでした";
-  return { turns, result, error, calls, forcedEnd };
+  return { turns, result, error, calls, forcedEnd, unmeasured, fatal };
 }
 
 /* ===== 判定 ===== */
@@ -103,6 +135,8 @@ function countQuestionMarks(q) {
  * 1回分の結果を判定する。返り値は [{key, label, status: "pass"|"fail"|"na", detail}]
  */
 function evaluateRun(sc, run) {
+  // 通信・APIのエラーで途切れた回は採点しない（レポートでは「測定できなかった回」に出す）
+  if (run.unmeasured) return [];
   const ex = sc.expect || {};
   const given = new Set(sc.given || []);
   const asked = new Set(run.turns.map(t => t.topic));
@@ -176,4 +210,4 @@ const TOPIC_LABELS = {
 };
 function topicLabel(t) { return TOPIC_LABELS[t] || t; }
 
-module.exports = { MAX_QUESTIONS, TOPICS, classifyQuestion, answerFor, runScenario, evaluateRun, countQuestionMarks, topicLabel };
+module.exports = { MAX_QUESTIONS, HARNESS_VERSION, TOPICS, coreQuestion, classifyQuestion, isFatalError, answerFor, runScenario, evaluateRun, countQuestionMarks, topicLabel };

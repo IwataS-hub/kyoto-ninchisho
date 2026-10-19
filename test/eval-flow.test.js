@@ -126,3 +126,42 @@ test("評価セットv3は、v2から T07/T13/T14/T16 の進行度の想定だ�
   });
   assert.deepStrictEqual(changed, ["T07", "T13", "T14", "T16"].map(id => `${id}:暫定_進行度:moderate→unknown`));
 });
+
+test("実際のAIの質問（2026-10-19 検証用Worker）を正しく分類する", () => {
+  const cases = [
+    // 前置きや質問文に「同じこと」「もの忘れ」が混ざっていても、時期を尋ねていれば「いつから」
+    ["お母様のご様子についてのご相談ですね。同じことを何度も聞かれるようになったのは、いつ頃から気になり始められましたか？（例：数週間前、数か月前、1年以上前 など）", "onset"],
+    ["お父様のことについてですね。そのもの忘れは、いつ頃から気になり始められましたか？", "onset"],
+    ["お財布を探されたり同じお話が続くと、ご家族もご心配ですね。そうしたご様子は、およそいつ頃から気になり始められましたでしょうか？", "onset"],
+    // 前置きの「料理」「支払い」に引きずられない
+    ["お料理やお支払いは問題なく続けられているのですね。続いてお伺いしますが、最近、お母様のご様子の変化で困っていることはありますか？（例：大きな声を出す、手が出る、一人で外に出て行ってしまう など）", "behavior"],
+    ["お母様のご様子で、最近困っておられることや気になる変化はございますか？（例：大きな声を出す、手が出る、一人で外に出て行ってしまう など）", "behavior"],
+    ["そうしたご様子がないとお聞きして少し安心いたしました。いま、ご家族としてどのような手助けがあるとよいと思われますでしょうか？（例：病院で詳しく調べたい／介護サービスのことを知りたい／まず話を聞いてほしい など）", "wish"],
+    ["半年ほど前からなのですね。教えていただきありがとうございます。最近、お母様がお料理をされる際の品数や手順などに、以前と変わった様子は見られますか？", "task"],
+    ["少し立ち入ったことをお伺いしますが、季節や天候に合った服をご自身で選んで着ることはできていらっしゃいますか？", "clothing"],
+  ];
+  for (const [q, topic] of cases) assert.strictEqual(lib.classifyQuestion(q), topic, q);
+});
+
+test("待っても回復しないエラー（月の支出上限など）を見分ける", () => {
+  assert.ok(lib.isFatalError("Your project has exceeded its monthly spending cap. Please go to AI Studio"));
+  assert.ok(lib.isFatalError("本日の利用上限に達しました。明日以降にお試しください。"));
+  assert.ok(!lib.isFatalError("This model is currently experiencing high demand."));
+});
+
+test("通信・APIのエラーで途切れた回は採点しない（AIの誤りとして数えない）", async () => {
+  const sc = S("S05");
+  const send = async (messages) => messages.length < 3
+    ? { ok: true, json: { phase: "asking", next_question: "いつ頃から気になり始められましたか？" } }
+    : { ok: false, fatal: true, error: "HTTP 502: Your project has exceeded its monthly spending cap." };
+  const run = await lib.runScenario(sc, send);
+  assert.ok(run.unmeasured && run.fatal);
+  assert.deepStrictEqual(lib.evaluateRun(sc, run), []);
+});
+
+test("AIが結論を出せなかった回は、測定できた回として不合格にする", async () => {
+  const sc = S("S01");
+  const run = await lib.runScenario(sc, async () => ({ ok: true, json: { phase: "???" } }));
+  assert.ok(!run.unmeasured);
+  assert.ok(fails(lib.evaluateRun(sc, run)).includes("completed"));
+});

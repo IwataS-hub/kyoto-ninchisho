@@ -144,6 +144,10 @@ node eval_triage_layer3.js --runs 2           # 検証用Workerで14シナリオ
 node eval_triage_layer3.js --only S06,S07     # 指定したシナリオだけ
 ```
 
+途中で止まった場合は、同じコマンドをもう一度実行すると、終わった回は飛ばして続きから回します
+（最初から回し直すときは `--fresh`）。月の支出上限・1日の上限など、待っても回復しないエラーでは
+再試行せずにその場で中断します。費用の目安は1リクエスト約1.3円で、14シナリオ×1回（約110リクエスト）で約150円です。
+
 層2の評価セットは、問診の変更に合わせて想定ラベルを改訂した v3 があります
 （`トリアージ評価セット_v3_20件.csv`。v2 との違いは T07/T13/T14/T16 の進行度だけ：
 着衣・入浴・排泄の情報がない相談文では中等度以上と判定しない、に変えたため moderate→unknown）。
@@ -152,7 +156,7 @@ node eval_triage_layer3.js --only S06,S07     # 指定したシナリオだけ
 
 ```sh
 cp eval_layer2_raw_fujita.json eval_layer2_raw_fujita_v3.json
-EVAL_CSV=トリアージ評価セット_v3_20件.csv EVAL_TAG=fujita_v3 node eval_triage_layer2.js --report-only
+EVAL_WORKER_URL=https://kyoto-ninchisho-consult-staging.iwatas.workers.dev EVAL_CSV=トリアージ評価セット_v3_20件.csv EVAL_TAG=fujita_v3 node eval_triage_layer2.js --report-only
 # → eval_layer2_result_fujita_v3.md
 ```
 

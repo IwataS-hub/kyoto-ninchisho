@@ -6,6 +6,11 @@
  *   node eval_triage_layer3.js --only S06,S07  … 指定したシナリオだけ
  *   node eval_triage_layer3.js --dry-run       … APIを呼ばずに、シナリオと質問の分類を確認
  *   node eval_triage_layer3.js --report-only   … 保存済みの生データからレポートだけ作り直す
+ *   node eval_triage_layer3.js --fresh         … 保存済みの結果を使わず、最初から回し直す
+ *
+ * 途中で止まった場合は、同じコマンドをもう一度実行すると、終わった回は飛ばして続きから回す
+ * （回答者の規則が変わっていない場合のみ。eval_flow_lib.js の HARNESS_VERSION）。
+ * 月の支出上限・1日の上限など、待っても回復しないエラーでは、再試行せずにその場で中断する。
  *
  * 評価先は既定で検証用Worker。本番と比べるときは EVAL_WORKER_URL と EVAL_TAG を指定する:
  *   EVAL_WORKER_URL=https://kyoto-ninchisho-consult.iwatas.workers.dev EVAL_TAG=prod node eval_triage_layer3.js
@@ -35,8 +40,9 @@ const RUNS = Math.max(1, Number(argVal("--runs") || 1));
 const ONLY = (argVal("--only") || "").split(",").map(s => s.trim()).filter(Boolean);
 const DRY_RUN = argv.includes("--dry-run");
 const REPORT_ONLY = argv.includes("--report-only");
+const FRESH = argv.includes("--fresh");
 
-const SLEEP_MS = 2000;
+const SLEEP_MS = Number(process.env.EVAL_SLEEP_MS || 2000);
 const RETRY_WAIT_MS = 30000;
 const BUSY_WAIT_MS = [15000, 30000, 60000, 90000, 120000];
 const MAX_RETRY = 6;
@@ -65,6 +71,10 @@ async function send(messages, forceDone) {
       if (res.ok) return { ok: true, json };
       const detail = (json && (json.detail || json.error)) || `HTTP ${res.status}`;
       const upstream = json && json.upstream_status;
+      if (lib.isFatalError(detail)) {
+        // 月の支出上限・1日の上限・APIキーの問題は、待っても回復しない
+        return { ok: false, fatal: true, error: `HTTP ${res.status}: ${detail}` };
+      }
       if ((res.status === 429 || upstream === 429) && attempt < MAX_RETRY) {
         console.log(`    429（レート制限）: ${String(detail).slice(0, 60)} … ${RETRY_WAIT_MS / 1000}秒待って再試行`);
         await sleep(RETRY_WAIT_MS); continue;
@@ -97,25 +107,39 @@ function buildReport(data) {
   L.push(`- 評価対象: \`${meta.worker}\`（モデル: gemini-3.7-flash）`);
   L.push(`- シナリオ: \`${path.basename(SC_PATH)}\`（${meta.version}）`);
   L.push(`- 実行日時: ${meta.date} (UTC)`);
-  L.push(`- 実行回数: 各シナリオ ${meta.runs} 回（計 ${runs.length} 回）、Workerへのリクエスト ${runs.reduce((a, r) => a + r.calls, 0)} 回、一時エラーによる再試行 ${meta.transient} 回`, "");
+  L.push(`- 実行回数: 各シナリオ ${meta.runs} 回（計 ${runs.length} 回${meta.reused ? `、うち前回の結果を再利用 ${meta.reused} 回` : ""}）、Workerへのリクエスト ${runs.reduce((a, r) => a + (r.reused ? 0 : r.calls), 0)} 回、一時エラーによる再試行 ${meta.transient} 回`);
+  L.push(`- 回答者の規則: v${meta.harness || 1}`, "");
   L.push("## この評価で分かること・分からないこと", "");
   L.push("- 回答者は「質問文をキーワードで話題に分類し、シナリオの答えを返す」単純な規則で動く。実際の利用者の言い回しのばらつきは再現していない。");
   L.push("- シナリオの想定（期待する緊急度・相談先など）はチームの暫定で、医師の確認はまだ。");
   L.push("- AIの応答は毎回少しずつ変わる。1回の結果だけで判断せず、回数を増やして傾向を見る。", "");
 
-  // checks summary
+  const measured = runs.filter(r => !r.unmeasured);
+  const unmeasured = runs.filter(r => r.unmeasured);
+  if (unmeasured.length) {
+    L.push("## 測定できなかった回（通信・APIのエラー。採点に含めない）", "");
+    L.push("| シナリオ | 回 | エラー |", "|---|---|---|");
+    unmeasured.forEach(r => L.push(`| ${r.id} | ${r.run} | ${String(r.error).slice(0, 120)} |`));
+    L.push("", "同じコマンドをもう一度実行すると、この回だけを回し直します。", "");
+  }
+  if (meta.notRun && meta.notRun.length) {
+    L.push(`中断したため未実行: ${meta.notRun.join("、")}`, "");
+  }
+
+  // checks summary（測定できた回だけ）
   const agg = {};
-  runs.forEach(r => r.checks.forEach(c => {
+  measured.forEach(r => r.checks.forEach(c => {
     const g = agg[c.label] || (agg[c.label] = { pass: 0, fail: 0 });
     if (c.status === "pass") g.pass++; else if (c.status === "fail") g.fail++;
   }));
-  const all = runs.flatMap(r => r.checks).filter(c => c.status !== "na");
+  const all = measured.flatMap(r => r.checks).filter(c => c.status !== "na");
   const passN = all.filter(c => c.status === "pass").length;
   L.push("## 全体", "");
-  L.push(`**判定 ${passN} / ${all.length} 件が合格（${(passN / Math.max(1, all.length) * 100).toFixed(1)}%）**`, "");
+  L.push(`**測定できた ${measured.length} / ${runs.length} 回で、判定 ${passN} / ${all.length} 件が合格（${(passN / Math.max(1, all.length) * 100).toFixed(1)}%）**`, "");
   L.push("| シナリオ | 内容 | 合格した回 | 不合格だった判定 |", "|---|---|---|---|");
   scenarios.forEach(sc => {
-    const rs = bySc(sc.id);
+    const rs = bySc(sc.id).filter(r => !r.unmeasured);
+    if (!rs.length) { L.push(`| ${sc.id} | ${sc.title} | 測定できず | — |`); return; }
     const okRuns = rs.filter(r => r.checks.every(c => c.status !== "fail")).length;
     const fails = [...new Set(rs.flatMap(r => r.checks.filter(c => c.status === "fail").map(c => c.label)))];
     L.push(`| ${sc.id} | ${sc.title} | ${okRuns} / ${rs.length} | ${fails.join("、") || "—"} |`);
@@ -150,6 +174,7 @@ function buildReport(data) {
     } else {
       L.push("", `- エラー: ${r.error}`);
     }
+    if (r.unmeasured) { L.push("- 測定できず（採点に含めない）", ""); return; }
     const fails = r.checks.filter(c => c.status === "fail");
     L.push(fails.length ? `- 不合格: ${fails.map(c => c.label + (c.detail ? `（${c.detail}）` : "")).join("、")}` : "- 不合格: なし", "");
   });
@@ -175,20 +200,55 @@ async function main() {
     return;
   }
 
+  // 再開: 前回の結果のうち、測定できた回は再利用する（回答者の規則が同じ場合のみ）
+  const previous = {};
+  if (!FRESH && fs.existsSync(RAW_PATH)) {
+    try {
+      const saved = JSON.parse(fs.readFileSync(RAW_PATH, "utf8"));
+      if ((saved.meta && saved.meta.harness) === lib.HARNESS_VERSION) {
+        saved.runs.filter(r => !r.unmeasured).forEach(r => { previous[`${r.id}#${r.run}`] = r; });
+        const n = Object.keys(previous).length;
+        if (n) console.log(`前回の結果を再利用します: ${n}回（最初から回すときは --fresh）`);
+      } else {
+        console.log("回答者の規則が前回と違うため、前回の結果は使わずに回します");
+      }
+    } catch (e) { console.log("（前回の結果を読めなかったため、最初から回します）"); }
+  }
+
   const runs = [];
+  const notRun = [];
+  let stopped = null;
   for (const sc of scenarios) {
     for (let k = 1; k <= RUNS; k++) {
+      if (stopped) { notRun.push(`${sc.id}#${k}`); continue; }
+      const prev = previous[`${sc.id}#${k}`];
+      if (prev) {
+        // 会話はそのまま使い、判定だけ現在のシナリオの想定でやり直す
+        const checks = lib.evaluateRun(sc, prev);
+        runs.push(Object.assign({}, prev, { checks, reused: true }));
+        console.log(`  ${sc.id} ${k}回目 … 前回の結果を再利用`);
+        continue;
+      }
       process.stdout.write(`  ${sc.id} ${k}回目 … `);
       const run = await lib.runScenario(sc, send);
       const checks = lib.evaluateRun(sc, run);
       const fails = checks.filter(c => c.status === "fail");
-      console.log(run.error ? `エラー: ${run.error}` : `${run.turns.length}問 → ${run.result.urgency}/${run.result.category}/${run.result.stage_band}` + (fails.length ? `（不合格 ${fails.length}）` : "（すべて合格）"));
+      if (run.unmeasured) console.log(`測定できず: ${String(run.error).slice(0, 100)}`);
+      else console.log(run.error ? `エラー: ${run.error}` : `${run.turns.length}問 → ${run.result.urgency}/${run.result.category}/${run.result.stage_band}` + (fails.length ? `（不合格 ${fails.length}）` : "（すべて合格）"));
       runs.push(Object.assign({ id: sc.id, run: k }, run, { checks }));
+      if (run.fatal) stopped = run.error;
     }
   }
-  const data = { meta: { worker: WORKER_URL, version: doc.version, date: new Date().toISOString().slice(0, 16).replace("T", " "), runs: RUNS, transient: transientCount }, scenarios, runs };
+  const data = {
+    meta: { worker: WORKER_URL, version: doc.version, harness: lib.HARNESS_VERSION, date: new Date().toISOString().slice(0, 16).replace("T", " "), runs: RUNS, transient: transientCount, reused: runs.filter(r => r.reused).length, notRun },
+    scenarios, runs,
+  };
   fs.writeFileSync(RAW_PATH, JSON.stringify(data, null, 2), "utf8");
   fs.writeFileSync(OUT_PATH, buildReport(data), "utf8");
+  if (stopped) {
+    console.log(`\n待っても回復しないエラーのため中断しました: ${String(stopped).slice(0, 160)}`);
+    console.log("上限などを見直したあと、同じコマンドをもう一度実行すると続きから回します。");
+  }
   console.log(`\n→ ${path.basename(OUT_PATH)} / ${path.basename(RAW_PATH)} を出力しました`);
 }
 

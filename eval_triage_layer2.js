@@ -116,6 +116,10 @@ async function callWorker(text, signs) {
 
       const detail = json && (json.detail || json.error) || `HTTP ${res.status}`;
       const upstream = json && json.upstream_status;
+      // 月の支出上限・1日の上限・APIキーの問題は、待っても回復しないので再試行しない
+      if (/spending cap|spend cap|API key not valid|API_KEY_INVALID|PERMISSION_DENIED|PerDay|本日の利用上限/i.test(String(detail))) {
+        return { ok: false, error: `HTTP ${res.status}: ${detail}`, attempts: attempt };
+      }
       const isRateLimited = res.status === 429 || upstream === 429;
       if (isRateLimited && attempt < MAX_RETRY) {
         console.log(`    429（レート制限）。${RETRY_WAIT_MS / 1000}秒待って再試行 (${attempt}/${MAX_RETRY})`);
@@ -201,6 +205,7 @@ async function main() {
 
     let rec = {
       id: row["ID"],
+      worker: WORKER_URL,   // --report-only で作り直したときも、どのWorkerの結果か分かるように
       group: GROUPS.includes(row["分類"]) ? row["分類"] : "その他",
       respondent: row["回答者"],
       text,
@@ -329,7 +334,12 @@ function writeReport(results) {
   const L = [];
   L.push("# トリアージ評価【層2】結果 — Worker経由のAI判定");
   L.push("");
-  L.push(`- 評価対象: ${IS_PROD ? "本番Worker" : "検証用Worker"} \`${WORKER_URL}\`（モデル: gemini-3.7-flash）`);
+  // 生データに記録したWorkerを優先する（--report-only では実行時の環境変数と違うことがある）
+  const savedWorker = (results.find(r => r.worker) || {}).worker;
+  const worker = savedWorker || WORKER_URL;
+  const label = worker === PROD_WORKER_URL ? "本番Worker" : "検証用Worker";
+  L.push(`- 評価対象: ${label} \`${worker}\`（モデル: gemini-3.7-flash）` +
+    (!savedWorker && REPORT_ONLY ? "（※保存済みデータにWorkerの記録がないため、実行時の EVAL_WORKER_URL から表示）" : ""));
   L.push(`- 評価セット: \`${path.basename(CSV_PATH)}\`（${results.length}件）`);
   L.push(`- 実行日時: ${new Date().toISOString().slice(0, 16).replace("T", " ")} (UTC)`);
   L.push(`- 測定できたケース: ${measured.length} / ${results.length}` +
