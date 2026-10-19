@@ -126,6 +126,38 @@ Gemini API の `gemini-3.7-flash`（安定版）を使用します。表現の�
 node --test "test/*.test.js"
 ```
 
+### 動作検証（評価）の3つの層
+
+| 層 | スクリプト | 何を測るか | AI呼び出し |
+|---|---|---|---|
+| 層1 | `eval_triage_layer1.js` | 危険兆候の語彙判定（即時バナー）だけ | なし |
+| 層2 | `eval_triage_layer2.js` | 相談文1通からの一発判断（緊急度・相談先・進行度） | 20回 |
+| 層3 | `eval_triage_layer3.js` | 多段問診を最後まで：何を・どの順で聞いたか＋結論＋安全 | 14シナリオ×約8回 |
+
+問診の流れ（段階2＝記憶・段階3＝作業、行動の変化、受け止め方・希望など）を変えたため、
+流れそのものは層3で確かめます。層3では、シナリオごとの「架空の回答者」が、AIの質問を
+キーワードで話題に分類して決まった答えを返します（`評価シナリオ_v3_多段問診.json`、判定は `eval_flow_lib.js`）。
+
+```sh
+node eval_triage_layer3.js --dry-run          # シナリオの確認（APIを呼ばない）
+node eval_triage_layer3.js --runs 2           # 検証用Workerで14シナリオ×2回 → eval_layer3_result.md
+node eval_triage_layer3.js --only S06,S07     # 指定したシナリオだけ
+```
+
+層2の評価セットは、問診の変更に合わせて想定ラベルを改訂した v3 があります
+（`トリアージ評価セット_v3_20件.csv`。v2 との違いは T07/T13/T14/T16 の進行度だけ：
+着衣・入浴・排泄の情報がない相談文では中等度以上と判定しない、に変えたため moderate→unknown）。
+保存済みのAI応答を v3 で採点し直すだけなら、AIは呼びません
+（v2 の結果を残すため、生データを別名にコピーしてから採点する）:
+
+```sh
+cp eval_layer2_raw_fujita.json eval_layer2_raw_fujita_v3.json
+EVAL_CSV=トリアージ評価セット_v3_20件.csv EVAL_TAG=fujita_v3 node eval_triage_layer2.js --report-only
+# → eval_layer2_result_fujita_v3.md
+```
+
+シナリオと想定ラベルはチームの暫定です（医師の確認待ち）。
+
 ## データ出典
 
 - 厚生労働省「[医療情報ネット](https://www.iryou-jouhou.jp/)」オープンデータ

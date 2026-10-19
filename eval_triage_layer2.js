@@ -3,6 +3,11 @@
  *
  *   node eval_triage_layer2.js            … 20件を判定して eval_layer2_result.md を出力
  *   node eval_triage_layer2.js --dry-run  … API を呼ばずに送信内容だけ確認する
+ *   node eval_triage_layer2.js --report-only … 保存済みのAI応答を、現在の評価セットで採点し直す
+ *
+ *   評価セットは EVAL_CSV で切り替える（既定は v2）。問診を変えた後の想定ラベルは v3:
+ *     EVAL_CSV=トリアージ評価セット_v3_20件.csv node eval_triage_layer2.js
+ *   多段問診の流れ（何を・どの順で聞くか）はこの層では測れない → eval_triage_layer3.js
  *
  * 何を測るか:
  *   本番Worker（Gemini 3.7 Flash）が返す result.urgency / category / stage_band を、
@@ -35,7 +40,10 @@ const PROD_WORKER_URL = "https://kyoto-ninchisho-consult.iwatas.workers.dev";
 const WORKER_URL = process.env.EVAL_WORKER_URL || PROD_WORKER_URL;
 const IS_PROD = WORKER_URL === PROD_WORKER_URL;
 const TAG = process.env.EVAL_TAG ? "_" + process.env.EVAL_TAG.replace(/[^\w-]/g, "") : "";
-const CSV_PATH = path.join(__dirname, "トリアージ評価セット_v2_20件.csv");
+// 評価セットの切り替え（既定は v2）。問診の変更後の想定ラベルで測るときは v3 を指定する:
+//   EVAL_CSV=トリアージ評価セット_v3_20件.csv（v2 との違いは T07/T13/T14/T16 の進行度の想定だけ）
+const CSV_NAME = process.env.EVAL_CSV || "トリアージ評価セット_v2_20件.csv";
+const CSV_PATH = path.isAbsolute(CSV_NAME) ? CSV_NAME : path.join(__dirname, CSV_NAME);
 const OUT_PATH = path.join(__dirname, `eval_layer2_result${TAG}.md`);
 const RAW_PATH = path.join(__dirname, `eval_layer2_raw${TAG}.json`);
 
@@ -145,6 +153,15 @@ async function main() {
 
   if (REPORT_ONLY) {
     const saved = JSON.parse(fs.readFileSync(RAW_PATH, "utf8"));
+    // 想定ラベルは現在の評価セット（EVAL_CSV）から取り直す。AIを呼び直さずに、
+    // ラベルを改訂した評価セットで採点し直せる。
+    const byId = Object.fromEntries(rows.map(row => [row["ID"], row]));
+    saved.forEach(r => {
+      const row = byId[r.id];
+      if (!row) return;
+      r.aim = row["ねらい・確認したい点"];
+      r.expected = { urgency: row["暫定_緊急度"], category: row["暫定_カテゴリ"], stage_band: row["暫定_進行度"] };
+    });
     // 層1の判定だけ現在のコードで取り直す（AI応答は保存済みのものを使う）
     saved.forEach(r => {
       const signs = triage.classify(r.text);
@@ -313,7 +330,7 @@ function writeReport(results) {
   L.push("# トリアージ評価【層2】結果 — Worker経由のAI判定");
   L.push("");
   L.push(`- 評価対象: ${IS_PROD ? "本番Worker" : "検証用Worker"} \`${WORKER_URL}\`（モデル: gemini-3.7-flash）`);
-  L.push(`- 評価セット: \`トリアージ評価セット_v2_20件.csv\`（${results.length}件）`);
+  L.push(`- 評価セット: \`${path.basename(CSV_PATH)}\`（${results.length}件）`);
   L.push(`- 実行日時: ${new Date().toISOString().slice(0, 16).replace("T", " ")} (UTC)`);
   L.push(`- 測定できたケース: ${measured.length} / ${results.length}` +
     (unmeasurable.length ? `（測定不能 ${unmeasurable.length}件）` : ""));

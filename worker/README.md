@@ -181,4 +181,14 @@ EVAL_WORKER_URL=https://kyoto-ninchisho-consult-staging.iwatas.workers.dev EVAL_
 # → eval_layer2_result_fujita.md / eval_layer2_raw_fujita.json（本番の結果は上書きしない）
 ```
 
+多段問診の評価（層3）は、既定で検証用Workerを評価先にします（14シナリオ×約8回＝100回前後）。
+本番と同じ1日50リクエスト/IPの上限では足りないため、検証用Workerだけ
+`wrangler.toml` の `[env.staging.vars]` で上限を `RATE_LIMIT_PER_DAY = "300"` に上げています
+（本番Workerは変わらず50。値を変えたら `npx wrangler deploy --env staging` で反映）。
+
+```sh
+node eval_triage_layer3.js --runs 2
+# → eval_layer3_result.md / eval_layer3_raw.json
+```
+
 使い終わったら（不採用の場合など）`npx wrangler delete --env staging` で削除できます。

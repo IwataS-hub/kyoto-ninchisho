@@ -108,3 +108,21 @@ test("シナリオの形式（必須項目とID重複）", () => {
   }
   assert.strictEqual(scenarios.length, 14);
 });
+
+test("評価セットv3は、v2から T07/T13/T14/T16 の進行度の想定だけを変えている", () => {
+  const read = (name) => fs.readFileSync(new URL("../" + name, import.meta.url), "utf8").replace(/^﻿/, "")
+    .split(/\r?\n/).filter(Boolean).map(l => l.split(","));
+  const v2 = read("トリアージ評価セット_v2_20件.csv"), v3 = read("トリアージ評価セット_v3_20件.csv");
+  const hdr = v2[0], iAim = hdr.indexOf("ねらい・確認したい点");
+  assert.deepStrictEqual(v3[0], hdr);
+  assert.strictEqual(v3.length, v2.length);
+  const changed = [];
+  v2.slice(1).forEach((a, k) => {
+    const b = v3[k + 1];
+    a.forEach((cell, j) => {
+      if (j === iAim) return; // 変更理由の追記だけを許す
+      if (cell !== b[j]) changed.push(`${a[0]}:${hdr[j]}:${cell}→${b[j]}`);
+    });
+  });
+  assert.deepStrictEqual(changed, ["T07", "T13", "T14", "T16"].map(id => `${id}:暫定_進行度:moderate→unknown`));
+});
